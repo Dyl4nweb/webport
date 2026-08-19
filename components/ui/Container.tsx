@@ -1,27 +1,32 @@
-import { cn } from "@/lib/utils";
+import type { ElementType, ComponentPropsWithoutRef, ReactNode } from "react";
 
-interface ContainerProps {
-  children: React.ReactNode;
-  className?: string;
+type ContainerProps<T extends ElementType = "div"> = {
+  as?: T;
   narrow?: boolean;
-  as?: keyof JSX.IntrinsicElements;
-}
+  children?: ReactNode;
+} & Omit<ComponentPropsWithoutRef<T>, "as" | "children">;
 
-export default function Container({
-  children,
-  className,
+export default function Container<T extends ElementType = "div">({
+  as,
   narrow = false,
-  as: Tag = "div",
-}: ContainerProps) {
+  className,
+  children,
+  ...props
+}: ContainerProps<T>) {
+  const Component = as ?? "div";
+
   return (
-    <Tag
-      className={cn(
-        "mx-auto w-full px-6 md:px-10",
-        narrow ? "max-w-narrow" : "max-w-content",
-        className
-      )}
+    <Component
+      className={[
+        "mx-auto w-full px-6 sm:px-8",
+        narrow ? "max-w-4xl" : "max-w-7xl",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      {...props}
     >
       {children}
-    </Tag>
+    </Component>
   );
 }

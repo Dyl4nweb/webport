@@ -4,14 +4,13 @@ function flattenClasses(values: ClassValue[], out: (string | number)[] = []): (s
   for (const value of values) {
     if (Array.isArray(value)) {
       flattenClasses(value, out);
-    } else if (value) {
+    } else if (value && (typeof value === 'string' || typeof value === 'number')) {
       out.push(value);
     }
   }
   return out;
 }
 
-/** Lightweight className combiner (no external dependency required). */
 export function cn(...inputs: ClassValue[]): string {
   return flattenClasses(inputs)
     .join(" ")
