@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 
 type Theme = "light" | "dark";
 
@@ -57,10 +58,37 @@ export default function ThemeToggle() {
       animatingRef.current = false;
     };
 
-    // Use View Transition API if supported
+    // One flow for every View Transitions-capable browser — desktop and
+    // mobile alike: the knob glides live during the async callback window,
+    // the settled frame is captured, then the circular reveal sweeps the
+    // new theme across the page from the toggle's origin.
     if ("startViewTransition" in document) {
-      const transition = (document as any).startViewTransition(() => {
-        applyTheme();
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)")
+        .matches;
+      // Touch devices only: give WebKit one frame to settle the tap's
+      // :active style recalc before flipping, otherwise the knob/icon
+      // transitions register from dirty styles and snap instead of gliding.
+      const coarsePointer = window.matchMedia(
+        "(hover: none) and (pointer: coarse)",
+      ).matches;
+      const transition = (document as any).startViewTransition(async () => {
+        if (coarsePointer && !reduceMotion) {
+          await new Promise((r) => requestAnimationFrame(r));
+        }
+        // Touch devices: commit synchronously so the flip and glide start
+        // are pinned to the tap (post-await React updates otherwise run at
+        // concurrent priority and land late on busy mobile main threads).
+        if (coarsePointer) {
+          flushSync(() => setIsDark(nextDark));
+          root.classList.toggle("dark", nextDark);
+          localStorage.setItem("theme", next);
+        } else {
+          applyTheme();
+        }
+        // Until the callback settles the live page is still on screen, so the
+        // knob glide and sun/moon crossfade play visibly; waiting for them to
+        // finish also guarantees the captured frame is the settled final state.
+        if (!reduceMotion) await new Promise((r) => setTimeout(r, 350));
       });
 
       transition.finished.then(unlock, () => {
@@ -69,6 +97,7 @@ export default function ThemeToggle() {
         unlock();
       });
       // Safety net: bound the lock even if `finished` never settles
+      // (covers the live switch glide plus the full circular reveal)
       unlockTimer = setTimeout(() => {
         try {
           transition.skipTransition();
@@ -78,19 +107,24 @@ export default function ThemeToggle() {
         root.style.removeProperty("--view-tx");
         root.style.removeProperty("--view-ty");
         unlock();
-      }, 1200);
+      }, 2200);
     } else {
-      // Fallback: instant theme change, no animation
-      applyTheme();
-      root.style.removeProperty("--view-tx");
-      root.style.removeProperty("--view-ty");
+      // Fallback: no View Transition — plain smooth CSS transitions. Defer one
+      // frame so WebKit settles the tap's :active style recalc first; flipping
+      // synchronously makes iOS register the transitions from dirty styles and
+      // jump straight to their end state.
+      requestAnimationFrame(() => {
+        applyTheme();
+        root.style.removeProperty("--view-tx");
+        root.style.removeProperty("--view-ty");
+      });
       setTimeout(unlock, 50);
     }
   };
 
   // SSR / hydration placeholder — matches exact toggle dimensions
   if (!mounted) {
-    return <div className="h-8 w-[52px] flex-shrink-0" aria-hidden="true" />;
+    return <div className="h-7 w-[46px] flex-shrink-0" aria-hidden="true" />;
   }
 
   return (
@@ -103,7 +137,7 @@ export default function ThemeToggle() {
       data-theme-toggle
       onClick={toggleTheme}
       className={[
-        "relative h-8 w-[52px] flex-shrink-0 rounded-full p-[4px]",
+        "relative h-7 w-[46px] flex-shrink-0 rounded-full p-[4px]",
         "select-none touch-manipulation [-webkit-tap-highlight-color:transparent]",
         "before:absolute before:-inset-1.5 before:rounded-full before:content-['']",
         "active:scale-95",
@@ -123,14 +157,14 @@ export default function ThemeToggle() {
       {/* Sliding knob */}
       <span
         className={[
-          "absolute left-[4px] top-[4px] flex h-6 w-6 items-center justify-center",
-          "rounded-full bg-white shadow-sm",
+          "absolute left-[4px] top-[4px] flex h-5 w-5 items-center justify-center",
+          "rounded-full bg-white shadow-sm will-change-transform",
           "transition-transform duration-300 ease-in-out",
-          isDark ? "translate-x-[20px]" : "translate-x-0",
+          isDark ? "translate-x-[18px]" : "translate-x-0",
         ].join(" ")}
       >
         {/* Sun / Moon icons — both mounted; swapped via opacity + transform */}
-        <span className="relative block h-[14px] w-[14px]">
+        <span className="relative block h-[14px] w-[14px] will-change-[opacity,transform]">
           <svg
             width="14"
             height="14"

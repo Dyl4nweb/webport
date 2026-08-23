@@ -126,6 +126,16 @@
 
 /* ─── View Transition: liquid sheet reveal from toggle button ─── */
 
+/* Freeze transitions only while theme snapshots are captured, so the
+   "new" frame is the final theme state, not a mid-fade hybrid.
+   Animations (marquees, loaders) are intentionally untouched. */
+html.theme-swap,
+html.theme-swap *,
+html.theme-swap *::before,
+html.theme-swap *::after {
+  transition: none !important;
+}
+
 ::view-transition-old(root) {
   animation: none !important;
   z-index: 1;
@@ -300,11 +310,12 @@
     scroll-behavior: auto !important;
   }
 
-  /* Let View Transition API handle its own cross-fade */
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none !important;
-  }
+  /* NOTE: ::view-transition-old/new(root) intentionally NOT suppressed here.
+     Suppressing them cancelled theme-reveal entirely, killing the circular
+     wave on any device with Reduce Motion enabled. The universal 0.001ms
+     rules above never reach view-transition pseudo-elements, so removing
+     this override lets the author keyframes run identically to non-RM,
+     while every real-element transition stays instant per the preference. */
 
   #splash {
     display: none !important;

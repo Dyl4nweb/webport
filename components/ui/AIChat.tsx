@@ -60,6 +60,10 @@ export default function AIChat() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [open]);
 
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("aichat:open", { detail: open }));
+  }, [open]);
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmed = input.trim();
