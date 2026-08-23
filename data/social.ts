@@ -1,7 +1,24 @@
-import { SocialLink } from "@/types";
+import type { SocialLink } from "@/types";
 
 export const socialLinks: SocialLink[] = [
-  { label: "Gmail", url: "mailto:hello@alexrivera.dev", icon: "mail" },
-  { label: "LinkedIn", url: "https://linkedin.com/in/alexrivera", icon: "linkedin" },
-  { label: "Instagram", url: "https://instagram.com/alexrivera", icon: "instagram" },
+  {
+    label: "GitHub",
+    url: "https://github.com/kurtdope",
+    icon: "github",
+  },
+  {
+    label: "LinkedIn",
+    url: "https://www.linkedin.com/in/kurt-dylan-viray-4b656541b/",
+    icon: "linkedin",
+  },
+  {
+    label: "Instagram",
+    url: "https://instagram.com/_dylanweb",
+    icon: "instagram",
+  },
+  {
+    label: "Gmail",
+    url: "mailto:kurtdylanviray@gmail.com",
+    icon: "mail",
+  },
 ];

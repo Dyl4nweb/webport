@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef } from "react";
+
 import { NAV_LINKS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -10,45 +12,82 @@ interface MobileMenuProps {
   pathname: string;
 }
 
-export default function MobileMenu({ open, onClose, pathname }: MobileMenuProps) {
+export default function MobileMenu({
+  open,
+  onClose,
+  pathname,
+}: MobileMenuProps) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) onClose();
+    };
+    window.addEventListener("click", handleClickOutside);
+    return () => window.removeEventListener("click", handleClickOutside);
+  }, [open, onClose]);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open, onClose]);
+
   return (
     <div
+      ref={ref}
       className={cn(
-        "fixed inset-0 z-40 bg-surface/98 backdrop-blur-xl transition-opacity duration-300 ease-apple dark:bg-surface-dark/98 md:hidden",
-        open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+        "fixed z-[200] md:hidden",
+        "right-3 top-[70px]",
+        "w-[min(264px,calc(100vw-24px))]",
+        "overflow-hidden rounded-2xl",
+        "shadow-[0_16px_48px_-12px_rgba(0,0,0,0.18),0_4px_12px_rgba(0,0,0,0.06)]",
+        "dark:shadow-[0_16px_48px_-12px_rgba(0,0,0,0.5),0_4px_12px_rgba(0,0,0,0.25)]",
+        "border border-line/20 dark:border-line-dark/20",
+        "transition-[transform,opacity,visibility] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
+        "origin-top-right",
+        open
+          ? "scale-100 opacity-100 visible"
+          : "scale-95 opacity-0 invisible pointer-events-none"
       )}
     >
-      <div className="flex h-14 items-center justify-end px-6">
-        <button
-          type="button"
-          aria-label="Close menu"
-          onClick={onClose}
-          className="flex h-8 w-8 items-center justify-center text-ink dark:text-ink-dark"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M5 5l14 14M19 5L5 19"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
-      </div>
-
-      <nav className="flex flex-col items-center gap-8 pt-10">
-        {NAV_LINKS.map((link) => {
+      <div
+        className={cn(
+          "absolute inset-0 -z-10 rounded-[inherit]",
+          open
+            ? "bg-surface/95 backdrop-blur-xl [-webkit-backdrop-filter:blur(24px)] dark:bg-surface-dark/95"
+            : ""
+        )}
+      />
+      <nav className="relative flex flex-col p-1.5">
+        {NAV_LINKS.map((link, index) => {
           const active = pathname === link.href;
           return (
             <Link
               key={link.href}
               href={link.href}
               onClick={onClose}
+              style={{ transitionDelay: open ? `${60 + index * 45}ms` : "0ms" }}
               className={cn(
-                "text-[28px] font-semibold tracking-tight",
+                "flex items-center gap-2.5 rounded-lg px-2.5 py-2",
+                "text-[14px] font-medium tracking-[-0.01em]",
+                "transition-[transform,opacity,background-color,color] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
                 active
-                  ? "text-ink dark:text-ink-dark"
-                  : "text-ink-secondary dark:text-ink-dark-secondary"
+                  ? [
+                      "bg-ink/[0.06] text-ink",
+                      "dark:bg-ink-dark/[0.08] dark:text-ink-dark",
+                    ]
+                  : [
+                      "text-ink-secondary",
+                      "hover:bg-ink/[0.04] hover:text-ink",
+                      "dark:text-ink-dark-secondary",
+                      "dark:hover:bg-ink-dark/[0.06] dark:hover:text-ink-dark",
+                    ],
+                open ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"
               )}
             >
               {link.label}

@@ -3,17 +3,17 @@ export interface Project {
   name: string;
   tagline: string;
   description: string;
-  problem: string;
-  solution: string;
   role: string;
   year: string;
+  category: string;
   image: string;
-  gallery?: string[];
+  screenshots?: { src: string; title: string; description: string }[];
   techStack: string[];
   liveUrl?: string;
   repoUrl?: string;
   featured: boolean;
-  metrics?: { label: string; value: string }[];
+  overview?: string;
+  features?: string[];
 }
 
 export interface Skill {

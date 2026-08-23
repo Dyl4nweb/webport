@@ -1,14 +1,14 @@
 import Container from "@/components/ui/Container";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Button from "@/components/ui/Button";
-import ProjectGrid from "@/components/projects/ProjectGrid";
-import { getFeaturedProjects } from "@/data/projects";
+import ProjectsGrid from "@/components/projects/ProjectsGrid";
+import { getFeaturedProjects } from "@/lib/projects-data";
 
-export default function FeaturedProjects() {
-  const projects = getFeaturedProjects();
+export default async function FeaturedProjects() {
+  const projects = await getFeaturedProjects();
 
   return (
-    <section className="border-t border-line/60 bg-surface-alt py-24 dark:border-line-dark/60 dark:bg-surface-dark-alt md:py-32">
+    <section className="py-24 md:py-32" style={{ contain: "layout style" }}>
       <Container className="flex flex-col gap-14">
         <SectionHeading
           eyebrow="Selected Work"
@@ -16,7 +16,7 @@ export default function FeaturedProjects() {
           deck="A few pieces of work I'd stand behind in a room full of critics."
         />
 
-        <ProjectGrid projects={projects} />
+        <ProjectsGrid projects={projects} />
 
         <Button href="/projects" variant="secondary" className="self-center">
           View all projects

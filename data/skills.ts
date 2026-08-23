@@ -2,27 +2,54 @@ import { Skill } from "@/types";
 
 export const skills: Skill[] = [
   {
-    category: "Languages",
-    items: ["TypeScript", "JavaScript", "Python", "Go", "SQL"],
-  },
-  {
     category: "Frontend",
-    items: ["React", "Next.js", "Tailwind CSS", "Framer Motion", "Redux"],
+    items: [
+      "React",
+      "Next.js",
+      "React Native",
+      "Tailwind CSS",
+      "TypeScript",
+      "JavaScript",
+      "Flutter",
+      "HTML",
+      "CSS",
+    ],
   },
   {
     category: "Backend",
-    items: ["Node.js", "Express", "PostgreSQL", "Prisma", "Redis", "GraphQL"],
+    items: [
+      "Node.js",
+      "Supabase",
+      "PostgreSQL",
+      "MongoDB",
+      "Prisma",
+      "Dart",
+      "REST APIs",
+    ],
   },
   {
-    category: "Infrastructure",
-    items: ["AWS", "Docker", "Vercel", "CI/CD", "Terraform"],
+    category: "Dev Tools",
+    items: [
+      "Git",
+      "GitHub",
+      "Visual Studio Code",
+      "Vercel",
+      "Expo Go",
+      "Cal.com",
+      "Resend",
+      "EmailJS",
+      "Docker",
+      "Netlify",
+    ],
   },
   {
     category: "AI & Data",
-    items: ["OpenAI API", "LangChain", "Vector Search", "Pandas"],
-  },
-  {
-    category: "Practice",
-    items: ["Design Systems", "Accessibility", "Performance", "Testing"],
+    items: [
+      "OpenAI API",
+      "OpenRouter API",
+      "Google Gemini API",
+      "IPinfo API",
+      "Resend API"
+    ],
   },
 ];

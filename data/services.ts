@@ -2,27 +2,21 @@ import { Service } from "@/types";
 
 export const services: Service[] = [
   {
-    title: "Product Engineering",
+    title: "Website & Landing Pages",
     description:
-      "End-to-end build of web applications — from architecture and data model through a polished, shipped interface.",
+      "Full responsive websites for companies — built to convert and perform. From simple landing pages to multi-page business websites.",
     icon: "layers",
   },
   {
-    title: "Design Systems",
+    title: "Mobile App Development",
     description:
-      "Component libraries and design tokens that keep a growing product consistent without slowing teams down.",
-    icon: "grid",
+      "Native and cross-platform mobile applications for iOS and Android. Designed for performance, usability, and scalability.",
+    icon: "mobile",
   },
   {
-    title: "AI Integration",
+    title: "Graphic Design & Branding",
     description:
-      "Practical AI features — retrieval, assistants, document intelligence — built for reliability, not novelty.",
-    icon: "sparkles",
-  },
-  {
-    title: "Performance Audits",
-    description:
-      "Deep passes on load time, rendering, and Core Web Vitals with a prioritized, actionable fix list.",
-    icon: "gauge",
+      "Professional graphic design services including flyers, promotional materials, and pubmats using GIMP and Canva.",
+    icon: "paint",
   },
 ];
