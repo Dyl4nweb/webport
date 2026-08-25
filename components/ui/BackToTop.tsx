@@ -46,7 +46,7 @@ export default function BackToTop() {
       tabIndex={visible ? 0 : -1}
       className={[
         "public-chat fixed bottom-[76px] right-6 z-[150]",
-        "flex h-10 w-10 items-center justify-center rounded-2xl",
+        "flex h-10 w-10 items-center justify-center rounded-full",
         "bg-white/40 backdrop-blur-2xl saturate-150",
         "border border-white/20 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.25)]",
         "text-ink dark:bg-black/40 dark:border-white/10 dark:text-ink-dark",

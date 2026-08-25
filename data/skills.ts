@@ -33,6 +33,7 @@ export const skills: Skill[] = [
       "Git",
       "GitHub",
       "Visual Studio Code",
+      "Antigravity IDE",
       "Vercel",
       "Expo Go",
       "Cal.com",
@@ -45,9 +46,10 @@ export const skills: Skill[] = [
   {
     category: "AI & Data",
     items: [
-      "OpenAI API",
-      "OpenRouter API",
       "Google Gemini API",
+      "OpenAI CLI",
+      "Opencode CLI",
+      "OpenRouter API",
       "IPinfo API",
       "Resend API"
     ],

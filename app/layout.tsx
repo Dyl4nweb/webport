@@ -64,7 +64,7 @@ export default function RootLayout({
         />
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem("theme");if(!t)t=matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light";var r=document.documentElement;r.classList.toggle("dark",t==="dark");if(t==="dark"){r.style.backgroundColor="#000";var c=function(){r.style.backgroundColor=""};"loading"===document.readyState?document.addEventListener("DOMContentLoaded",c,{once:!0}):c()}}catch(e){}`,
+            __html: `try{var t=localStorage.getItem("theme");if(!t)t=matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light";var r=document.documentElement;r.classList.toggle("dark",t==="dark");if(t==="dark"){r.style.backgroundColor="#000";var c=function(){r.style.backgroundColor=""};"loading"===document.readyState?window.addEventListener("DOMContentLoaded",c,{once:!0}):c()}}catch(e){}`,
           }}
         />
       </head>

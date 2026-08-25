@@ -133,14 +133,14 @@ export default function AIChat() {
 
   return (
     <>
-      {/* Floating trigger — rounded rectangle matching navbar */}
+      {/* Floating trigger — rounded capsule matching navbar */}
       <button
-  type="button"
-  onClick={() => setOpen((current) => !current)}
-  aria-label={open ? "Close chat" : "Chat with Dylan"}
-  aria-expanded={open}
-  className="group fixed bottom-6 right-6 z-[150] flex items-center gap-2.5 rounded-2xl bg-white/40 px-4 py-2.5 text-ink backdrop-blur-2xl saturate-150 border border-white/20 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.25)] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hover:-translate-y-1 hover:shadow-[0_16px_48px_-12px_rgba(0,0,0,0.35)] active:scale-[0.97] dark:bg-black/40 dark:border-white/10 dark:text-ink-dark"
->
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        aria-label={open ? "Close chat" : "Chat with Dylan"}
+        aria-expanded={open}
+        className="group fixed bottom-6 right-6 z-[150] flex items-center gap-2.5 rounded-full bg-white/40 px-4 py-2.5 text-ink backdrop-blur-2xl saturate-150 border border-white/20 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.25)] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hover:-translate-y-1 hover:shadow-[0_16px_48px_-12px_rgba(0,0,0,0.35)] active:scale-[0.97] dark:bg-black/40 dark:border-white/10 dark:text-ink-dark"
+      >
   {open ? (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-ink dark:text-ink-dark">
       <path d="M18 6 6 18M6 6l12 12" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />

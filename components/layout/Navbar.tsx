@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
-import Container from "@/components/ui/Container";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import MobileMenu from "@/components/layout/MobileMenu";
 
@@ -52,22 +51,22 @@ export default function Navbar() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50",
+        "fixed inset-x-0 top-0 z-50 mx-auto",
+        "w-[calc(100%-1.5rem)] sm:w-[calc(100%-2.5rem)] md:w-full md:max-w-4xl",
         "will-change-transform",
-        "transition-[margin,radius,box-shadow] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
+        "transition-[margin,border-radius,box-shadow,max-width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
         scrolled
           ? [
-              "mx-3 md:mx-5 lg:mx-8",
               "mt-2 md:mt-3",
-              "rounded-2xl",
+              "rounded-full",
               "border border-white/20",
               "dark:border-white/10",
               "shadow-[0_4px_24px_-4px_rgba(0,0,0,0.12),0_1px_3px_rgba(0,0,0,0.06)]",
               "dark:shadow-[0_4px_24px_-4px_rgba(0,0,0,0.35),0_1px_3px_rgba(0,0,0,0.2)]",
             ]
           : [
-              "mx-0 mt-0",
-              "rounded-none",
+              "mt-0 md:mt-2",
+              "rounded-full",
               "border-transparent",
               "shadow-none",
             ]
@@ -83,7 +82,7 @@ export default function Navbar() {
             : "opacity-0",
         )}
       />
-      <Container className="relative flex h-[54px] items-center justify-between pt-[env(safe-area-inset-top,0px)] md:h-[62px]">
+      <div className="relative flex h-[54px] w-full items-center justify-between px-4 sm:px-6 md:h-[58px] pt-[env(safe-area-inset-top,0px)]">
         <button
           type="button"
           onClick={scrollToTop}
@@ -111,7 +110,7 @@ export default function Navbar() {
           />
         </button>
 
-        <nav className="hidden items-center gap-2 md:flex">
+        <nav className="hidden items-center gap-1 lg:gap-1.5 md:flex">
           {NAV_LINKS.map((link) => {
             const active = pathname === link.href;
             return (
@@ -120,7 +119,7 @@ export default function Navbar() {
                 href={link.href}
                 className={cn(
                   "rounded-full",
-                  "px-4 py-2",
+                  "px-3.5 py-1.5",
                   "text-[13px] font-semibold",
                   "tracking-[-0.01em]",
                   "transition-[background-color,color] duration-200",
@@ -204,7 +203,7 @@ export default function Navbar() {
             />
           </div>
         </div>
-      </Container>
+      </div>
     </header>
   );
 }

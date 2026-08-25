@@ -19,6 +19,13 @@
 
   html {
     scroll-behavior: auto;
+    /* Theme canvas — matches the surface tokens so the pre-CSS boot frame
+       can never flash unstyled white in dark mode (or black in light). */
+    background-color: #fbfbfd;
+  }
+
+  html.dark {
+    background-color: #000000;
   }
 
   body {
@@ -128,46 +135,115 @@
 
 /* Freeze transitions only while theme snapshots are captured, so the
    "new" frame is the final theme state, not a mid-fade hybrid.
-   Animations (marquees, loaders) are intentionally untouched. */
+   Toggle button is excluded so its smooth GPU transitions remain fluid. */
 html.theme-swap,
-html.theme-swap *,
-html.theme-swap *::before,
-html.theme-swap *::after {
+html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *),
+html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::before,
+html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
   transition: none !important;
+}
+
+::view-transition-image-pair(root) {
+  isolation: isolate;
 }
 
 ::view-transition-old(root) {
   animation: none !important;
+  mix-blend-mode: normal !important;
   z-index: 1;
 }
 
 ::view-transition-new(root) {
-  /* Fallback curve, then a viscous surge-and-settle glide that reads as
-     flowing water: quick uptake, long calm deceleration. Single animated
-     property (clip-path) = pure compositor work, no per-frame raster. */
-  animation: theme-reveal 0.95s cubic-bezier(0.65, 0, 0.35, 1) both;
-  animation: theme-reveal 0.95s
-    linear(
-      0,
-      0.26 18%,
-      0.48 38%,
-      0.65 54%,
-      0.79 68%,
-      0.89 80%,
-      0.96 90%,
-      1
-    )
-    both;
+  animation: none !important;
+  mix-blend-mode: normal !important;
   z-index: 9999;
 }
 
-@keyframes theme-reveal {
-  0% {
-    clip-path: circle(0% at var(--view-tx, 50%) var(--view-ty, 50%));
+/* Knob & icons: dedicated snapshot pairs with fluid spring-like easing floating
+   above the circular wave reveal (z-index: 100000+). */
+::view-transition-group(tt-knob) {
+  animation-duration: 350ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100000;
+}
+
+::view-transition-group(tt-icons) {
+  animation-duration: 350ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100001;
+}
+
+::view-transition-old(tt-knob),
+::view-transition-new(tt-knob) {
+  animation-duration: 350ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes tt-swing-out-cw {
+  from {
+    opacity: 1;
+    transform: rotate(0deg);
   }
-  100% {
-    clip-path: circle(150% at var(--view-tx, 50%) var(--view-ty, 50%));
+  to {
+    opacity: 0;
+    transform: rotate(90deg);
   }
+}
+
+@keyframes tt-swing-in-cw {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes tt-swing-out-ccw {
+  from {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+  to {
+    opacity: 0;
+    transform: rotate(-90deg);
+  }
+}
+
+@keyframes tt-swing-in-ccw {
+  from {
+    opacity: 0;
+    transform: rotate(90deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+}
+
+::view-transition-old(tt-icons),
+::view-transition-new(tt-icons) {
+  animation-duration: 350ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
+}
+
+html.dark ::view-transition-old(tt-icons) {
+  animation-name: tt-swing-out-cw;
+}
+
+html.dark ::view-transition-new(tt-icons) {
+  animation-name: tt-swing-in-cw;
+}
+
+html:not(.dark) ::view-transition-old(tt-icons) {
+  animation-name: tt-swing-out-ccw;
+}
+
+html:not(.dark) ::view-transition-new(tt-icons) {
+  animation-name: tt-swing-in-ccw;
 }
 
 /* ─── Splash screen ─── */
