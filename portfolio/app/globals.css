@@ -1,0 +1,350 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Base layer ─── */
+@layer base {
+  #app-main {
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.28, 0.11, 0.32, 1);
+  }
+
+  #app-main.is-ready {
+    opacity: 1;
+  }
+
+  * {
+    @apply border-line dark:border-line-dark;
+  }
+
+  html {
+    scroll-behavior: auto;
+    --view-tx: 88%;
+    --view-ty: 4%;
+    /* Theme canvas — matches the surface tokens so the pre-CSS boot frame
+       can never flash unstyled white in dark mode (or black in light). */
+    background-color: #fbfbfd;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    html:not(.light) {
+      background-color: #000000;
+    }
+  }
+
+  html.dark {
+    background-color: #000000;
+  }
+
+  body {
+    @apply bg-surface text-ink antialiased dark:bg-surface-dark dark:text-ink-dark;
+    font-feature-settings: "kern", "liga", "calt";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    @apply bg-accent/20 text-ink dark:bg-accent-dark/30 dark:text-ink-dark;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-surface dark:ring-accent-dark dark:ring-offset-surface-dark;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-line dark:bg-line-dark;
+  }
+}
+
+/* ─── Utilities layer ─── */
+@layer utilities {
+  .reveal {
+    animation: fadeUp 0.8s cubic-bezier(0.28, 0.11, 0.32, 1) both;
+  }
+
+  .animate-marquee-left {
+    animation: marquee-left linear infinite;
+  }
+
+  .animate-marquee-right {
+    animation: marquee-right linear infinite;
+  }
+}
+
+/* ─── Keyframes (global, outside @layer for proper cascade) ─── */
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes marquee-left {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes marquee-right {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes shimmerOnce {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes hintBounce {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-3px);
+  }
+}
+
+@keyframes typingBounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+  30% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+}
+
+/* ─── View Transition: liquid sheet reveal from toggle button ─── */
+
+/* Freeze transitions only while theme snapshots are captured, so the
+   "new" frame is the final theme state, not a mid-fade hybrid.
+   Toggle button is excluded so its smooth GPU transitions remain fluid. */
+html.theme-swap,
+html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *),
+html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::before,
+html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
+  transition: none !important;
+}
+
+::view-transition-image-pair(root) {
+  isolation: isolate;
+}
+
+::view-transition-old(root) {
+  animation: none !important;
+  mix-blend-mode: normal !important;
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  animation: theme-reveal 1.25s cubic-bezier(0.4, 0.05, 0.2, 1) both;
+  mix-blend-mode: normal !important;
+  z-index: 9999;
+}
+
+@keyframes theme-reveal {
+  0%,
+  7% {
+    clip-path: circle(0% at var(--view-tx, 50%) var(--view-ty, 50%));
+  }
+  100% {
+    clip-path: circle(150% at var(--view-tx, 50%) var(--view-ty, 50%));
+  }
+}
+
+
+/* ─── Splash screen ─── */
+
+#splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  background: #fbfbfd;
+  transition: opacity 0.6s cubic-bezier(0.28, 0.11, 0.32, 1),
+    transform 0.6s cubic-bezier(0.28, 0.11, 0.32, 1),
+    visibility 0s 0.6s;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) #splash {
+    background: #000000;
+  }
+}
+
+.dark #splash {
+  background: #000000;
+}
+
+/* Entrance — one-shot, lightweight */
+
+@keyframes splash-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading line */
+
+#splash-line {
+  position: relative;
+  width: 180px;
+  height: 2px;
+  border-radius: 9999px;
+  background: var(--splash-track, rgba(29, 29, 31, 0.1));
+  overflow: hidden;
+  animation: splash-rise 0.6s cubic-bezier(0.28, 0.11, 0.32, 1) both;
+}
+
+#splash-line::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 36%;
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--splash-active, #1d1d1f) 35%,
+    var(--splash-active, #1d1d1f) 65%,
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: splash-shimmer 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.dark #splash-line {
+  background: var(--splash-track, rgba(245, 245, 247, 0.1));
+}
+
+.dark #splash-line::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--splash-active, #f5f5f7) 35%,
+    var(--splash-active, #f5f5f7) 65%,
+    transparent
+  );
+}
+
+@keyframes splash-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(380%);
+  }
+}
+
+/* Loading text */
+
+#splash-text {
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont,
+    "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--splash-text, #86868b);
+  user-select: none;
+  animation: splash-rise 0.6s cubic-bezier(0.28, 0.11, 0.32, 1) 0.1s both;
+}
+
+.dark #splash-text {
+  --splash-text: #98989d;
+}
+
+@media (min-width: 768px) {
+  #splash {
+    gap: 24px;
+  }
+
+  #splash-line {
+    width: 280px;
+    height: 2px;
+  }
+
+  #splash-text {
+    font-size: 12px;
+  }
+}
+
+#splash.is-done {
+  opacity: 0;
+  transform: scale(1.02);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ─── Reduced motion ─── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* NOTE: ::view-transition-old/new(root) intentionally NOT suppressed here.
+     Suppressing them cancelled theme-reveal entirely, killing the circular
+     wave on any device with Reduce Motion enabled. The universal 0.001ms
+     rules above never reach view-transition pseudo-elements, so removing
+     this override lets the author keyframes run identically to non-RM,
+     while every real-element transition stays instant per the preference. */
+
+  #splash {
+    display: none !important;
+  }
+}
+
+/* ─── Admin area: suppress public chrome ─── */
+
+html[data-admin] .public-navbar,
+html[data-admin] .public-footer,
+html[data-admin] .public-chat,
+html[data-admin] #splash {
+  display: none !important;
+}
+
+html[data-admin] #app-main {
+  opacity: 1 !important;
+}

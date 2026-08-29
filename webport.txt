@@ -1,0 +1,32 @@
+habit-tracker-mobile/
+├── app/                              # Expo Router (File-based navigation)
+│   ├── (tabs)/                       # Bottom Tab Navigation
+│   │   ├── index.tsx                 # 🏠 Today's Habits & Streak Card
+│   │   ├── pomodoro.tsx              # ⏱️ Focus Timer (with sound & vibrate)
+│   │   ├── stats.tsx                 # 📊 Weekly consistency & heatmap
+│   │   ├── achievements.tsx          # 🏆 Badges & milestones
+│   │   └── settings.tsx              # ⚙️ Data Export/Import, Freeze credits
+│   ├── modal.tsx                     # ➕ Add / Edit Habit modal
+│   └── _layout.tsx                   # Tab bar configuration & theme provider
+│
+├── src/
+│   ├── components/
+│   │   ├── HabitCard.tsx             # Swipeable habit item with check button
+│   │   ├── StreakFreezeButton.tsx    # Protect streak button (uses credits)
+│   │   ├── TimerRing.tsx             # Circular Pomodoro countdown visual
+│   │   └── ProgressBar.tsx           # Daily completion percentage
+│   │
+│   ├── lib/
+│   │   ├── storage.ts                # 💾 AsyncStorage CRUD operations
+│   │   ├── notifications.ts          # 🔔 Offline daily habit reminders
+│   │   ├── haptics.ts                # 📳 Native vibration feedback
+│   │   └── streaks.ts                # Streak calculations & freeze logic
+│   │
+│   ├── types/
+│   │   └── index.ts                  # Habit, Log, Session, & Settings types
+│   │
+│   └── constants/
+│       └── theme.ts                  # Dark/Light colors & typography
+│
+├── package.json
+└── app.json                          # Expo config (App icon, splash screen, bundle ID)
