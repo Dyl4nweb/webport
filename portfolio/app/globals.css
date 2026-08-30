@@ -165,14 +165,17 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
   animation: theme-reveal 1.25s cubic-bezier(0.4, 0.05, 0.2, 1) both;
   mix-blend-mode: normal !important;
   z-index: 9999;
+  will-change: clip-path;
+  transform: translateZ(0);
 }
 
 @keyframes theme-reveal {
-  0%,
-  7% {
+  from {
+    -webkit-clip-path: circle(0% at var(--view-tx, 50%) var(--view-ty, 50%));
     clip-path: circle(0% at var(--view-tx, 50%) var(--view-ty, 50%));
   }
-  100% {
+  to {
+    -webkit-clip-path: circle(150% at var(--view-tx, 50%) var(--view-ty, 50%));
     clip-path: circle(150% at var(--view-tx, 50%) var(--view-ty, 50%));
   }
 }

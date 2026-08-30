@@ -28,12 +28,19 @@ export const skills: Skill[] = [
     ],
   },
   {
+    category: "Data Analysis",
+    items: [
+      "Excel",
+      "SQL",
+      "Google Sheets",
+    ],
+  },
+  {
     category: "Dev Tools",
     items: [
       "Git",
       "GitHub",
       "Visual Studio Code",
-      "Antigravity IDE",
       "Vercel",
       "Expo Go",
       "Cal.com",
@@ -44,11 +51,11 @@ export const skills: Skill[] = [
     ],
   },
   {
-    category: "AI & Data",
+    category: "AI & Intelligent Systems",
     items: [
-      "Google Gemini API",
-      "OpenAI CLI",
-      "Opencode CLI",
+      "Gemini AI API",
+      "OpenAI API",
+      "Opencode API",
       "OpenRouter API",
       "IPinfo API",
       "Resend API"

@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
       "visitor_hash, ip_address, first_seen, last_seen, visit_count"
     )
     .order("last_seen", { ascending: false })
-    .limit(10);
+    .limit(30);
 
   if (recentError) {
     console.error(

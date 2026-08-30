@@ -47,9 +47,52 @@ const BRAND_ICONS: Record<string, string> = {
     "M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81",
   "Anthropic Claude API":
     "m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z",
+  Excel:
+    "M23 1.5q.41 0 .7.3.3.29.3.7v19q0 .41-.3.7-.29.3-.7.3H7q-.41 0-.7-.3-.3-.29-.3-.7V18H1q-.41 0-.7-.3-.3-.29-.3-.7V7q0-.41.3-.7Q.58 6 1 6h5V2.5q0-.41.3-.7.29-.3.7-.3zM6 13.28l1.42 2.66h2.14l-2.38-3.87 2.34-3.8H7.46l-1.3 2.4-.05.08-.04.09-.64-1.28-.66-1.29H2.59l2.27 3.82-2.48 3.85h2.16zM14.25 21v-3H7.5v3zm0-4.5v-3.75H12v3.75zm0-5.25V7.5H12v3.75zm0-5.25V3H7.5v3zm8.25 15v-3h-6.75v3zm0-4.5v-3.75h-6.75v3.75zm0-5.25V7.5h-6.75v3.75zm0-5.25V3h-6.75v3Z",
+  "Microsoft Excel":
+    "M23 1.5q.41 0 .7.3.3.29.3.7v19q0 .41-.3.7-.29.3-.7.3H7q-.41 0-.7-.3-.3-.29-.3-.7V18H1q-.41 0-.7-.3-.3-.29-.3-.7V7q0-.41.3-.7Q.58 6 1 6h5V2.5q0-.41.3-.7.29-.3.7-.3zM6 13.28l1.42 2.66h2.14l-2.38-3.87 2.34-3.8H7.46l-1.3 2.4-.05.08-.04.09-.64-1.28-.66-1.29H2.59l2.27 3.82-2.48 3.85h2.16zM14.25 21v-3H7.5v3zm0-4.5v-3.75H12v3.75zm0-5.25V7.5H12v3.75zm0-5.25V3H7.5v3zm8.25 15v-3h-6.75v3zm0-4.5v-3.75h-6.75v3.75zm0-5.25V7.5h-6.75v3.75zm0-5.25V3h-6.75v3Z",
+  "Google Sheets":
+    "M11.318 12.545H7.91v-1.909h3.41v1.91zM14.728 0v6h6l-6-6zm1.363 10.636h-3.41v1.91h3.41v-1.91zm0 3.273h-3.41v1.91h3.41v-1.91zM20.727 6.5v15.864c0 .904-.732 1.636-1.636 1.636H4.909a1.636 1.636 0 0 1-1.636-1.636V1.636C3.273.732 4.005 0 4.909 0h9.318v6.5h6.5zm-3.273 2.773H6.545v7.909h10.91v-7.91zm-6.136 4.636H7.91v1.91h3.41v-1.91z",
 };
 
 const GLYPH_ICONS: Record<string, ReactNode> = {
+  SQL: (
+    <g
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <ellipse cx="12" cy="5" rx="9" ry="3" />
+      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+      <path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3" />
+    </g>
+  ),
+  "Opencode API": (
+    <g
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="4 17 10 11 4 5" />
+      <line x1="12" y1="19" x2="20" y2="19" />
+    </g>
+  ),
+  Opencode: (
+    <g
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="4 17 10 11 4 5" />
+      <line x1="12" y1="19" x2="20" y2="19" />
+    </g>
+  ),
   "REST APIs": (
     <g
       fill="none"
@@ -138,6 +181,16 @@ const FALLBACK_ICON = (
   </g>
 );
 
+const ALIASES: Record<string, string> = {
+  "Microsoft Excel": "Excel",
+  "Google Sheets": "Google Sheets",
+  "Gemini AI API": "Google Gemini API",
+  "Gemini AI": "Google Gemini API",
+  "Open AI": "OpenAI API",
+  OpenAI: "OpenAI API",
+  Opencode: "Opencode API",
+};
+
 const NEUTRAL_COLOR = "text-ink-secondary dark:text-ink-dark-secondary";
 
 const ICON_COLORS: Record<string, string> = {
@@ -163,18 +216,29 @@ const ICON_COLORS: Record<string, string> = {
   "Expo Go": "text-ink dark:text-ink-dark",
   Docker: "text-[#2496ED]",
   Netlify: "text-[#00C7B7] dark:text-[#36E2CE]",
+  Excel: "text-[#107C41] dark:text-[#21A366]",
+  "Microsoft Excel": "text-[#107C41] dark:text-[#21A366]",
+  SQL: "text-[#336791] dark:text-[#5B9BD5]",
+  "Google Sheets": "text-[#0F9D58] dark:text-[#34A853]",
   "OpenAI API": "text-ink dark:text-ink-dark",
+  "Open AI": "text-ink dark:text-ink-dark",
+  OpenAI: "text-ink dark:text-ink-dark",
   "Google Gemini API": "text-[#8E75B2] dark:text-[#B79CE4]",
+  "Gemini AI API": "text-[#8E75B2] dark:text-[#B79CE4]",
+  "Gemini AI": "text-[#8E75B2] dark:text-[#B79CE4]",
   "Anthropic Claude API": "text-[#D97757] dark:text-[#EB8C67]",
+  "Opencode API": "text-[#3B82F6] dark:text-[#60A5FA]",
+  Opencode: "text-[#3B82F6] dark:text-[#60A5FA]",
 };
 
 export default function TechIcon({ name }: { name: string }) {
-  const d = BRAND_ICONS[name];
+  const targetKey = ALIASES[name] ?? name;
+  const d = BRAND_ICONS[targetKey] ?? BRAND_ICONS[name];
   const content =
     d !== undefined ? (
       <path d={d} fill="currentColor" />
     ) : (
-      GLYPH_ICONS[name] ?? FALLBACK_ICON
+      GLYPH_ICONS[targetKey] ?? GLYPH_ICONS[name] ?? FALLBACK_ICON
     );
 
   return (
@@ -184,7 +248,10 @@ export default function TechIcon({ name }: { name: string }) {
       viewBox="0 0 24 24"
       aria-hidden="true"
       focusable="false"
-      className={["shrink-0", ICON_COLORS[name] ?? NEUTRAL_COLOR].join(" ")}
+      className={[
+        "shrink-0",
+        ICON_COLORS[targetKey] ?? ICON_COLORS[name] ?? NEUTRAL_COLOR,
+      ].join(" ")}
     >
       {content}
     </svg>

@@ -12,6 +12,7 @@ import {
   type PageViewRow,
 } from "@/lib/admin/analytics";
 import { getSupabase } from "@/lib/supabase";
+import VisitorProfilesList from "@/components/admin/VisitorProfilesList";
 
 const DEVICE_DOT: Record<Device, string> = {
   mobile: "bg-blue-500",
@@ -313,55 +314,24 @@ export default function AdminVisitorsPage() {
         </section>
       )}
 
-      {/* Unique visitors */}
+      {/* Unique visitor profiles */}
       {!loading && (
         <section className="rounded-apple-lg border border-line/70 bg-surface-card p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
-          <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
-            Unique visitors
-            <span className="ml-2 text-[12px] font-normal text-ink-tertiary dark:text-ink-dark-secondary">
-              latest · IP visible to admins only
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-[16px] font-semibold tracking-tight text-ink dark:text-ink-dark">
+                Visitor Profiles
+              </h2>
+              <p className="text-[12px] text-ink-tertiary dark:text-ink-dark-secondary">
+                Identities, derived personas, IP addresses & visit logs (visible to admins only)
+              </p>
+            </div>
+            <span className="self-start rounded-full bg-ink/[0.05] px-2.5 py-1 text-[11px] font-medium text-ink-secondary dark:bg-ink-dark/[0.08] dark:text-ink-dark-secondary sm:self-auto">
+              {uniqueRows.length} recent {uniqueRows.length === 1 ? "visitor" : "visitors"}
             </span>
-          </h2>
+          </div>
 
-          {uniqueRows.length === 0 ? (
-            <p className="mt-4 text-[14px] text-ink-secondary dark:text-ink-dark-secondary">
-              No unique visitors recorded yet.
-            </p>
-          ) : (
-            <ul className="mt-5 flex flex-col">
-              {uniqueRows.map((row) => (
-                <li
-                  key={row.visitor_hash}
-                  className="flex items-center gap-3 border-b border-line/50 py-3 last:border-none dark:border-line-dark/50"
-                >
-                  <span
-                    title={row.visitor_hash}
-                    className="w-[7.5rem] shrink-0 truncate font-mono text-[12px] text-ink-tertiary dark:text-ink-dark-secondary"
-                  >
-                    {row.visitor_hash.slice(0, 12)}…
-                  </span>
-
-                  <span
-                    title={row.ip_address ?? undefined}
-                    className="min-w-0 flex-1 truncate text-[14px] tabular-nums text-ink dark:text-ink-dark"
-                  >
-                    {row.ip_address ?? "—"}
-                  </span>
-
-                  <span className="shrink-0 text-[12px] tabular-nums text-ink-tertiary dark:text-ink-dark-secondary">
-                    {row.visit_count.toLocaleString()}×
-                  </span>
-
-                  <time
-                    dateTime={row.last_seen}
-                    className="w-20 shrink-0 text-right text-[13px] tabular-nums text-ink-tertiary dark:text-ink-dark-secondary"
-                  >
-                    {relativeTime(row.last_seen)}
-                  </time>
-                </li>
-              ))}
-            </ul>
-          )}
+          <VisitorProfilesList rows={uniqueRows} />
         </section>
       )}
 
