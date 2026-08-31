@@ -77,6 +77,8 @@ export default function RootLayout({
               }
               html.dark { background-color: #000000 !important; color: #f5f5f7 !important; }
               html.dark #splash { background-color: #000000 !important; --splash-bg: #000000 !important; }
+              #navbar-logo:not(.is-revealed) { opacity: 0 !important; visibility: hidden !important; }
+              #navbar-logo.is-revealed { opacity: 1 !important; visibility: visible !important; transition: opacity 0.25s ease !important; }
             `,
           }}
         />
@@ -95,15 +97,107 @@ export default function RootLayout({
         <PublicChromeGate />
         <PageViewTracker />
         <div id="splash" suppressHydrationWarning>
+          <div id="splash-logo-box">
+            <img
+              id="splash-logo"
+              src="/icon.png"
+              alt="Dylan Ramos"
+              width={64}
+              height={64}
+              draggable={false}
+              suppressHydrationWarning
+            />
+          </div>
           <div id="splash-line" />
           <div id="splash-text">Loading</div>
         </div>
-        {/* Splash controller lives here (not in <head>) so the hold/fade
-            countdown starts as soon as the splash mounts — i.e. at first
-            paint — instead of waiting for the full DOM to parse. */}
+        {/* Splash controller: Handles loading countdown and buttery-smooth FLIP animation */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `!function(){function done(){var s=document.getElementById("splash");if(s){s.classList.add("is-done");setTimeout(function(){s.style.display="none"},700)}var m=document.getElementById("app-main");if(m)m.classList.add("is-ready")}requestAnimationFrame(function(){requestAnimationFrame(function(){setTimeout(done,800)})})}();`,
+            __html: `!function(){
+              function startFlight(){
+                var s = document.getElementById("splash");
+                var splashLogo = document.getElementById("splash-logo");
+                var navLogo = document.getElementById("navbar-logo");
+                var m = document.getElementById("app-main");
+
+                if (splashLogo && navLogo && s) {
+                  var sRect = splashLogo.getBoundingClientRect();
+                  var nRect = navLogo.getBoundingClientRect();
+
+                  if (nRect.width > 0 && nRect.height > 0) {
+                    var clone = splashLogo.cloneNode(true);
+                    clone.id = "splash-flying-clone";
+                    clone.style.cssText = "position:fixed;left:" + sRect.left + "px;top:" + sRect.top + "px;width:" + sRect.width + "px;height:" + sRect.height + "px;z-index:10000;pointer-events:none;border-radius:12px;will-change:transform,opacity,border-radius;transform-origin:center center;box-shadow:0 10px 30px -10px rgba(0,0,0,0.25);";
+                    document.body.appendChild(clone);
+
+                    // Hide original inside splash so only flying clone moves
+                    splashLogo.style.opacity = "0";
+
+                    // Center-to-center translation offsets
+                    var sCenterX = sRect.left + sRect.width / 2;
+                    var sCenterY = sRect.top + sRect.height / 2;
+                    var nCenterX = nRect.left + nRect.width / 2;
+                    var nCenterY = nRect.top + nRect.height / 2;
+
+                    var dx = nCenterX - sCenterX;
+                    var dy = nCenterY - sCenterY;
+                    var scaleX = nRect.width / sRect.width;
+                    var scaleY = nRect.height / sRect.height;
+
+                    // Trigger ultra-smooth GPU flight with silky Apple bezier
+                    requestAnimationFrame(function(){
+                      requestAnimationFrame(function(){
+                        clone.style.transition = "transform 0.88s cubic-bezier(0.22, 1, 0.36, 1), border-radius 0.88s ease, box-shadow 0.88s ease";
+                        clone.style.transform = "translate3d(" + dx + "px, " + dy + "px, 0) scale(" + scaleX + ", " + scaleY + ")";
+                        clone.style.borderRadius = "6px";
+                        clone.style.boxShadow = "none";
+
+                        // Reveal navbar logo exactly as clone reaches the destination
+                        setTimeout(function(){
+                          if (navLogo) {
+                            navLogo.classList.add("is-revealed");
+                            navLogo.style.opacity = "1";
+                          }
+                          if (clone) {
+                            clone.style.transition = "opacity 0.12s ease-out";
+                            clone.style.opacity = "0";
+                          }
+                        }, 860);
+
+                        setTimeout(function(){
+                          if (clone && clone.parentNode) clone.parentNode.removeChild(clone);
+                        }, 1050);
+                      });
+                    });
+                  }
+                }
+
+                if (s) {
+                  s.classList.add("is-done");
+                  setTimeout(function(){ s.style.display = "none"; }, 1050);
+                }
+                if (m) {
+                  m.classList.add("is-ready");
+                }
+              }
+
+              // Run when DOM and navbar are painted, with an intentional pause (1400ms)
+              function checkReady(){
+                var navLogo = document.getElementById("navbar-logo");
+                if (navLogo && navLogo.getBoundingClientRect().width > 0) {
+                  setTimeout(startFlight, 1400);
+                } else {
+                  setTimeout(checkReady, 50);
+                }
+              }
+
+              if (document.readyState === "complete") {
+                checkReady();
+              } else {
+                window.addEventListener("load", checkReady);
+              }
+            }();`,
           }}
         />
         <NavbarGate />

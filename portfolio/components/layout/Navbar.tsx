@@ -101,10 +101,13 @@ export default function Navbar() {
           "
         >
           <Image
+            id="navbar-logo"
             src="/icon.png"
             alt={SITE.name}
             width={32}
             height={32}
+            priority
+            suppressHydrationWarning
             className="h-7 w-auto md:h-8"
           />
         </button>

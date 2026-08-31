@@ -193,9 +193,41 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
   justify-content: center;
   gap: 20px;
   background: #fbfbfd;
-  transition: opacity 0.6s cubic-bezier(0.28, 0.11, 0.32, 1),
-    transform 0.6s cubic-bezier(0.28, 0.11, 0.32, 1),
-    visibility 0s 0.6s;
+  transition: background-color 0.6s cubic-bezier(0.28, 0.11, 0.32, 1),
+    opacity 0.6s cubic-bezier(0.28, 0.11, 0.32, 1),
+    visibility 0s 0.75s;
+}
+
+#splash-logo-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+}
+
+#splash-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+  animation: splash-rise 0.6s cubic-bezier(0.28, 0.11, 0.32, 1) both;
+  will-change: transform, opacity;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.25);
+}
+
+@media (min-width: 768px) {
+  #splash-logo-box {
+    width: 74px;
+    height: 74px;
+  }
+
+  #splash-logo {
+    width: 70px;
+    height: 70px;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -213,15 +245,15 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
 @keyframes splash-rise {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(8px) scale(0.96);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
-/* Loading line */
+/* Loading progress bar — genuine 0% to 100% progress fill */
 
 #splash-line {
   position: relative;
@@ -230,7 +262,8 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
   border-radius: 9999px;
   background: var(--splash-track, rgba(29, 29, 31, 0.1));
   overflow: hidden;
-  animation: splash-rise 0.6s cubic-bezier(0.28, 0.11, 0.32, 1) both;
+  animation: splash-rise 0.6s cubic-bezier(0.28, 0.11, 0.32, 1) 0.05s both;
+  transition: opacity 0.35s ease;
 }
 
 #splash-line::after {
@@ -238,18 +271,13 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
   position: absolute;
   top: 0;
   left: 0;
-  width: 36%;
+  width: 100%;
   height: 100%;
   border-radius: 9999px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--splash-active, #1d1d1f) 35%,
-    var(--splash-active, #1d1d1f) 65%,
-    transparent
-  );
-  transform: translateX(-100%);
-  animation: splash-shimmer 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  background: var(--splash-active, #1d1d1f);
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation: splash-progress-fill 1.35s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
 }
 
 .dark #splash-line {
@@ -257,21 +285,24 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
 }
 
 .dark #splash-line::after {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--splash-active, #f5f5f7) 35%,
-    var(--splash-active, #f5f5f7) 65%,
-    transparent
-  );
+  background: var(--splash-active, #f5f5f7);
 }
 
-@keyframes splash-shimmer {
+@keyframes splash-progress-fill {
   0% {
-    transform: translateX(-100%);
+    transform: scaleX(0);
+  }
+  20% {
+    transform: scaleX(0.28);
+  }
+  55% {
+    transform: scaleX(0.68);
+  }
+  85% {
+    transform: scaleX(0.92);
   }
   100% {
-    transform: translateX(380%);
+    transform: scaleX(1);
   }
 }
 
@@ -310,9 +341,29 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
 
 #splash.is-done {
   opacity: 0;
-  transform: scale(1.02);
   visibility: hidden;
   pointer-events: none;
+}
+
+#splash.is-done #splash-line,
+#splash.is-done #splash-text {
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Hide the actual navbar logo while splash is on screen so it looks like
+   the logo flying from splash BECOMES the navbar logo upon arrival */
+#navbar-logo {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 0.25s ease !important;
+}
+
+#navbar-logo.is-revealed,
+html:not(:has(#splash)) #navbar-logo {
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /* ─── Reduced motion ─── */
