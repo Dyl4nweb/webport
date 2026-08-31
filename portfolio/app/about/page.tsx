@@ -47,23 +47,20 @@ export default function AboutPage() {
             <div className="mb-12">
               <Link
                 href="/"
-                className="group inline-flex items-center gap-2 text-[13px] font-medium text-ink-secondary transition-colors duration-300 hover:text-ink dark:text-ink-dark-secondary dark:hover:text-ink-dark"
+                className="group inline-flex items-center gap-1.5 rounded-full bg-surface-alt px-3.5 py-1.5 text-[13px] font-medium text-ink-secondary transition-all hover:bg-black/[0.06] hover:text-ink dark:bg-surface-dark-alt dark:text-ink-dark-secondary dark:hover:bg-white/[0.08] dark:hover:text-ink-dark"
               >
                 <svg
-                  width="16"
-                  height="16"
+                  width="15"
+                  height="15"
                   viewBox="0 0 24 24"
                   fill="none"
-                  aria-hidden="true"
-                  className="transition-transform duration-300 group-hover:-translate-x-1"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="transition-transform duration-200 group-hover:-translate-x-0.5"
                 >
-                  <path
-                    d="M19 12H5M11 6l-6 6 6 6"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
+                  <path d="m15 18-6-6 6-6" />
                 </svg>
                 <span>Back to home</span>
               </Link>
@@ -124,12 +121,11 @@ export default function AboutPage() {
                 </p>
 
                 <Button
-                  href="/resume/resume.pdf"
+                  href="/resume"
                   variant="secondary"
-                  external
                   className="mt-8 transition-transform duration-300 hover:-translate-y-0.5"
                 >
-                  Download resume
+                  View resume
                 </Button>
               </div>
             </Reveal>

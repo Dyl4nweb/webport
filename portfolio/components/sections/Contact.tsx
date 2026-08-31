@@ -6,7 +6,7 @@ import { SITE } from "@/lib/constants";
 export default function Contact() {
   const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
     SITE.email,
-  )}`;
+  )}&su=${encodeURIComponent("Job Inquiry / Collaboration — Dylan Ramos")}`;
 
   return (
     <section className="relative overflow-hidden pb-32 pt-24 md:pb-40 md:pt-32" style={{ contain: "layout style" }}>

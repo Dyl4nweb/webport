@@ -79,6 +79,11 @@ export default function RootLayout({
               html.dark #splash { background-color: #000000 !important; --splash-bg: #000000 !important; }
               #navbar-logo:not(.is-revealed) { opacity: 0 !important; visibility: hidden !important; }
               #navbar-logo.is-revealed { opacity: 1 !important; visibility: visible !important; transition: opacity 0.25s ease !important; }
+              @media (hover: hover) and (pointer: fine) {
+                html:not([data-admin]), html:not([data-admin]) body, html:not([data-admin]) #splash {
+                  cursor: url("data:image/svg+xml,%3Csvg width='24' height='32' viewBox='0 0 24 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5 1.5L1.5 25.5L7.2 20.2L12.4 30.5L16.2 28.6L11 18.3L18.8 18.3L1.5 1.5Z' fill='%23000000' stroke='%23FFFFFF' stroke-width='1.8' stroke-linejoin='miter' stroke-miterlimit='4'/%3E%3C/svg%3E") 0 0, auto !important;
+                }
+              }
             `,
           }}
         />

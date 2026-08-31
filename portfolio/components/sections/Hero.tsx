@@ -1,5 +1,6 @@
 "use client";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import ProfileCard from "@/components/ui/ProfileCard";
@@ -8,9 +9,10 @@ import { cn } from "@/lib/utils";
 
 const roles = [
   "Tech Enthusiast",
-  "Full Stack Developer",
+  "Full Stack Engineer",
   "Software Engineer",
-  "IT Support"
+  "Info Tech Support",
+  "Graphic Designer"
 ];
 
 const TYPE_SPEED = 95;
@@ -198,14 +200,12 @@ export default function Hero() {
             className="mt-8 flex w-full animate-fadeUp flex-col items-center justify-center gap-3 sm:mt-10 sm:w-auto sm:flex-row"
             style={{ animationDelay: "280ms" }}
           >
-            <a
-              href="/resume/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/resume"
               className="inline-flex items-center justify-center rounded-full bg-ink px-8 py-3 text-[14px] font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_35px_-18px_rgba(0,0,0,0.45)] dark:bg-ink-dark dark:text-surface-dark"
             >
               View Resume
-            </a>
+            </Link>
 
             <Button
               href="/contact"

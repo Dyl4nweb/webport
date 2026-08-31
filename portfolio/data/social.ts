@@ -18,7 +18,7 @@ export const socialLinks: SocialLink[] = [
   },
   {
     label: "Gmail",
-    url: "mailto:kurtdylanviray@gmail.com",
+    url: `https://mail.google.com/mail/?view=cm&fs=1&to=kurtdylanviray@gmail.com&su=${encodeURIComponent("Job Inquiry / Collaboration — Dylan Ramos")}`,
     icon: "mail",
   },
 ];
