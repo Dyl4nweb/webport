@@ -8,8 +8,9 @@ import { cn } from "@/lib/utils";
 
 const roles = [
   "Tech Enthusiast",
-  "Full Stack Engineer",
+  "Full Stack Developer",
   "Software Engineer",
+  "IT Support"
 ];
 
 const TYPE_SPEED = 95;
@@ -64,37 +65,14 @@ function HeroTypewriter() {
     return () => clearTimeout(timeout);
   }, []);
 
-  // Longest role reserves the chip's width so it never jitters as it types.
-  const longest = roles.reduce((a, b) => (b.length > a.length ? b : a), "");
-
   return (
-    <div className="mt-7 flex h-9 items-center justify-center sm:mt-8">
-      <span
-        className={cn(
-          "relative inline-flex items-center gap-2.5 rounded-full px-4 py-2",
-          "border border-black/[0.08] bg-black/[0.035]",
-          "dark:border-white/[0.1] dark:bg-white/[0.05]",
-        )}
-      >
-        {/* Status dot — same visual language as the ID badge "ACTIVE" indicator */}
-        <span className="relative flex h-[6px] w-[6px] shrink-0">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500/60" />
-          <span className="relative inline-flex h-[6px] w-[6px] rounded-full bg-emerald-500" />
-        </span>
-
-        <span className="relative font-mono text-[13px] font-medium tracking-tight text-accent dark:text-accent-dark sm:text-[13.5px]">
-          {/* Invisible sizer keeps the pill from resizing mid-type */}
-          <span aria-hidden="true" className="invisible">
-            {longest}
-          </span>
-          <span className="absolute left-0 top-0 inline-flex items-center whitespace-nowrap">
-            {text}
-            <span
-              aria-hidden="true"
-              className="ml-[3px] h-[15px] w-[7px] shrink-0 animate-pulse bg-accent dark:bg-accent-dark"
-            />
-          </span>
-        </span>
+    <div className="mt-6 flex h-8 items-center justify-center sm:mt-7">
+      <span className="inline-flex items-center font-mono text-[16px] font-medium tracking-tight text-accent dark:text-accent-dark sm:text-[18px]">
+        <span>{text}</span>
+        <span
+          aria-hidden="true"
+          className="ml-1.5 h-[19px] w-[8px] shrink-0 animate-pulse bg-accent dark:bg-accent-dark"
+        />
       </span>
     </div>
   );
