@@ -311,12 +311,14 @@ export default memo(function StatsBanner() {
       aria-label="Portfolio Statistics & Roles"
       className="relative z-10 py-8 sm:py-14 md:py-20 flex flex-col gap-6 sm:gap-8 md:gap-10 overflow-hidden"
     >
-      {/* Top Sliding Marquee */}
-      <MarqueeRow direction="left" />
+      {/* Top Sliding Marquee with Side Margins */}
+      <Container className="w-full max-w-5xl px-4 sm:px-6 md:px-8">
+        <MarqueeRow direction="left" />
+      </Container>
 
       {/* Center 3 Stat Cards */}
-      <Container>
-        <div className="mx-auto grid max-w-5xl grid-cols-3 gap-2 min-[370px]:gap-3 sm:gap-6 md:gap-8">
+      <Container className="w-full max-w-5xl px-4 sm:px-6 md:px-8">
+        <div className="mx-auto grid w-full grid-cols-3 gap-2 min-[370px]:gap-3 sm:gap-6 md:gap-8">
           {statsList.map((stat, idx) => (
             <StatCard
               key={stat.id}
@@ -328,8 +330,10 @@ export default memo(function StatsBanner() {
         </div>
       </Container>
 
-      {/* Bottom Sliding Marquee */}
-      <MarqueeRow direction="right" />
+      {/* Bottom Sliding Marquee with Side Margins */}
+      <Container className="w-full max-w-5xl px-4 sm:px-6 md:px-8">
+        <MarqueeRow direction="right" />
+      </Container>
     </section>
   );
 });
