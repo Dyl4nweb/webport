@@ -8,27 +8,32 @@ import Reveal from "@/components/ui/Reveal";
 import TechIcon from "@/components/ui/TechIcon";
 import { cn } from "@/lib/utils";
 
-// Curated core technologies for a compact, clean homepage presentation
+// Curated core technologies for a concise, compact 3-row homepage presentation
 const CORE_SKILLS_ROW_1 = [
   "Next.js",
   "TypeScript",
   "React",
   "Tailwind CSS",
   "Node.js",
-  "PostgreSQL",
-  "Supabase",
-  "React Native",
+  "JavaScript",
 ];
 
 const CORE_SKILLS_ROW_2 = [
+  "PostgreSQL",
+  "Supabase",
+  "React Native",
   "Flutter",
+  "REST APIs",
+  "Prisma",
+];
+
+const CORE_SKILLS_ROW_3 = [
   "Git",
   "Docker",
   "Gemini AI API",
-  "REST APIs",
   "MongoDB",
-  "Prisma",
   "Figma",
+  "Vercel",
 ];
 
 function SkillPill({ name }: { name: string }) {
@@ -60,7 +65,7 @@ interface MarqueeRowProps {
 const MarqueeRow = memo(function MarqueeRow({
   items,
   direction = "left",
-  speed = 36,
+  speed = 32,
 }: MarqueeRowProps) {
   const repeated = useMemo(() => [...items, ...items, ...items, ...items], [items]);
 
@@ -118,11 +123,12 @@ export default function Skills() {
           </Reveal>
         </Container>
 
-        {/* Compact 2-Row Sliding Marquee Tracks */}
+        {/* Compact 3-Row Sliding Marquee Tracks */}
         <Reveal delay={100} className="w-full">
-          <div className="flex w-full flex-col gap-2.5 sm:gap-3.5">
-            <MarqueeRow items={CORE_SKILLS_ROW_1} direction="left" speed={38} />
-            <MarqueeRow items={CORE_SKILLS_ROW_2} direction="right" speed={44} />
+          <div className="flex w-full flex-col gap-2.5 sm:gap-3">
+            <MarqueeRow items={CORE_SKILLS_ROW_1} direction="left" speed={32} />
+            <MarqueeRow items={CORE_SKILLS_ROW_2} direction="right" speed={38} />
+            <MarqueeRow items={CORE_SKILLS_ROW_3} direction="left" speed={34} />
           </div>
         </Reveal>
 
