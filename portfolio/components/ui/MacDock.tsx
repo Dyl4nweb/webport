@@ -87,6 +87,48 @@ function calculateMagnification(mouseX: number | null, el: HTMLElement | null) {
   return { scale: 1, translateY: 0 };
 }
 
+function performSmoothScrollToTop(duration = 700) {
+  const lenis = typeof window !== "undefined" ? window.__lenis : undefined;
+  if (lenis) {
+    lenis.scrollTo(0, {
+      duration: 0.95,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    });
+    return;
+  }
+
+  if (typeof window === "undefined") return;
+
+  const startY =
+    window.scrollY ||
+    window.pageYOffset ||
+    document.documentElement.scrollTop ||
+    document.body.scrollTop ||
+    0;
+
+  if (startY <= 0) return;
+
+  const startTime = performance.now();
+  const easeOutQuart = (x: number): number => 1 - Math.pow(1 - x, 4);
+
+  function step(currentTime: number) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(1, elapsed / duration);
+    const ease = easeOutQuart(progress);
+    const currentY = Math.round(startY * (1 - ease));
+
+    window.scrollTo(0, currentY);
+    if (document.documentElement) document.documentElement.scrollTop = currentY;
+    if (document.body) document.body.scrollTop = currentY;
+
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    }
+  }
+
+  requestAnimationFrame(step);
+}
+
 export const MacDock = memo(function MacDock() {
   const pathname = usePathname();
   const router = useRouter();
@@ -95,25 +137,15 @@ export const MacDock = memo(function MacDock() {
   const dockRef = useRef<HTMLDivElement | null>(null);
   const themeRef = useRef<HTMLDivElement | null>(null);
 
-  // Pure Back to Top: Always scrolls to y=0 of the current page
+  // Pure Back to Top: Always smoothly scrolls to y=0 of the current page
   const scrollToTop = useCallback(() => {
-    const lenis = window.__lenis;
-    if (lenis) {
-      lenis.scrollTo(0, { force: true });
-    } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    performSmoothScrollToTop();
   }, []);
 
-  // D Logo: Navigates to Home if on subpage, or scrolls up if on Home
+  // D Logo: Navigates to Home if on subpage, or smoothly scrolls up if on Home
   const handleLogoClick = useCallback(() => {
     if (pathname === "/") {
-      const lenis = window.__lenis;
-      if (lenis) {
-        lenis.scrollTo(0, { force: true });
-      } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
+      performSmoothScrollToTop();
     } else {
       router.push("/");
     }
