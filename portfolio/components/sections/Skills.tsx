@@ -8,32 +8,32 @@ import Reveal from "@/components/ui/Reveal";
 import TechIcon from "@/components/ui/TechIcon";
 import { cn } from "@/lib/utils";
 
-// Curated core technologies for a concise, compact 3-row homepage presentation
+// Strictly verified from data/skills.ts
 const CORE_SKILLS_ROW_1 = [
   "Next.js",
   "TypeScript",
   "React",
   "Tailwind CSS",
-  "Node.js",
+  "React Native",
   "JavaScript",
 ];
 
 const CORE_SKILLS_ROW_2 = [
-  "PostgreSQL",
+  "Node.js",
   "Supabase",
-  "React Native",
-  "Flutter",
-  "REST APIs",
+  "PostgreSQL",
+  "MongoDB",
   "Prisma",
+  "REST APIs",
 ];
 
 const CORE_SKILLS_ROW_3 = [
   "Git",
   "Docker",
-  "Gemini AI API",
-  "MongoDB",
-  "Figma",
   "Vercel",
+  "SQL",
+  "Gemini AI API",
+  "OpenAI API",
 ];
 
 function SkillPill({ name }: { name: string }) {
