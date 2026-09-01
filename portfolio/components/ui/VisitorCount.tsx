@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import GlitchText from "@/components/ui/GlitchText";
 
 // Minimalist Black & White Vector Character Avatars
 const BW_CHARACTERS = [
@@ -76,19 +77,19 @@ export default function VisitorCount() {
   if (count === null) return null;
 
   return (
-    <span className="inline-flex items-center gap-2 select-none">
+    <span className="inline-flex items-center gap-2 text-[13px] font-medium select-none">
       {/* Pulsing live emerald dot */}
-      <span className="relative flex h-2 w-2 items-center justify-center">
+      <span className="relative flex h-2.5 w-2.5 items-center justify-center">
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+        <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
       </span>
 
       {/* Black & White Character Avatars Facepile (Static, non-clickable) */}
-      <span className="flex -space-x-1.5 overflow-hidden">
+      <span className="flex -space-x-2 overflow-hidden">
         {BW_CHARACTERS.map((char, i) => (
           <span
             key={i}
-            className="inline-flex h-4 w-4 shrink-0 overflow-hidden rounded-full ring-1 ring-surface dark:ring-surface-dark"
+            className="inline-flex h-5 w-5 shrink-0 overflow-hidden rounded-full ring-1.5 ring-surface-alt dark:ring-surface-dark-alt"
             title={char.title}
           >
             {char.svg}
@@ -96,9 +97,18 @@ export default function VisitorCount() {
         ))}
       </span>
 
-      {/* Visitor Count Text */}
-      <span className="tracking-tight">
-        {count.toLocaleString()} visitors
+      {/* Visitor Count Text — Number only glitch */}
+      <span className="tracking-tight text-ink-secondary dark:text-ink-dark-secondary select-none">
+        <strong className="font-semibold text-ink dark:text-ink-dark">
+          <GlitchText
+            text={count.toLocaleString()}
+            triggerOnMount={true}
+            triggerOnHover={true}
+            delay={150}
+            duration={700}
+          />
+        </strong>{" "}
+        visitors
       </span>
     </span>
   );

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import GlitchText from "@/components/ui/GlitchText";
 
 interface SectionHeadingProps {
   eyebrow?: string;
@@ -29,7 +30,7 @@ export default function SectionHeading({
         </span>
       )}
       <h2 className="max-w-2xl text-[32px] font-semibold leading-[1.1] tracking-tight text-ink dark:text-ink-dark md:text-[44px]">
-        {title}
+        <GlitchText text={title} />
       </h2>
       {deck && (
         <p className="max-w-xl text-[19px] leading-relaxed text-ink-secondary dark:text-ink-dark-secondary">

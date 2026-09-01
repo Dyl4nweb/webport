@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-
+import { memo, useMemo } from "react";
 import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal from "@/components/ui/Reveal";
 import TechIcon from "@/components/ui/TechIcon";
 import { skills } from "@/data/skills";
+import { cn } from "@/lib/utils";
 
 interface SkillGroup {
   category: string;
@@ -20,197 +20,124 @@ const allSkills: string[] = (skills as SkillGroup[]).flatMap(
 
 function splitIntoRows(items: string[], rowCount: number): string[][] {
   const rows: string[][] = Array.from({ length: rowCount }, () => []);
-
   items.forEach((item, index) => {
     rows[index % rowCount].push(item);
   });
-
   return rows;
-}
-
-interface MarqueeRowProps {
-  items: string[];
-  direction?: "left" | "right";
-  speed?: number;
-  paused: boolean;
-}
-
-function MarqueeRow({
-  items,
-  direction = "right",
-  speed = 34,
-  paused,
-}: MarqueeRowProps) {
-  if (!items.length) return null;
-
-  return (
-    <div className="relative -my-2 overflow-hidden py-2">
-      {/* Edge fades */}
-      <div
-        aria-hidden="true"
-        className="
-          pointer-events-none absolute inset-y-0 left-0 z-10 w-16
-          bg-gradient-to-r from-surface to-transparent
-          dark:from-surface-dark
-        "
-      />
-      <div
-        aria-hidden="true"
-        className="
-          pointer-events-none absolute inset-y-0 right-0 z-10 w-16
-          bg-gradient-to-l from-surface to-transparent
-          dark:from-surface-dark
-        "
-      />
-
-      <div
-        className={`flex w-max gap-3 transform-gpu will-change-transform ${
-          direction === "left"
-            ? "animate-marquee-left"
-            : "animate-marquee-right"
-        } motion-reduce:animate-none`}
-        style={{
-          animationDuration: `${speed}s`,
-          animationPlayState: paused ? "paused" : "running",
-          visibility: paused ? "hidden" : "visible",
-        }}
-      >
-        {/* First set */}
-        <div className="flex shrink-0 gap-3">
-          {items.map((name) => (
-            <SkillPill key={name} name={name} />
-          ))}
-        </div>
-
-        {/* Duplicate set */}
-        <div className="flex shrink-0 gap-3" aria-hidden="true">
-          {items.map((name) => (
-            <SkillPill key={`duplicate-${name}`} name={name} />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
 }
 
 function SkillPill({ name }: { name: string }) {
   return (
     <div
-      className="
-        flex shrink-0 items-center gap-2
-        rounded-full
-        border border-line/70
-        bg-surface-card
-        px-5 py-2.5
-        dark:border-line-dark/70
-        dark:bg-surface-dark-card
-      "
+      className={cn(
+        "flex shrink-0 items-center gap-2 sm:gap-2.5",
+        "rounded-full border border-black/8 dark:border-white/10",
+        "bg-white/70 dark:bg-white/[0.04]",
+        "backdrop-blur-md shadow-[0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.25)]",
+        "px-3.5 py-1.5 sm:px-5 sm:py-2.5",
+        "transition-all duration-200 hover:-translate-y-0.5 hover:bg-white dark:hover:bg-white/10 hover:border-black/20 dark:hover:border-white/25"
+      )}
     >
       <TechIcon name={name} />
-      <span
-        className="
-          whitespace-nowrap
-          text-[13.5px]
-          font-medium
-          tracking-[-0.01em]
-          text-ink-secondary
-          dark:text-ink-dark-secondary
-        "
-      >
+      <span className="whitespace-nowrap text-[12px] sm:text-[13.5px] font-medium tracking-tight text-ink dark:text-ink-dark">
         {name}
       </span>
     </div>
   );
 }
 
+interface MarqueeRowProps {
+  items: string[];
+  direction?: "left" | "right";
+  speed?: number;
+}
+
+const MarqueeRow = memo(function MarqueeRow({
+  items,
+  direction = "left",
+  speed = 35,
+}: MarqueeRowProps) {
+  const repeated = useMemo(
+    () => [...items, ...items, ...items, ...items],
+    [items]
+  );
+
+  if (!items.length) return null;
+
+  return (
+    <div
+      aria-hidden="true"
+      className="relative w-full overflow-hidden select-none py-1 sm:py-1.5 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
+    >
+      <div
+        className={cn(
+          "flex w-max items-center gap-2.5 sm:gap-3.5 will-change-transform",
+          direction === "left"
+            ? "animate-marquee-left hover:[animation-play-state:paused]"
+            : "animate-marquee-right hover:[animation-play-state:paused]"
+        )}
+        style={{
+          animationDuration: `${speed}s`,
+        }}
+      >
+        {repeated.map((name, idx) => (
+          <SkillPill key={`${name}-${idx}`} name={name} />
+        ))}
+      </div>
+    </div>
+  );
+});
+
 export default function Skills() {
-  const rows = splitIntoRows(allSkills, 3);
-  const sectionRef = useRef<HTMLElement>(null);
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting),
-      { rootMargin: "200px 0px" }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+  const rows = useMemo(() => splitIntoRows(allSkills, 3), []);
 
   return (
     <section
-      ref={sectionRef}
-      className="relative overflow-hidden py-24 md:py-32"
+      aria-label="Technologies & Skills"
+      className="relative overflow-hidden py-16 sm:py-24 md:py-32"
       style={{ contain: "layout style" }}
     >
-      {/* Ambient background */}
+      {/* Ambient background glow */}
       <div
         aria-hidden="true"
-        className="
-          pointer-events-none
-          absolute left-1/2 top-0
-          h-[360px] w-[720px]
-          -translate-x-1/2
-          rounded-full
-          bg-gradient-to-b
-          from-accent/[0.04]
-          via-transparent
-          to-transparent
-          blur-xl
-          dark:from-accent-dark/[0.04]
-        "
+        className="pointer-events-none absolute left-1/2 top-0 h-[360px] w-[720px] -translate-x-1/2 rounded-full bg-gradient-to-b from-accent/[0.04] via-transparent to-transparent blur-xl dark:from-accent-dark/[0.04]"
       />
 
-      <Container className="relative flex flex-col items-center gap-14">
-        {/* Heading */}
-        <Reveal>
-          <div className="w-full max-w-3xl text-center">
-            <SectionHeading
-              eyebrow="Technologies"
-              title="What I build with"
-              deck="A working set, not a wish list — every tool here shipped in production this year."
-              align="center"
-            />
+      <div className="relative flex flex-col items-center gap-10 sm:gap-14">
+        {/* Section Heading */}
+        <Container>
+          <Reveal>
+            <div className="mx-auto w-full max-w-3xl text-center">
+              <SectionHeading
+                eyebrow="Technologies"
+                title="What I build with"
+                deck="A working set, not a wish list — every tool here shipped in production this year."
+                align="center"
+              />
+            </div>
+          </Reveal>
+        </Container>
+
+        {/* Full-width 3-Row Sliding Marquee Tracks matching StatsBanner */}
+        <Reveal delay={100} className="w-full">
+          <div className="flex w-full flex-col gap-2.5 sm:gap-4">
+            <MarqueeRow items={rows[0]} direction="left" speed={70} />
+            <MarqueeRow items={rows[1]} direction="right" speed={82} />
+            <MarqueeRow items={rows[2]} direction="left" speed={74} />
           </div>
         </Reveal>
 
-        {/* Marquee */}
-        <Reveal delay={100}>
-          <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-4 sm:px-8 lg:px-12">
-            <MarqueeRow
-              items={rows[0]}
-              direction="right"
-              speed={55}
-              paused={!inView}
-            />
-
-            <MarqueeRow
-              items={rows[1]}
-              direction="left"
-              speed={68}
-              paused={!inView}
-            />
-
-            <MarqueeRow
-              items={rows[2]}
-              direction="right"
-              speed={60}
-              paused={!inView}
-            />
-          </div>
-        </Reveal>
-
-        {/* View More */}
-        <Reveal delay={160}>
-          <Button href="/tech-stack" variant="secondary">
-            View More
-          </Button>
-        </Reveal>
-      </Container>
+        {/* View More Button */}
+        <Container>
+          <Reveal delay={160}>
+            <div className="flex justify-center">
+              <Button href="/tech-stack" variant="secondary">
+                View More
+              </Button>
+            </div>
+          </Reveal>
+        </Container>
+      </div>
     </section>
   );
 }

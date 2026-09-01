@@ -5,6 +5,7 @@ import Container from "@/components/ui/Container";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Reveal from "@/components/ui/Reveal";
+import GlitchText from "@/components/ui/GlitchText";
 import Contact from "@/components/sections/Contact";
 
 import { experience } from "@/data/experience";
@@ -20,7 +21,7 @@ export default function ExperiencePage() {
   return (
     <>
       {/* Header */}
-      <header className="relative overflow-hidden pb-16 pt-28 md:pb-20 md:pt-36">
+      <header className="relative overflow-hidden pb-12 pt-8 sm:pt-12 md:pb-16 md:pt-14">
         {/* Ambient glow */}
         <div
           aria-hidden="true"
@@ -30,7 +31,7 @@ export default function ExperiencePage() {
         <Container>
           {/* Back */}
           <Reveal>
-            <div className="mb-12">
+            <div className="mb-6 sm:mb-8">
               <Link
                 href="/"
                 className="group inline-flex items-center gap-1.5 rounded-full bg-surface-alt px-3.5 py-1.5 text-[13px] font-medium text-ink-secondary transition-all hover:bg-black/[0.06] hover:text-ink dark:bg-surface-dark-alt dark:text-ink-dark-secondary dark:hover:bg-white/[0.08] dark:hover:text-ink-dark"
@@ -62,8 +63,8 @@ export default function ExperiencePage() {
             </Reveal>
 
             <Reveal delay={140}>
-              <h1 className="mt-5 max-w-3xl text-balance text-[40px] font-semibold leading-[1.04] tracking-[-0.04em] text-ink dark:text-ink-dark sm:text-[52px] md:text-[64px]">
-                Where I&apos;ve built and learned.
+              <h1 className="mt-5 max-w-3xl text-balance text-[28px] min-[360px]:text-[32px] min-[400px]:text-[36px] sm:text-[48px] md:text-[56px] lg:text-[64px] font-semibold leading-[1.2] sm:leading-[1.08] tracking-[-0.03em] text-ink dark:text-ink-dark pb-1">
+                <GlitchText text="Where I've built and learned." />
               </h1>
             </Reveal>
 

@@ -3,30 +3,17 @@ import Image from "next/image";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import Reveal from "@/components/ui/Reveal";
+import GlitchText from "@/components/ui/GlitchText";
 
 export default function About() {
   return (
     <section className="relative overflow-hidden py-20 sm:py-24 md:py-32" style={{ contain: "layout style" }}>
-      {/* Ambient background */}
-      <div
-        aria-hidden="true"
-        className="
-          pointer-events-none absolute -left-40 top-1/2
-          h-[420px] w-[420px]
-          -translate-y-1/2
-          rounded-full
-          bg-accent/[0.05]
-          blur-xl
-          dark:bg-accent-dark/[0.05]
-        "
-      />
-
       <Container className="relative grid gap-12 md:grid-cols-[0.85fr_1.15fr] md:items-center md:gap-20">
         {/* Portrait */}
         <Reveal
           className="
-            relative mx-auto w-full max-w-[270px]
-            sm:max-w-[320px]
+            relative mx-auto w-full max-w-[200px] min-[380px]:max-w-[230px]
+            sm:max-w-[300px]
             md:max-w-[380px]
           "
         >
@@ -179,21 +166,22 @@ export default function About() {
 
           <h2
             className="
-              text-balance
-              text-[34px]
+              text-[24px]
+              min-[360px]:text-[28px]
+              sm:text-[36px]
+              md:text-[46px]
+              lg:text-[52px]
               font-semibold
-              leading-[1.02]
-              tracking-[-0.04em]
+              leading-[1.12]
+              sm:leading-[1.05]
+              tracking-[-0.03em]
               text-ink
               dark:text-ink-dark
-              sm:text-[40px]
-              md:text-[48px]
-              lg:text-[54px]
             "
           >
-            I turn complex problems into{" "}
+            <GlitchText text="I turn complex problems into " />
             <span className="text-ink-secondary dark:text-ink-dark-secondary">
-              simple, useful experiences.
+              <GlitchText text="simple, useful experiences." />
             </span>
           </h2>
 
@@ -225,18 +213,7 @@ export default function About() {
 
           {/* Actions */}
           <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-            <Button
-              href="/about"
-              variant="primary"
-              className="
-                transition-[transform,box-shadow]
-                duration-500
-                ease-[cubic-bezier(0.22,1,0.36,1)]
-                hover:-translate-y-0.5
-                hover:shadow-[0_12px_28px_-18px_rgba(0,0,0,0.35)]
-                dark:hover:shadow-[0_12px_28px_-18px_rgba(0,0,0,0.65)]
-              "
-            >
+            <Button href="/about" variant="primary">
               More about me
             </Button>
 

@@ -6,6 +6,7 @@ import Container from "@/components/ui/Container";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Button from "@/components/ui/Button";
 import Reveal from "@/components/ui/Reveal";
+import GlitchText from "@/components/ui/GlitchText";
 import Contact from "@/components/sections/Contact";
 
 import { SITE } from "@/lib/constants";
@@ -34,7 +35,7 @@ export default function AboutPage() {
   return (
     <>
       {/* Hero */}
-      <header className="relative overflow-hidden pb-16 pt-28 md:pb-20 md:pt-36">
+      <header className="relative overflow-hidden pb-12 pt-8 sm:pt-12 md:pb-16 md:pt-14">
         {/* Ambient glow */}
         <div
           aria-hidden="true"
@@ -44,7 +45,7 @@ export default function AboutPage() {
         <Container>
           {/* Back to home */}
           <Reveal>
-            <div className="mb-12">
+            <div className="mb-6 sm:mb-8">
               <Link
                 href="/"
                 className="group inline-flex items-center gap-1.5 rounded-full bg-surface-alt px-3.5 py-1.5 text-[13px] font-medium text-ink-secondary transition-all hover:bg-black/[0.06] hover:text-ink dark:bg-surface-dark-alt dark:text-ink-dark-secondary dark:hover:bg-white/[0.08] dark:hover:text-ink-dark"
@@ -70,7 +71,7 @@ export default function AboutPage() {
           <div className="grid gap-14 md:grid-cols-[0.9fr_1.1fr] md:items-center md:gap-20">
             {/* Portrait */}
             <Reveal delay={80}>
-              <div className="group relative mx-auto w-full max-w-[360px]">
+              <div className="group relative mx-auto w-full max-w-[210px] min-[380px]:max-w-[240px] sm:max-w-[300px] md:max-w-[360px]">
                 <div
                   aria-hidden="true"
                   className="pointer-events-none absolute -inset-6 -z-10 transform-gpu rounded-full bg-accent/[0.08] blur-xl md:blur-3xl dark:bg-accent-dark/[0.07]"
@@ -99,21 +100,17 @@ export default function AboutPage() {
                   About me
                 </span>
 
-                <h1 className="mt-5 max-w-3xl text-balance text-[38px] font-semibold leading-[1.04] tracking-[-0.04em] text-ink dark:text-ink-dark md:text-[56px]">
-                  I&apos;m{" "}
-                  <span className="text-ink-secondary dark:text-ink-dark-secondary">
-                    {SITE.name}
-                  </span>
-                  , a Full Stack Engineer building modern digital experiences.
+                <h1 className="mt-5 max-w-3xl text-[24px] min-[360px]:text-[28px] sm:text-[38px] md:text-[54px] font-semibold leading-[1.12] sm:leading-[1.04] tracking-[-0.03em] text-ink dark:text-ink-dark">
+                  <GlitchText text={`I'm ${SITE.name}, a Full Stack Engineer building modern digital experiences.`} />
                 </h1>
 
-                <p className="mt-7 max-w-2xl text-[18px] leading-[1.8] text-ink-secondary dark:text-ink-dark-secondary">
+                <p className="mt-7 max-w-2xl text-[16px] sm:text-[18px] leading-[1.8] text-ink-secondary dark:text-ink-dark-secondary">
                   I&apos;m passionate about creating modern, scalable, and
                   user-centered web applications that are fast, responsive,
                   and intuitive.
                 </p>
 
-                <p className="mt-5 max-w-2xl text-[17px] leading-[1.8] text-ink-secondary dark:text-ink-dark-secondary">
+                <p className="mt-5 max-w-2xl text-[15px] sm:text-[17px] leading-[1.8] text-ink-secondary dark:text-ink-dark-secondary">
                   As an Information Technology graduate, I primarily work with{" "}
                   <span className="font-medium text-ink dark:text-ink-dark">
                     Next.js, TypeScript, Tailwind CSS, PostgreSQL, and Supabase.
@@ -134,7 +131,7 @@ export default function AboutPage() {
       </header>
 
       {/* My Approach */}
-      <section className="relative overflow-hidden py-24 md:py-28">
+      <section className="relative overflow-hidden py-20 sm:py-24 md:py-28">
         <Container narrow className="flex flex-col gap-8">
           <Reveal>
             <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-accent dark:text-accent-dark">
@@ -143,9 +140,8 @@ export default function AboutPage() {
           </Reveal>
 
           <Reveal delay={100}>
-            <h2 className="max-w-3xl text-balance text-[30px] font-semibold leading-[1.08] tracking-[-0.03em] text-ink dark:text-ink-dark md:text-[42px]">
-              I like turning ideas into products that feel simple, useful, and
-              intentional.
+            <h2 className="max-w-3xl text-[22px] min-[360px]:text-[25px] sm:text-[32px] md:text-[42px] font-semibold leading-[1.12] sm:leading-[1.08] tracking-[-0.03em] text-ink dark:text-ink-dark">
+              <GlitchText text="I like turning ideas into products that feel simple, useful, and intentional." />
             </h2>
           </Reveal>
 

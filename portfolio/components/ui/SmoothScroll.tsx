@@ -15,6 +15,12 @@ export default function SmoothScroll() {
   const rafRef = useRef<number>(0);
 
   useEffect(() => {
+    if (typeof history !== "undefined" && "scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+    window.scrollTo(0, 0);
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+
     let destroyed = false;
 
     // Never hijack touch scrolling on mobile / touch devices.

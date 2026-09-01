@@ -7,6 +7,9 @@
   #app-main {
     opacity: 0;
     transition: opacity 0.5s cubic-bezier(0.28, 0.11, 0.32, 1);
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
   }
 
   #app-main.is-ready {
@@ -19,6 +22,9 @@
 
   html {
     scroll-behavior: auto;
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
     --view-tx: 88%;
     --view-ty: 4%;
     /* Theme canvas — matches the surface tokens so the pre-CSS boot frame
@@ -38,6 +44,9 @@
 
   body {
     @apply bg-surface text-ink antialiased dark:bg-surface-dark dark:text-ink-dark;
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
     font-feature-settings: "kern", "liga", "calt";
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -51,16 +60,17 @@
     @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-surface dark:ring-accent-dark dark:ring-offset-surface-dark;
   }
 
+  /* Global scrollbar suppression across all browsers */
+  html,
+  body {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
   ::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply rounded-full bg-line dark:bg-line-dark;
+    display: none;
+    width: 0;
+    height: 0;
   }
 }
 
@@ -136,6 +146,29 @@
   30% {
     transform: translateY(-5px);
     opacity: 1;
+  }
+}
+
+@keyframes glitchJitter {
+  0% {
+    transform: translate3d(0, 0, 0);
+    text-shadow: none;
+  }
+  25% {
+    transform: translate3d(-0.6px, 0.3px, 0);
+    text-shadow: 0.6px 0 rgba(255, 0, 80, 0.2), -0.6px 0 rgba(0, 230, 255, 0.2);
+  }
+  50% {
+    transform: translate3d(0.6px, -0.3px, 0);
+    text-shadow: -0.6px 0 rgba(255, 0, 80, 0.2), 0.6px 0 rgba(0, 230, 255, 0.2);
+  }
+  75% {
+    transform: translate3d(-0.3px, -0.3px, 0);
+    text-shadow: 0.3px 0 rgba(255, 0, 80, 0.15), -0.3px 0 rgba(0, 230, 255, 0.15);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    text-shadow: none;
   }
 }
 

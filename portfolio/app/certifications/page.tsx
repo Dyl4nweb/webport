@@ -4,6 +4,7 @@ import Link from "next/link";
 import Container from "@/components/ui/Container";
 import Reveal from "@/components/ui/Reveal";
 import CertificateCard from "@/components/sections/CertificateCard";
+import GlitchText from "@/components/ui/GlitchText";
 import Contact from "@/components/sections/Contact";
 
 import type { Certificate } from "@/data/certificates";
@@ -32,7 +33,7 @@ export default async function CertificationsPage() {
 
   return (
     <>
-      <header className="relative overflow-hidden pb-16 pt-28 md:pb-20 md:pt-36">
+      <header className="relative overflow-hidden pb-12 pt-8 sm:pt-12 md:pb-16 md:pt-14">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[480px] w-[900px] -translate-x-1/2 transform-gpu rounded-full bg-gradient-to-b from-accent/[0.045] via-transparent to-transparent blur-xl md:blur-3xl dark:from-accent-dark/[0.045]"
@@ -40,7 +41,7 @@ export default async function CertificationsPage() {
 
         <Container>
           <Reveal>
-            <div className="mb-12">
+            <div className="mb-6 sm:mb-8">
               <Link
                 href="/"
                 className="group inline-flex items-center gap-1.5 rounded-full bg-surface-alt px-3.5 py-1.5 text-[13px] font-medium text-ink-secondary transition-all hover:bg-black/[0.06] hover:text-ink dark:bg-surface-dark-alt dark:text-ink-dark-secondary dark:hover:bg-white/[0.08] dark:hover:text-ink-dark"
@@ -71,8 +72,8 @@ export default async function CertificationsPage() {
             </Reveal>
 
             <Reveal delay={140}>
-              <h1 className="mt-5 max-w-3xl text-balance text-[40px] font-semibold leading-[1.04] tracking-[-0.04em] text-ink dark:text-ink-dark sm:text-[52px] md:text-[64px]">
-                Learning that goes beyond the code.
+              <h1 className="mt-5 max-w-3xl text-[26px] min-[360px]:text-[30px] min-[420px]:text-[36px] sm:text-[52px] md:text-[64px] font-semibold leading-[1.2] tracking-[-0.02em] text-ink dark:text-ink-dark pb-1">
+                <GlitchText text="Learning that goes beyond the code." />
               </h1>
             </Reveal>
 

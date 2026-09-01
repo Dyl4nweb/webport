@@ -34,7 +34,7 @@ export const experience: ExperienceItem[] = [
   {
     company: "Pangasinan State University — Lingayen",
     role: "Bachelor of Science in Information Technology",
-    start: "2021",
+    start: "2022",
     end: "2026",
     location: "Lingayen, Pangasinan",
     summary:
@@ -49,7 +49,7 @@ export const experience: ExperienceItem[] = [
     company: "PHINMA University of Pangasinan",
     role: "First Line of Code — Hello World in C++",
     start: "2021",
-    end: "2021",
+    end: "2022",
     location: "Pangasinan, Philippines",
     summary:
       "Wrote my very first program, a simple 'Hello World' in C++. This marked the beginning of my journey into programming and sparked my interest in software development.",

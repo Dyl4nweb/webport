@@ -77,8 +77,8 @@ export default function RootLayout({
               }
               html.dark { background-color: #000000 !important; color: #f5f5f7 !important; }
               html.dark #splash { background-color: #000000 !important; --splash-bg: #000000 !important; }
-              #navbar-logo:not(.is-revealed) { opacity: 0 !important; visibility: hidden !important; }
-              #navbar-logo.is-revealed { opacity: 1 !important; visibility: visible !important; transition: opacity 0.25s ease !important; }
+              .navbar-logo-target:not(.is-revealed), #navbar-logo:not(.is-revealed), #navbar-logo-dock:not(.is-revealed) { opacity: 0 !important; visibility: hidden !important; }
+              .navbar-logo-target.is-revealed, #navbar-logo.is-revealed, #navbar-logo-dock.is-revealed { opacity: 1 !important; visibility: visible !important; transition: opacity 0.3s ease !important; }
               @media (hover: hover) and (pointer: fine) {
                 html:not([data-admin]), html:not([data-admin]) body, html:not([data-admin]) #splash {
                   cursor: url("data:image/svg+xml,%3Csvg width='24' height='32' viewBox='0 0 24 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5 1.5L1.5 25.5L7.2 20.2L12.4 30.5L16.2 28.6L11 18.3L18.8 18.3L1.5 1.5Z' fill='%23000000' stroke='%23FFFFFF' stroke-width='1.8' stroke-linejoin='miter' stroke-miterlimit='4'/%3E%3C/svg%3E") 0 0, auto !important;
@@ -120,10 +120,31 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `!function(){
+              if (typeof history !== 'undefined' && 'scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+              }
+              window.scrollTo(0, 0);
+              if (document.documentElement) document.documentElement.scrollTop = 0;
+              if (document.body) document.body.scrollTop = 0;
+
+              var hasFlown = false;
+
+              function getVisibleNavLogo(){
+                var candidates = document.querySelectorAll(".navbar-logo-target, #navbar-logo, #navbar-logo-dock");
+                for (var i = 0; i < candidates.length; i++) {
+                  var r = candidates[i].getBoundingClientRect();
+                  if (r.width > 0 && r.height > 0) return candidates[i];
+                }
+                return document.getElementById("navbar-logo") || document.getElementById("navbar-logo-dock");
+              }
+
               function startFlight(){
+                if (hasFlown) return;
+                hasFlown = true;
+
                 var s = document.getElementById("splash");
                 var splashLogo = document.getElementById("splash-logo");
-                var navLogo = document.getElementById("navbar-logo");
+                var navLogo = getVisibleNavLogo();
                 var m = document.getElementById("app-main");
 
                 if (splashLogo && navLogo && s) {
@@ -164,6 +185,11 @@ export default function RootLayout({
                             navLogo.classList.add("is-revealed");
                             navLogo.style.opacity = "1";
                           }
+                          var allLogos = document.querySelectorAll(".navbar-logo-target, #navbar-logo, #navbar-logo-dock");
+                          for (var j = 0; j < allLogos.length; j++) {
+                            allLogos[j].classList.add("is-revealed");
+                            allLogos[j].style.opacity = "1";
+                          }
                           if (clone) {
                             clone.style.transition = "opacity 0.12s ease-out";
                             clone.style.opacity = "0";
@@ -189,13 +215,16 @@ export default function RootLayout({
 
               // Run when DOM and navbar are painted, with an intentional pause (1400ms)
               function checkReady(){
-                var navLogo = document.getElementById("navbar-logo");
+                var navLogo = getVisibleNavLogo();
                 if (navLogo && navLogo.getBoundingClientRect().width > 0) {
-                  setTimeout(startFlight, 1400);
+                  setTimeout(startFlight, 1200);
                 } else {
                   setTimeout(checkReady, 50);
                 }
               }
+
+              // Safety timeout: Maximum 2.2s fallback guarantees home screen always loads smoothly
+              setTimeout(startFlight, 2200);
 
               if (document.readyState === "complete") {
                 checkReady();

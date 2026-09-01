@@ -6,13 +6,14 @@ import { SITE } from "@/lib/constants";
 import { socialLinks } from "@/data/social";
 import { skills } from "@/data/skills";
 import { cn } from "@/lib/utils";
+import GlitchText from "@/components/ui/GlitchText";
 
 interface ProfileCardProps {
   open?: boolean;
   onClose?: () => void;
 }
 
-const topSkills = skills.flatMap((g) => g.items).slice(0, 4);
+const topSkills = ["Next.js", "TypeScript", "React Native", "Tailwind CSS"];
 
 const socialIcons: Record<string, React.ReactNode> = {
   github: (
@@ -235,7 +236,7 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
                   <path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16" />
                 </svg>
                 <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-black/40 dark:text-white/35">
-                  Developer ID
+                  <GlitchText triggerOnMount triggerOnHover={false} delay={100} duration={600} text="Developer ID" />
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -244,7 +245,7 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
                   <span className="relative inline-flex h-[6px] w-[6px] rounded-full bg-emerald-500" />
                 </span>
                 <span className="font-mono text-[10px] font-medium tracking-wide text-black/40 dark:text-white/35">
-                  ACTIVE
+                  <GlitchText triggerOnMount triggerOnHover={false} delay={160} duration={500} text="ACTIVE" />
                 </span>
               </div>
             </div>
@@ -271,22 +272,22 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
               <div className="flex min-w-0 flex-1 flex-col justify-between">
                 <div>
                   <h2 className="truncate text-[25px] font-bold leading-tight tracking-[-0.02em] text-black/90 dark:text-white/90">
-                    {SITE.name}
+                    <GlitchText triggerOnMount triggerOnHover={true} delay={220} duration={800} text={SITE.name} />
                   </h2>
                   <p className="mt-1 truncate font-mono text-[11px] font-medium uppercase tracking-wide text-black/45 dark:text-white/40">
-                    {SITE.role}
+                    <GlitchText triggerOnMount triggerOnHover={false} delay={280} duration={700} text={SITE.role} />
                   </p>
                   <p className="mt-2 flex items-center gap-1 text-[11px] text-black/40 dark:text-white/35">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
                       <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                       <circle cx="12" cy="10" r="3" />
                     </svg>
-                    {SITE.location}
+                    <GlitchText triggerOnMount triggerOnHover={false} delay={340} duration={650} text={SITE.location} />
                   </p>
                 </div>
 
                 <div className="flex flex-wrap gap-1.5">
-                  {topSkills.map((skill) => (
+                  {topSkills.map((skill, idx) => (
                     <span
                       key={skill}
                       className={cn(
@@ -296,7 +297,7 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
                         "dark:bg-white/[0.06] dark:text-white/55 dark:ring-white/[0.08]",
                       )}
                     >
-                      {skill}
+                      <GlitchText triggerOnMount triggerOnHover={false} delay={380 + idx * 70} duration={600} text={skill} />
                     </span>
                   ))}
                 </div>
@@ -361,7 +362,7 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
                 })()}
               </svg>
               <span className="font-mono text-[10px] font-medium tracking-wider text-black/35 dark:text-white/30">
-                №&nbsp;{badgeNo}
+                №&nbsp;<GlitchText triggerOnMount triggerOnHover={true} delay={440} duration={650} text={badgeNo} />
               </span>
             </div>
           </div>

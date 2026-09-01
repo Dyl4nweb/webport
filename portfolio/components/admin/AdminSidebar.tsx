@@ -98,7 +98,8 @@ export default function AdminSidebar({
           aria-hidden
           width={28}
           height={28}
-          className="h-7 w-auto rounded-[7px]"
+          className="h-7 w-7 object-contain rounded-[7px]"
+          style={{ width: "auto", height: "auto" }}
         />
         <div className="min-w-0 leading-tight">
           <p className="truncate text-[13px] font-semibold tracking-[-0.01em] text-ink dark:text-ink-dark">

@@ -4,6 +4,7 @@ import Link from "next/link";
 import Container from "@/components/ui/Container";
 import Reveal from "@/components/ui/Reveal";
 import TechIcon from "@/components/ui/TechIcon";
+import GlitchText from "@/components/ui/GlitchText";
 
 import { skills } from "@/data/skills";
 import { SITE } from "@/lib/constants";
@@ -47,7 +48,7 @@ export default function TechStackPage() {
   return (
     <>
       {/* Header */}
-      <header className="relative overflow-hidden pb-16 pt-28 md:pb-20 md:pt-36">
+      <header className="relative overflow-hidden pb-12 pt-8 sm:pt-12 md:pb-16 md:pt-14">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[500px] w-[900px] -translate-x-1/2 transform-gpu rounded-full bg-gradient-to-b from-accent/[0.045] via-transparent to-transparent blur-xl md:blur-3xl dark:from-accent-dark/[0.045]"
@@ -55,7 +56,7 @@ export default function TechStackPage() {
 
         <Container>
           <Reveal>
-            <div className="mb-12">
+            <div className="mb-6 sm:mb-8">
               <Link
                 href="/"
                 className="group inline-flex items-center gap-1.5 rounded-full bg-surface-alt px-3.5 py-1.5 text-[13px] font-medium text-ink-secondary transition-all hover:bg-black/[0.06] hover:text-ink dark:bg-surface-dark-alt dark:text-ink-dark-secondary dark:hover:bg-white/[0.08] dark:hover:text-ink-dark"
@@ -87,7 +88,7 @@ export default function TechStackPage() {
 
             <Reveal delay={120}>
               <h1 className="mt-5 text-balance text-[38px] font-semibold leading-[1.04] tracking-[-0.04em] text-ink dark:text-ink-dark md:text-[56px]">
-                Tech stack
+                <GlitchText text="Tech stack" />
               </h1>
             </Reveal>
 

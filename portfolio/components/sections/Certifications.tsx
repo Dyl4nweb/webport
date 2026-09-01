@@ -2,6 +2,7 @@ import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import Reveal from "@/components/ui/Reveal";
 import CertificateCard from "@/components/sections/CertificateCard";
+import GlitchText from "@/components/ui/GlitchText";
 
 import { certificates } from "@/data/certificates";
 
@@ -25,8 +26,8 @@ export default function Certifications() {
             </span>
 
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-              <h2 className="max-w-2xl text-[30px] font-semibold leading-[1.05] tracking-[-0.035em] text-ink dark:text-ink-dark md:text-[38px]">
-                Continuous learning, beyond the code.
+              <h2 className="max-w-2xl text-[21px] min-[360px]:text-[24px] min-[400px]:text-[28px] sm:text-[34px] md:text-[38px] font-semibold leading-[1.25] sm:leading-[1.2] tracking-[-0.02em] text-ink dark:text-ink-dark pb-1">
+                <GlitchText text="Continuous learning, beyond the code." />
               </h2>
 
               <Button

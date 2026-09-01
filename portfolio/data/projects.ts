@@ -70,39 +70,39 @@ export const projects: Project[] = [
     featured: true,
   },
   {
-  slug: "brew-bloom",
-  name: "Brew & Bloom Coffee Co.",
-  tagline: "Craft Coffee, Cozy Vibes.",
-  description:
-    "A warm, responsive coffee shop landing page designed to showcase specialty drinks, fresh pastries, location details, and a QR-powered digital menu.",
-  role: "Frontend Developer",
-  year: "2026",
-  category: "Landing Page",
-  image: "/images/projects/brew-bloom.png",
-  screenshots: [
-    {
-      src: "/images/projects/brew-bloom-1.png",
-      title: "Warm hero experience",
-      description:
-        "A welcoming hero section with a clear menu call-to-action, cozy coffee-shop imagery, and a hand-roasted daily highlight.",
-    },
-    {
-      src: "/images/projects/brew-bloom-2.png",
-      title: "QR-powered menu",
-      description:
-        "A server-rendered QR code lets customers scan and open the full coffee menu directly from their phone.",
-    },
-    {
-      src: "/images/projects/brew-bloom-3.png",
-      title: "Location and contact",
-      description:
-        "A mobile-friendly location, hours, contact details, and map section makes visiting the shop simple.",
-    },
-  ],
-  techStack: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
-  liveUrl: "https://drcoffeeshop.vercel.app",
-  featured: true,
-},
+    slug: "brew-bloom",
+    name: "Brew & Bloom Coffee Co.",
+    tagline: "Craft Coffee, Cozy Vibes.",
+    description:
+      "A warm, responsive coffee shop landing page designed to showcase specialty drinks, fresh pastries, location details, and a QR-powered digital menu.",
+    role: "Frontend Developer",
+    year: "2026",
+    category: "Landing Page",
+    image: "/images/projects/brew-bloom.png",
+    screenshots: [
+      {
+        src: "/images/projects/brew-bloom-1.png",
+        title: "Warm hero experience",
+        description:
+          "A welcoming hero section with a clear menu call-to-action, cozy coffee-shop imagery, and a hand-roasted daily highlight.",
+      },
+      {
+        src: "/images/projects/brew-bloom-2.png",
+        title: "QR-powered menu",
+        description:
+          "A server-rendered QR code lets customers scan and open the full coffee menu directly from their phone.",
+      },
+      {
+        src: "/images/projects/brew-bloom-3.png",
+        title: "Location and contact",
+        description:
+          "A mobile-friendly location, hours, contact details, and map section makes visiting the shop simple.",
+      },
+    ],
+    techStack: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
+    liveUrl: "https://drcoffeeshop.vercel.app",
+    featured: true,
+  },
   {
     slug: "ip-tracker",
     name: "Ip Tracker",
@@ -265,6 +265,60 @@ export const projects: Project[] = [
       "Cal.com API",
       "Gmail API",
     ],
+    featured: false,
+  },
+  {
+    slug: "motus-mobile",
+    name: "Motus — Mobile App",
+    tagline: "Discipline in motion — habit tracking, streak mechanics, and focus sessions.",
+    description:
+      "A luxury dark-themed habit tracking mobile app built offline-first with React Native and Expo, featuring one-tap check-ins, freeze credits, Pomodoro focus sessions, milestone badges, and 70-day consistency heatmaps powered by AsyncStorage.",
+    role: "Software Engineer",
+    year: "2025 — Present",
+    category: "Mobile App",
+    image: "/images/projects/motus-mobile.png",
+    screenshots: [
+      {
+        src: "/images/projects/motus-mobile-1.png",
+        title: "Today Protocol & Check-in",
+        description:
+          "Morning Protocol greeting, daily habit progress, and one-tap habit logging with freeze credits.",
+      },
+      {
+        src: "/images/projects/motus-mobile-2.png",
+        title: "Habit Directory & 7-Day Grid",
+        description:
+          "Active, All, and Archived habit directory with a 7-day consistency grid and freeze protections.",
+      },
+      {
+        src: "/images/projects/motus-mobile-3.png",
+        title: "10-Week Heatmap & Analytics",
+        description:
+          "70-day visual activity heatmap, focus session breakdown, and habit consistency metrics.",
+      },
+    ],
+    techStack: ["React Native", "Expo", "TypeScript", "AsyncStorage"],
+    featured: false,
+  },
+  {
+    slug: "pantry-to-plate",
+    name: "Filipino Pantry to Plate",
+    tagline: "Walang tapon, walang sayang. Sagot ka ng Kusina.",
+    description:
+      "Tuklasin ang mga masasarap at abot-kayang pagkaing Pinoy gamit lamang ang mga sangkap na nasa kusina mo na ngayon—kahit walang internet o mobile load.",
+    role: "Lead - Front End Developer",
+    year: "2026",
+    category: "Landing Page",
+    image: "/images/projects/pantry.png",
+    screenshots: [
+      {
+        src: "/images/projects/pantry-1.png",
+        title: "Pantry to Plate",
+        description: "Mobile-friendly recipe discovery interface.",
+      },
+    ],
+    techStack: ["Next.js", "Tailwind CSS", "TypeScript"],
+    liveUrl: "https://filipino-pantrymate.vercel.app/",
     featured: false,
   },
 ];

@@ -39,7 +39,7 @@ export default function Experience() {
 
         <Reveal delay={experience.length * 90 + 60}>
           <Button href="/experience" variant="secondary" className="self-start">
-            Full experience
+            View full experience
           </Button>
         </Reveal>
       </Container>

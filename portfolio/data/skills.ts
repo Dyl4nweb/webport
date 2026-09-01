@@ -4,11 +4,11 @@ export const skills: Skill[] = [
   {
     category: "Frontend",
     items: [
-      "React",
       "Next.js",
+      "TypeScript",
       "React Native",
       "Tailwind CSS",
-      "TypeScript",
+      "React",
       "JavaScript",
       "Flutter",
       "HTML",
@@ -58,7 +58,6 @@ export const skills: Skill[] = [
       "Opencode API",
       "OpenRouter API",
       "IPinfo API",
-      "Resend API"
     ],
   },
 ];

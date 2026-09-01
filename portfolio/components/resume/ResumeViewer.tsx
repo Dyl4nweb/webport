@@ -21,11 +21,17 @@ export default function ResumeViewer() {
       const link = document.createElement("a");
       link.href = blobUrl;
       link.download = "Dylan_Ramos_Resume.pdf";
+      // Hide the link so it doesn't steal focus (which causes cursor to disappear)
+      link.style.display = "none";
+      link.setAttribute("aria-hidden", "true");
+      link.setAttribute("tabindex", "-1");
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(blobUrl);
-      
+      // Restore focus to body so the cursor stays visible
+      document.body.focus();
+
       setDownloadSuccess(true);
     } catch (err) {
       // Fallback to standard anchor download if fetch fails
@@ -33,9 +39,14 @@ export default function ResumeViewer() {
       link.href = resumeUrl;
       link.download = "Dylan_Ramos_Resume.pdf";
       link.target = "_blank";
+      link.style.display = "none";
+      link.setAttribute("aria-hidden", "true");
+      link.setAttribute("tabindex", "-1");
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      // Restore focus to body so the cursor stays visible
+      document.body.focus();
       setDownloadSuccess(true);
     } finally {
       setDownloading(false);
@@ -43,7 +54,7 @@ export default function ResumeViewer() {
   }, [resumeUrl]);
 
   return (
-    <div className="relative min-h-screen pb-24 pt-24 sm:pt-28 md:pt-32">
+    <div className="relative min-h-screen pb-28 pt-8 sm:pt-12 md:pt-14">
       {/* Ambient decorative glow */}
       <div
         aria-hidden="true"
@@ -53,7 +64,7 @@ export default function ResumeViewer() {
       {/* In-page Header: Back to Home & Actions */}
       <Container className="px-4 sm:px-8">
         <Reveal>
-          <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
             <Link
               href="/"
               className="group inline-flex items-center gap-1.5 rounded-full bg-surface-alt px-3.5 py-1.5 text-[13px] font-medium text-ink-secondary transition-all hover:bg-black/[0.06] hover:text-ink dark:bg-surface-dark-alt dark:text-ink-dark-secondary dark:hover:bg-white/[0.08] dark:hover:text-ink-dark"
@@ -80,22 +91,20 @@ export default function ResumeViewer() {
                 <button
                   type="button"
                   onClick={() => setViewMode("digital")}
-                  className={`rounded-full px-3 py-1 text-[12px] font-medium transition-all ${
-                    viewMode === "digital"
-                      ? "bg-white text-ink shadow-sm dark:bg-black dark:text-white"
-                      : "text-ink-secondary hover:text-ink dark:text-ink-dark-secondary dark:hover:text-white"
-                  }`}
+                  className={`rounded-full px-3 py-1 text-[12px] font-medium transition-all ${viewMode === "digital"
+                    ? "bg-white text-ink shadow-sm dark:bg-black dark:text-white"
+                    : "text-ink-secondary hover:text-ink dark:text-ink-dark-secondary dark:hover:text-white"
+                    }`}
                 >
                   Digital CV
                 </button>
                 <button
                   type="button"
                   onClick={() => setViewMode("pdf")}
-                  className={`rounded-full px-3 py-1 text-[12px] font-medium transition-all ${
-                    viewMode === "pdf"
-                      ? "bg-white text-ink shadow-sm dark:bg-black dark:text-white"
-                      : "text-ink-secondary hover:text-ink dark:text-ink-dark-secondary dark:hover:text-white"
-                  }`}
+                  className={`rounded-full px-3 py-1 text-[12px] font-medium transition-all ${viewMode === "pdf"
+                    ? "bg-white text-ink shadow-sm dark:bg-black dark:text-white"
+                    : "text-ink-secondary hover:text-ink dark:text-ink-dark-secondary dark:hover:text-white"
+                    }`}
                 >
                   PDF View
                 </button>
@@ -148,22 +157,20 @@ export default function ResumeViewer() {
           <button
             type="button"
             onClick={() => setViewMode("digital")}
-            className={`flex-1 rounded-lg py-1.5 text-center text-[13px] font-medium transition-all ${
-              viewMode === "digital"
-                ? "bg-white text-ink shadow-sm dark:bg-black dark:text-white"
-                : "text-ink-secondary"
-            }`}
+            className={`flex-1 rounded-lg py-1.5 text-center text-[13px] font-medium transition-all ${viewMode === "digital"
+              ? "bg-white text-ink shadow-sm dark:bg-black dark:text-white"
+              : "text-ink-secondary"
+              }`}
           >
             Digital CV
           </button>
           <button
             type="button"
             onClick={() => setViewMode("pdf")}
-            className={`flex-1 rounded-lg py-1.5 text-center text-[13px] font-medium transition-all ${
-              viewMode === "pdf"
-                ? "bg-white text-ink shadow-sm dark:bg-black dark:text-white"
-                : "text-ink-secondary"
-            }`}
+            className={`flex-1 rounded-lg py-1.5 text-center text-[13px] font-medium transition-all ${viewMode === "pdf"
+              ? "bg-white text-ink shadow-sm dark:bg-black dark:text-white"
+              : "text-ink-secondary"
+              }`}
           >
             PDF Embed
           </button>
@@ -431,37 +438,7 @@ export default function ResumeViewer() {
         </div>
       </Container>
 
-      {/* Floating Download Success Toast with Quick Home Shortcut */}
-      {downloadSuccess && (
-        <aside
-          role="status"
-          aria-live="polite"
-          className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-3 rounded-full border border-line bg-surface/95 px-5 py-3 shadow-2xl backdrop-blur-md animate-fadeUp dark:border-line-dark dark:bg-surface-dark/95"
-        >
-          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-          </div>
-          <span className="text-[13px] font-medium text-ink dark:text-ink-dark">
-            Resume downloaded!
-          </span>
-          <Link
-            href="/"
-            className="rounded-full bg-ink px-3 py-1 text-[12px] font-medium text-white transition-opacity hover:opacity-80 dark:bg-ink-dark dark:text-surface-dark"
-          >
-            ← Back to Home
-          </Link>
-          <button
-            type="button"
-            onClick={() => setDownloadSuccess(false)}
-            aria-label="Dismiss download notification"
-            className="ml-1 text-ink-tertiary hover:text-ink dark:text-ink-dark-secondary dark:hover:text-ink-dark"
-          >
-            ✕
-          </button>
-        </aside>
-      )}
+
     </div>
   );
 }

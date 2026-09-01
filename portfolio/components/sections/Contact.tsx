@@ -1,6 +1,7 @@
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import Reveal from "@/components/ui/Reveal";
+import GlitchText from "@/components/ui/GlitchText";
 import { SITE } from "@/lib/constants";
 
 export default function Contact() {
@@ -18,8 +19,8 @@ export default function Contact() {
 
       <Container className="flex flex-col items-center gap-6 text-center">
         <Reveal>
-          <h2 className="max-w-xl text-balance text-[32px] font-semibold leading-[1.1] tracking-tight text-ink dark:text-ink-dark md:text-[44px]">
-            Have a project in mind? Let&apos;s talk about it.
+          <h2 className="max-w-xl text-balance text-[26px] min-[360px]:text-[30px] sm:text-[36px] md:text-[44px] font-semibold leading-[1.2] sm:leading-[1.1] tracking-[-0.03em] text-ink dark:text-ink-dark pb-1">
+            <GlitchText text="Have a project in mind? Let's talk about it." />
           </h2>
         </Reveal>
 

@@ -1,4 +1,5 @@
 import Hero from "@/components/sections/Hero";
+import StatsBanner from "@/components/sections/StatsBanner";
 import About from "@/components/sections/About";
 import FeaturedProjects from "@/components/sections/FeaturedProjects";
 import Skills from "@/components/sections/Skills";
@@ -45,6 +46,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
       />
       <Hero />
+      <StatsBanner />
       <About />
       <FeaturedProjects />
       <Skills />
