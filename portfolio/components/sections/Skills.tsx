@@ -123,14 +123,16 @@ export default function Skills() {
           </Reveal>
         </Container>
 
-        {/* Compact 3-Row Sliding Marquee Tracks */}
-        <Reveal delay={100} className="w-full">
-          <div className="flex w-full flex-col gap-2.5 sm:gap-3">
-            <MarqueeRow items={CORE_SKILLS_ROW_1} direction="left" speed={32} />
-            <MarqueeRow items={CORE_SKILLS_ROW_2} direction="right" speed={38} />
-            <MarqueeRow items={CORE_SKILLS_ROW_3} direction="left" speed={34} />
-          </div>
-        </Reveal>
+        {/* Compact 3-Row Sliding Marquee Tracks with Side Margins */}
+        <Container className="w-full max-w-5xl px-4 sm:px-6 md:px-8">
+          <Reveal delay={100} className="w-full">
+            <div className="flex w-full flex-col gap-2.5 sm:gap-3">
+              <MarqueeRow items={CORE_SKILLS_ROW_1} direction="left" speed={32} />
+              <MarqueeRow items={CORE_SKILLS_ROW_2} direction="right" speed={38} />
+              <MarqueeRow items={CORE_SKILLS_ROW_3} direction="left" speed={34} />
+            </div>
+          </Reveal>
+        </Container>
 
         {/* View More Button */}
         <Container>
