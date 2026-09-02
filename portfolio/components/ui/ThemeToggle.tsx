@@ -146,7 +146,7 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // View Transitions API: native CSS wave reveal
+    // View Transitions API: native wave reveal from exact button origin
     if ("startViewTransition" in document && !reduceMotion) {
       try {
         root.classList.add("theme-swap");
@@ -156,6 +156,30 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
           });
         });
 
+        if (!isCyber && root.getAttribute("data-theme") !== "cyber") {
+          const isCafe = root.getAttribute("data-theme") === "cafe";
+          const duration = isCafe ? 980 : 920;
+          const easing = "cubic-bezier(0.16, 1, 0.3, 1)";
+          try {
+            transition.ready.then(() => {
+              document.documentElement.animate(
+                {
+                  clipPath: [
+                    `circle(0px at ${x.toFixed(1)}px ${y.toFixed(1)}px)`,
+                    `circle(${endRadius}px at ${x.toFixed(1)}px ${y.toFixed(1)}px)`
+                  ],
+                },
+                {
+                  duration,
+                  easing,
+                  pseudoElement: "::view-transition-new(root)",
+                  fill: "both",
+                }
+              );
+            }).catch(() => {});
+          } catch {}
+        }
+
         transition.finished.finally(unlock);
 
         // Safety net to guarantee unlock
@@ -164,7 +188,7 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
             transition.skipTransition();
           } catch {}
           unlock();
-        }, 1200);
+        }, 1400);
       } catch {
         applyTheme();
         unlock();

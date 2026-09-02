@@ -897,7 +897,7 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
 /* 1. Default / Modern Theme: Crisp Apple Circular Water Wave */
 html[data-theme="modern"]::view-transition-new(root),
 html:not([data-theme])::view-transition-new(root) {
-  animation: theme-reveal-modern 0.72s cubic-bezier(0.22, 1, 0.36, 1) both !important;
+  animation: theme-reveal-modern 0.92s cubic-bezier(0.16, 1, 0.3, 1) both !important;
   mix-blend-mode: normal !important;
   z-index: 9999;
 }
@@ -915,7 +915,7 @@ html:not([data-theme])::view-transition-new(root) {
 
 /* 2. Coffee Theme: Warm Golden Amber Liquid Brew Bloom */
 html[data-theme="cafe"]::view-transition-new(root) {
-  animation: theme-reveal-cafe 0.8s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+  animation: theme-reveal-cafe 0.98s cubic-bezier(0.16, 1, 0.3, 1) both !important;
   mix-blend-mode: normal !important;
   z-index: 9999;
 }
@@ -926,8 +926,8 @@ html[data-theme="cafe"]::view-transition-new(root) {
     clip-path: circle(0px at var(--view-tx, 50%) var(--view-ty, 50%));
     filter: sepia(0.3) saturate(1.25);
   }
-  60% {
-    filter: sepia(0.12) saturate(1.1);
+  50% {
+    filter: sepia(0.15) saturate(1.1);
   }
   100% {
     -webkit-clip-path: circle(var(--view-tr, 150vmax) at var(--view-tx, 50%) var(--view-ty, 50%));

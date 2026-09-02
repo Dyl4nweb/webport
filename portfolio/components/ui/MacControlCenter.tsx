@@ -140,6 +140,31 @@ export const MacControlCenter = memo(function MacControlCenter({
             apply();
           });
         });
+
+        if (themeId !== "cyber") {
+          const isCafe = themeId === "cafe";
+          const duration = isCafe ? 980 : 920;
+          const easing = "cubic-bezier(0.16, 1, 0.3, 1)";
+          try {
+            transition.ready.then(() => {
+              document.documentElement.animate(
+                {
+                  clipPath: [
+                    `circle(0px at ${x.toFixed(1)}px ${y.toFixed(1)}px)`,
+                    `circle(${endRadius}px at ${x.toFixed(1)}px ${y.toFixed(1)}px)`
+                  ],
+                },
+                {
+                  duration,
+                  easing,
+                  pseudoElement: "::view-transition-new(root)",
+                  fill: "both",
+                }
+              );
+            }).catch(() => {});
+          } catch {}
+        }
+
         transition.finished.finally(() => {
           root.classList.remove("theme-swap");
         });
