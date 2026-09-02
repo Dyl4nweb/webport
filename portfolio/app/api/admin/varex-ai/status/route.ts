@@ -6,7 +6,9 @@ export async function GET(request: NextRequest) {
   const { error } = await requireAdmin(request);
   if (error) return error;
 
-  const hasServerKey = Boolean(process.env.GEMINI_API_KEY?.trim());
+  const hasServerKey = Boolean(
+    process.env.GEMINI_API_KEY?.trim() || process.env.OPENROUTER_API_KEY?.trim()
+  );
 
   return NextResponse.json({
     ok: true,

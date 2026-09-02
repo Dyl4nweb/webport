@@ -102,17 +102,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 2. Resolve API Key: custom key from header or body, fallback to server environment
+    // 2. Resolve API Keys
     const headerApiKey = request.headers.get("x-gemini-api-key")?.trim();
     const effectiveApiKey =
       headerApiKey || bodyApiKey?.trim() || process.env.GEMINI_API_KEY?.trim();
+    const openRouterKey = process.env.OPENROUTER_API_KEY?.trim();
 
-    if (!effectiveApiKey) {
+    if (!effectiveApiKey && !openRouterKey) {
       return NextResponse.json(
         {
           ok: false,
           error:
-            "No Gemini API key found. Please enter your Gemini API key in the Varex AI settings (Key & Config) or set GEMINI_API_KEY in Vercel Environment Variables.",
+            "No AI provider API key found. Please enter your Gemini API key in Key & Config or configure GEMINI_API_KEY in Vercel Environment Variables.",
           needsKey: true,
         },
         { status: 400 }
@@ -176,102 +177,106 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // 6. Call Google Gemini API with smart retry and model fallback
+    // 6. Call Google Gemini API if Gemini key is available
     let successfulData: any = null;
     let usedModel = preferredModel;
     let lastError = "";
     let lastStatus = 500;
 
-    for (const currentModel of candidateModels) {
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
-        currentModel
-      )}:generateContent?key=${encodeURIComponent(effectiveApiKey)}`;
+    if (effectiveApiKey) {
+      for (const currentModel of candidateModels) {
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
+          currentModel
+        )}:generateContent?key=${encodeURIComponent(effectiveApiKey)}`;
 
-      // Try up to 2 times for temporary spikes/demand
-      for (let attempt = 0; attempt < 2; attempt++) {
-        if (attempt > 0) {
-          await new Promise((resolve) => setTimeout(resolve, 650));
+        // Try up to 2 times for temporary spikes/demand
+        for (let attempt = 0; attempt < 2; attempt++) {
+          if (attempt > 0) {
+            await new Promise((resolve) => setTimeout(resolve, 650));
+          }
+
+          const reqHeaders: Record<string, string> = {
+            "Content-Type": "application/json",
+            "x-goog-api-key": effectiveApiKey,
+          };
+
+          const geminiResponse = await fetch(geminiUrl, {
+            method: "POST",
+            headers: reqHeaders,
+            body: JSON.stringify({
+              system_instruction: {
+                parts: [{ text: fullSystemInstruction }],
+              },
+              contents,
+              generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 2048,
+                topP: 0.95,
+              },
+            }),
+          });
+
+          if (geminiResponse.ok) {
+            successfulData = await geminiResponse.json();
+            usedModel = currentModel;
+            break;
+          }
+
+          const errorText = await geminiResponse.text();
+          let parsedError = "";
+          try {
+            const errorJson = JSON.parse(errorText);
+            parsedError = errorJson?.error?.message || errorText;
+          } catch {
+            parsedError = errorText;
+          }
+
+          console.error(`[admin-varex-ai] Gemini API error for ${currentModel} (attempt ${attempt + 1}):`, parsedError);
+          lastError = parsedError;
+          lastStatus = geminiResponse.status;
+
+          // If invalid key, stop immediately unless OpenRouter fallback is available
+          if (geminiResponse.status === 400 && parsedError.includes("API key not valid")) {
+            if (!openRouterKey) {
+              return NextResponse.json(
+                {
+                  ok: false,
+                  error: "The provided Gemini API key is invalid. Please verify your API key in Google AI Studio.",
+                  invalidKey: true,
+                },
+                { status: 400 }
+              );
+            }
+            break;
+          }
+
+          // If high demand / temporary spike (503/429), fall through immediately to next candidate model
+          if (
+            parsedError.includes("high demand") ||
+            parsedError.includes("Resource has been exhausted") ||
+            geminiResponse.status === 503
+          ) {
+            break;
+          }
+
+          // If model not found or deprecated, break out of inner retry and try next candidate model
+          if (
+            geminiResponse.status === 404 ||
+            parsedError.includes("no longer available") ||
+            parsedError.includes("not found")
+          ) {
+            break;
+          }
         }
 
-        const reqHeaders: Record<string, string> = {
-          "Content-Type": "application/json",
-          "x-goog-api-key": effectiveApiKey,
-        };
-
-        const geminiResponse = await fetch(geminiUrl, {
-          method: "POST",
-          headers: reqHeaders,
-          body: JSON.stringify({
-            system_instruction: {
-              parts: [{ text: fullSystemInstruction }],
-            },
-            contents,
-            generationConfig: {
-              temperature: 0.7,
-              maxOutputTokens: 2048,
-              topP: 0.95,
-            },
-          }),
-        });
-
-        if (geminiResponse.ok) {
-          successfulData = await geminiResponse.json();
-          usedModel = currentModel;
+        if (successfulData) {
           break;
         }
-
-        const errorText = await geminiResponse.text();
-        let parsedError = "";
-        try {
-          const errorJson = JSON.parse(errorText);
-          parsedError = errorJson?.error?.message || errorText;
-        } catch {
-          parsedError = errorText;
-        }
-
-        console.error(`[admin-varex-ai] Gemini API error for ${currentModel} (attempt ${attempt + 1}):`, parsedError);
-        lastError = parsedError;
-        lastStatus = geminiResponse.status;
-
-        // If invalid key, stop immediately
-        if (geminiResponse.status === 400 && parsedError.includes("API key not valid")) {
-          return NextResponse.json(
-            {
-              ok: false,
-              error: "The provided Gemini API key is invalid. Please verify your API key in Google AI Studio.",
-              invalidKey: true,
-            },
-            { status: 400 }
-          );
-        }
-
-        // If high demand / temporary spike (503/429), fall through immediately to next candidate model
-        if (
-          parsedError.includes("high demand") ||
-          parsedError.includes("Resource has been exhausted") ||
-          geminiResponse.status === 503
-        ) {
-          break;
-        }
-
-        // If model not found or deprecated, break out of inner retry and try next candidate model
-        if (
-          geminiResponse.status === 404 ||
-          parsedError.includes("no longer available") ||
-          parsedError.includes("not found")
-        ) {
-          break;
-        }
-      }
-
-      if (successfulData) {
-        break;
       }
     }
 
+    // 7. Fallback to OpenRouter (already configured in production) if Gemini was unavailable
     if (!successfulData) {
-      // Fallback: If OpenRouter API key exists, seamlessly fulfill request via OpenRouter
-      const openRouterKey = process.env.OPENROUTER_API_KEY?.trim();
       if (openRouterKey) {
         try {
           const openRouterMessages = [
@@ -287,11 +292,11 @@ export async function POST(request: NextRequest) {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${openRouterKey}`,
-              "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://dyl4nramos.vercel.app",
+              "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://www.dylanramos.site",
               "X-Title": "Dylan Ramos Portfolio Admin Copilot",
             },
             body: JSON.stringify({
-              model: "google/gemini-2.0-flash-001",
+              model: "openrouter/free",
               messages: openRouterMessages,
               temperature: 0.7,
               max_tokens: 2048,
@@ -305,10 +310,13 @@ export async function POST(request: NextRequest) {
               return NextResponse.json({
                 ok: true,
                 message: fallbackText.trim(),
-                model: "gemini-2.0-flash (via OpenRouter)",
+                model: orData?.model || "Varex AI (via OpenRouter)",
                 usageMetadata: orData?.usage || null,
               });
             }
+          } else {
+            const orErrText = await openRouterRes.text();
+            console.error("[admin-varex-ai] OpenRouter response not ok:", orErrText);
           }
         } catch (orErr) {
           console.error("[admin-varex-ai] OpenRouter fallback failed:", orErr);
@@ -318,9 +326,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           ok: false,
-          error: `Gemini API returned an error (${lastStatus}): ${lastError}. Make sure your Gemini API key from Google AI Studio (starting with AIzaSy...) is active in .env.local.`,
+          error: lastError
+            ? `AI Error (${lastStatus}): ${lastError}`
+            : "Could not generate response. Please check your API key in Key & Config.",
         },
-        { status: lastStatus }
+        { status: lastStatus || 500 }
       );
     }
 
