@@ -318,6 +318,7 @@ export default async function RootLayout({
                 if (m) {
                   m.classList.add("is-ready");
                 }
+                window.dispatchEvent(new CustomEvent("splash:ready"));
               }
 
               // Run when DOM and navbar are painted, synchronized with progress bar completion

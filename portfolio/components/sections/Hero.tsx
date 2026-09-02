@@ -111,11 +111,46 @@ const HeroTypewriter = memo(function HeroTypewriter({ roles = DEFAULT_ROLES }: {
     function startTyping() {
       if (isCancelled || hasStarted) return;
       hasStarted = true;
-      timeoutId = setTimeout(tick, 50);
+      timeoutId = setTimeout(tick, 100);
     }
 
-    // Start typing immediately upon open
-    startTyping();
+    const appMain = document.getElementById("app-main");
+    const splash = document.getElementById("splash");
+    const isSplashActive = splash && !splash.classList.contains("is-done") && splash.style.display !== "none";
+
+    if (!isSplashActive || (appMain && appMain.classList.contains("is-ready"))) {
+      startTyping();
+    } else {
+      const observer = new MutationObserver(() => {
+        if (appMain && appMain.classList.contains("is-ready")) {
+          observer.disconnect();
+          startTyping();
+        }
+      });
+
+      if (appMain) {
+        observer.observe(appMain, { attributes: true, attributeFilter: ["class"] });
+      }
+
+      const handleSplash = () => {
+        if (appMain) observer.disconnect();
+        startTyping();
+      };
+
+      window.addEventListener("splash:ready", handleSplash, { once: true });
+      fallbackId = setTimeout(() => {
+        if (appMain) observer.disconnect();
+        startTyping();
+      }, 1500);
+
+      return () => {
+        isCancelled = true;
+        if (appMain) observer.disconnect();
+        window.removeEventListener("splash:ready", handleSplash);
+        if (fallbackId) clearTimeout(fallbackId);
+        if (timeoutId) clearTimeout(timeoutId);
+      };
+    }
 
     return () => {
       isCancelled = true;
@@ -178,7 +213,7 @@ function HeroName({ onOpenCard }: { onOpenCard: () => void }) {
     if (animRef.current) cancelAnimationFrame(animRef.current);
     setIsScrambling(true);
 
-    const duration = 850;
+    const duration = 1000;
     const startTime = performance.now();
 
     function step(now: number) {
@@ -208,10 +243,60 @@ function HeroName({ onOpenCard }: { onOpenCard: () => void }) {
     animRef.current = requestAnimationFrame(step);
   }, [originalName]);
 
-  // Synchronize glitch effect to start immediately on page open
+  // Synchronize effect to play visually right as the splash screen opens or immediately on navigation back
   useEffect(() => {
-    handleScramble();
+    let timerId: ReturnType<typeof setTimeout> | null = null;
+    let isCancelled = false;
+
+    function trigger() {
+      if (isCancelled) return;
+      timerId = setTimeout(() => {
+        handleScramble();
+      }, 80);
+    }
+
+    const appMain = document.getElementById("app-main");
+    const splash = document.getElementById("splash");
+    const isSplashActive = splash && !splash.classList.contains("is-done") && splash.style.display !== "none";
+
+    if (!isSplashActive || (appMain && appMain.classList.contains("is-ready"))) {
+      trigger();
+    } else {
+      const observer = new MutationObserver(() => {
+        if (appMain && appMain.classList.contains("is-ready")) {
+          observer.disconnect();
+          trigger();
+        }
+      });
+
+      if (appMain) {
+        observer.observe(appMain, { attributes: true, attributeFilter: ["class"] });
+      }
+
+      const handleSplash = () => {
+        if (appMain) observer.disconnect();
+        trigger();
+      };
+
+      window.addEventListener("splash:ready", handleSplash, { once: true });
+      const fallback = setTimeout(() => {
+        if (appMain) observer.disconnect();
+        trigger();
+      }, 1500);
+
+      return () => {
+        isCancelled = true;
+        if (appMain) observer.disconnect();
+        window.removeEventListener("splash:ready", handleSplash);
+        clearTimeout(fallback);
+        if (timerId) clearTimeout(timerId);
+        if (animRef.current) cancelAnimationFrame(animRef.current);
+      };
+    }
+
     return () => {
+      isCancelled = true;
+      if (timerId) clearTimeout(timerId);
       if (animRef.current) cancelAnimationFrame(animRef.current);
     };
   }, [handleScramble]);
