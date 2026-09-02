@@ -42,7 +42,7 @@ const DEFAULT_WELCOME: ChatMessage = {
   content:
     "👋 **Greetings Dylan!** I am **Varex AI**, your portfolio's intelligent admin copilot.\n\nI can assist you with:\n- ✉️ **Drafting professional email responses** to client inquiries\n- 📊 **Reviewing visitor traffic & conversion statistics**\n- 🚀 **Writing case studies & project descriptions**\n- ⚡ **Reviewing Next.js, Supabase & TypeScript code**\n- 📝 **Brainstorming new portfolio features**\n\nHow can I help you today?",
   timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-  modelUsed: "gemini-flash-latest",
+  modelUsed: "gemini-3.5-flash-lite",
 };
 
 /**
@@ -102,7 +102,7 @@ export function VarexAIProvider({ children }: { children: React.ReactNode }) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [customKey, setCustomKey] = useState("");
-  const [selectedModel, setSelectedModel] = useState("gemini-flash-latest");
+  const [selectedModel, setSelectedModel] = useState("gemini-3.5-flash-lite");
   const [includeLiveContext, setIncludeLiveContext] = useState(true);
   const [toast, setToast] = useState<{ message: string; type?: "success" | "error" | "info" } | null>(null);
 
@@ -113,12 +113,23 @@ export function VarexAIProvider({ children }: { children: React.ReactNode }) {
   // Load state from localStorage on mount
   useEffect(() => {
     const savedKey = localStorage.getItem(LOCAL_STORAGE_KEY) || "";
-    const savedModel = localStorage.getItem(LOCAL_STORAGE_MODEL) || "gemini-flash-latest";
-    const savedHistory = localStorage.getItem(LOCAL_STORAGE_HISTORY);
+    let savedModel = localStorage.getItem(LOCAL_STORAGE_MODEL) || "gemini-3.5-flash-lite";
+
+    // Auto-migrate any deprecated/throttled models
+    if (
+      savedModel.includes("2.0") ||
+      savedModel.includes("2.5") ||
+      savedModel.includes("1.5") ||
+      savedModel === "gemini-flash-latest"
+    ) {
+      savedModel = "gemini-3.5-flash-lite";
+      localStorage.setItem(LOCAL_STORAGE_MODEL, "gemini-3.5-flash-lite");
+    }
 
     if (savedKey) setCustomKey(savedKey);
-    if (savedModel) setSelectedModel(savedModel);
+    setSelectedModel(savedModel);
 
+    const savedHistory = localStorage.getItem(LOCAL_STORAGE_HISTORY);
     if (savedHistory) {
       try {
         const parsed = JSON.parse(savedHistory);

@@ -11,31 +11,31 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({
     ok: true,
     hasServerKey,
-    defaultModel: "gemini-3.6-flash",
+    defaultModel: "gemini-3.5-flash-lite",
     models: [
+      {
+        id: "gemini-3.5-flash-lite",
+        name: "Gemini 3.5 Flash Lite",
+        badge: "Recommended",
+        description: "Ultra-fast response speed with high quota availability",
+      },
+      {
+        id: "gemini-3.5-flash",
+        name: "Gemini 3.5 Flash",
+        badge: "Balanced",
+        description: "Great balance of reasoning, creativity, and speed",
+      },
+      {
+        id: "gemini-flash-lite-latest",
+        name: "Gemini Flash Lite (Stable)",
+        badge: "Stable",
+        description: "Fast lightweight model for instant admin assistance",
+      },
       {
         id: "gemini-3.6-flash",
         name: "Gemini 3.6 Flash",
-        badge: "Recommended",
-        description: "Latest generation ultra-fast model with enhanced reasoning",
-      },
-      {
-        id: "gemini-1.5-pro",
-        name: "Gemini 1.5 Pro",
-        badge: "Deep Reasoning",
-        description: "Complex reasoning, detailed code generation, and deep analysis",
-      },
-      {
-        id: "gemini-1.5-flash",
-        name: "Gemini 1.5 Flash",
-        badge: "Lightweight",
-        description: "High speed, lightweight, and cost-effective",
-      },
-      {
-        id: "gemini-2.5-flash",
-        name: "Gemini 2.5 Flash",
-        badge: "Latest",
-        description: "Cutting-edge reasoning and ultra-low latency",
+        badge: "Next-Gen",
+        description: "Latest generation model with deep multi-step reasoning",
       },
     ],
   });

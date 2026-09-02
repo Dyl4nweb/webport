@@ -15,13 +15,13 @@ interface RequestBody {
 }
 
 const SUPPORTED_MODELS = [
+  "gemini-3.5-flash-lite",
+  "gemini-3.5-flash",
+  "gemini-flash-lite-latest",
   "gemini-3.6-flash",
-  "gemini-2.5-flash",
-  "gemini-1.5-pro",
-  "gemini-1.5-flash",
 ];
 
-const DEFAULT_MODEL = "gemini-flash-latest";
+const DEFAULT_MODEL = "gemini-3.5-flash-lite";
 
 const BASE_SYSTEM_PROMPT = `
 You are Varex AI — the official Intelligent Admin Copilot and Executive Assistant for Dylan Ramos.
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
         {
           ok: false,
           error:
-            "No Gemini API key found. Please enter your Gemini API key in the Varex AI settings or set GEMINI_API_KEY in .env.local.",
+            "No Gemini API key found. Please enter your Gemini API key in the Varex AI settings (Key & Config) or set GEMINI_API_KEY in Vercel Environment Variables.",
           needsKey: true,
         },
         { status: 400 }
@@ -122,23 +122,18 @@ export async function POST(request: NextRequest) {
     // 3. Resolve Model Candidates
     const preferredModel = rawModel?.trim() || DEFAULT_MODEL;
 
-    // Discover live models for this API key to guarantee valid model names
-    const liveModels = await fetchSupportedModels(effectiveApiKey);
-    const filteredLive = liveModels.filter(
-      (m) =>
-        !m.includes("2.5-flash") &&
-        !m.includes("1.5-flash") &&
-        !m.includes("image") &&
-        !m.includes("tts") &&
-        !m.includes("preview-tts")
-    );
-
-    // Build ordered list of candidate models to try (only valid Flash models, skip zero-quota Pro models)
+    // Build ordered list of candidate models to try (reliable Flash models first)
     const candidateModels = Array.from(
       new Set([
-        preferredModel.includes("pro") ? "gemini-flash-latest" : preferredModel,
-        "gemini-flash-latest",
+        preferredModel &&
+        !preferredModel.includes("2.0") &&
+        !preferredModel.includes("2.5") &&
+        !preferredModel.includes("1.5")
+          ? preferredModel
+          : "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite",
         "gemini-3.5-flash",
+        "gemini-flash-lite-latest",
         "gemini-3.6-flash",
       ])
     ).filter(Boolean);
@@ -215,9 +210,6 @@ export async function POST(request: NextRequest) {
               temperature: 0.7,
               maxOutputTokens: 2048,
               topP: 0.95,
-              thinkingConfig: {
-                thinkingBudget: 0,
-              },
             },
           }),
         });

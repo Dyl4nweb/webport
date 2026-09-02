@@ -16,28 +16,28 @@ interface GeminiModelOption {
 
 const DEFAULT_MODELS: GeminiModelOption[] = [
   {
-    id: "gemini-flash-latest",
-    name: "Gemini Flash (Latest)",
-    badge: "Recommended",
-    description: "Official dynamic alias — ultra-fast, high-demand resilient",
+    id: "gemini-3.5-flash-lite",
+    name: "Gemini 3.5 Flash Lite",
+    badge: "Fast & Stable",
+    description: "Instant response speed with high quota availability",
   },
   {
-    id: "gemini-pro-latest",
-    name: "Gemini Pro (Latest)",
-    badge: "Deep Reasoning",
-    description: "Complex logic, deep code analysis and advanced planning",
+    id: "gemini-3.5-flash",
+    name: "Gemini 3.5 Flash",
+    badge: "Balanced",
+    description: "Great balance of reasoning, creativity, and speed",
   },
   {
-    id: "gemini-3.7-flash",
-    name: "Gemini 3.7 Flash",
-    badge: "Next-Gen",
-    description: "Next-generation multimodal reasoning and speed",
+    id: "gemini-flash-lite-latest",
+    name: "Gemini Flash Lite",
+    badge: "Lightweight",
+    description: "Fast lightweight model for instant assistance",
   },
   {
     id: "gemini-3.6-flash",
     name: "Gemini 3.6 Flash",
-    badge: "Fast",
-    description: "Latest 3.6 generation model",
+    badge: "Next-Gen",
+    description: "Latest generation model with deep reasoning",
   },
 ];
 
