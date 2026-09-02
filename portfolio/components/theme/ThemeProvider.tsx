@@ -35,18 +35,15 @@ export default function ThemeProvider() {
     setActiveTheme(initialTheme);
     applySiteThemeToDOM(initialTheme);
 
-    // 2. Fetch authoritative theme from API (Supabase / local settings)
+    // 2. Fetch authoritative global theme from API (Supabase / local settings)
     async function syncTheme() {
       try {
         const res = await fetch("/api/admin/theme", { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           if (data.ok && isValidTheme(data.theme)) {
-            const userChoice = localStorage.getItem(THEME_STORAGE_KEY);
-            if (!userChoice) {
-              setActiveTheme(data.theme);
-              applySiteThemeToDOM(data.theme);
-            }
+            setActiveTheme(data.theme);
+            applySiteThemeToDOM(data.theme);
           }
         }
       } catch {}
@@ -73,11 +70,19 @@ export default function ThemeProvider() {
       document.documentElement.style.setProperty("--splash-bg", bg);
     };
 
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        syncTheme();
+      }
+    };
+
     window.addEventListener("site-theme:change", handleSiteThemeEvent);
     window.addEventListener("theme:change", handleDarkLightChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
       window.removeEventListener("site-theme:change", handleSiteThemeEvent);
       window.removeEventListener("theme:change", handleDarkLightChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
 

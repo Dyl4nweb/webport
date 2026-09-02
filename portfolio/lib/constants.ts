@@ -7,7 +7,7 @@ export const SITE = {
   tagline: "I design and build software that feels inevitable.",
   description:
     "Portfolio of Dylan Ramos, a software engineer focused on building fast, considered products across web and AI.",
-  url: "https://dylanramos.vercel.app",
+  url: "https://www.dylanramos.site",
   email: "kurtdylanviray@gmail.com",
   calUrl: "https://cal.com/dylanweb444",
   location: "Manila, Philippines",

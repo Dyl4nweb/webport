@@ -15,6 +15,7 @@ import ThemeProvider from "@/components/theme/ThemeProvider";
 import CyberBinaryFX from "@/components/theme/CyberBinaryFX";
 import ThemeAtmosphere from "@/components/theme/ThemeAtmosphere";
 import { isValidTheme, type SiteTheme } from "@/lib/theme";
+import { getSupabase } from "@/lib/supabase";
 import { SITE } from "@/lib/constants";
 
 const inter = Inter({
@@ -81,6 +82,21 @@ export const metadata: Metadata = {
 };
 
 async function getAuthoritativeTheme(): Promise<SiteTheme> {
+  // 1. Try to read from Supabase (Global database for all visitors)
+  try {
+    const supabase = getSupabase();
+    const { data } = await supabase
+      .from("site_settings")
+      .select("active_theme")
+      .eq("id", "global")
+      .maybeSingle();
+
+    if (data && isValidTheme(data.active_theme)) {
+      return data.active_theme;
+    }
+  } catch {}
+
+  // 2. Fallback to local settings file
   try {
     const filePath = path.join(process.cwd(), "data", "site_settings.json");
     const raw = await fs.readFile(filePath, "utf-8");

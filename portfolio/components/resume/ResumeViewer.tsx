@@ -210,12 +210,12 @@ export default function ResumeViewer() {
                   </a>
                   <span className="opacity-30">•</span>
                   <a
-                    href="https://dylanramos.vercel.app"
+                    href="https://www.dylanramos.site"
                     target="_blank"
                     rel="noreferrer"
                     className="hover:text-accent hover:underline dark:hover:text-accent-dark"
                   >
-                    dylanramos.vercel.app
+                    dylanramos.site
                   </a>
                 </div>
               </header>

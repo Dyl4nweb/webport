@@ -121,7 +121,7 @@ IMPORTANT RULES:
           "Content-Type": "application/json",
           "HTTP-Referer":
             process.env.NEXT_PUBLIC_SITE_URL ||
-            "https://dylanport.vercel.app",
+            "https://www.dylanramos.site",
           "X-Title":
             process.env.NEXT_PUBLIC_SITE_NAME || "Dylan Ramos Portfolio",
         },
