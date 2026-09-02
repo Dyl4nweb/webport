@@ -58,8 +58,8 @@ export default function Reveal({ children, delay = 0, className }: RevealProps) 
       )}
       style={{
         visibility: visible ? "visible" : "hidden",
-        transform: visible ? "translate3d(0,0,0)" : "translate3d(0,32px,0)",
-        transition: `opacity 0.7s cubic-bezier(0.22,1,0.36,1) ${visible ? delay : 0}ms, transform 0.7s cubic-bezier(0.22,1,0.36,1) ${visible ? delay : 0}ms, visibility 0s linear ${visible ? delay : 0}ms`,
+        transform: visible ? "translate3d(0,0,0)" : "translate3d(0,20px,0)",
+        transition: `opacity 0.65s cubic-bezier(0.22,1,0.36,1) ${visible ? delay : 0}ms, transform 0.65s cubic-bezier(0.22,1,0.36,1) ${visible ? delay : 0}ms, visibility 0s linear ${visible ? delay : 0}ms`,
       }}
     >
       {children}

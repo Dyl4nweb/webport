@@ -81,13 +81,13 @@ export default function TechStackPage() {
 
           <div className="max-w-3xl">
             <Reveal delay={80}>
-              <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-accent dark:text-accent-dark">
+              <span className="font-mono text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.18em] text-accent dark:text-accent-dark">
                 Technologies
               </span>
             </Reveal>
 
             <Reveal delay={120}>
-              <h1 className="mt-5 text-balance text-[38px] font-semibold leading-[1.04] tracking-[-0.04em] text-ink dark:text-ink-dark md:text-[56px]">
+              <h1 className="mt-4 text-balance text-3xl min-[360px]:text-4xl sm:text-5xl md:text-6xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.08]">
                 <GlitchText text="Tech stack" />
               </h1>
             </Reveal>

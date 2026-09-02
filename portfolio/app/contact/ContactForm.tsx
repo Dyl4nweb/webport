@@ -45,10 +45,10 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      <div className="grid gap-6 sm:grid-cols-2">
-        <label className="flex flex-col gap-2">
-          <span className="text-[13px] font-medium text-ink-secondary dark:text-ink-dark-secondary">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-6">
+      <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
+        <label className="flex flex-col gap-1.5 sm:gap-2">
+          <span className="text-[12px] sm:text-[13px] font-medium text-ink-secondary dark:text-ink-dark-secondary">
             Name
           </span>
 
@@ -58,12 +58,12 @@ export default function ContactForm() {
             required
             placeholder="Your name"
             disabled={status === "submitting"}
-            className="rounded-apple-sm border border-line bg-surface-card px-4 py-3 text-[15px] text-ink outline-none transition-colors focus:border-accent disabled:cursor-not-allowed disabled:opacity-60 dark:border-line-dark dark:bg-surface-dark-card dark:text-ink-dark dark:focus:border-accent-dark"
+            className="rounded-xl border border-line/80 bg-surface-alt/50 px-3.5 py-2.5 sm:px-4 sm:py-3 text-[14px] sm:text-[15px] text-ink outline-none transition-all focus:border-ink dark:focus:border-white focus:bg-surface-card dark:focus:bg-surface-dark-card disabled:cursor-not-allowed disabled:opacity-60 dark:border-line-dark/80 dark:bg-surface-dark-alt/50 dark:text-ink-dark"
           />
         </label>
 
-        <label className="flex flex-col gap-2">
-          <span className="text-[13px] font-medium text-ink-secondary dark:text-ink-dark-secondary">
+        <label className="flex flex-col gap-1.5 sm:gap-2">
+          <span className="text-[12px] sm:text-[13px] font-medium text-ink-secondary dark:text-ink-dark-secondary">
             Email
           </span>
 
@@ -73,31 +73,31 @@ export default function ContactForm() {
             required
             placeholder="you@company.com"
             disabled={status === "submitting"}
-            className="rounded-apple-sm border border-line bg-surface-card px-4 py-3 text-[15px] text-ink outline-none transition-colors focus:border-accent disabled:cursor-not-allowed disabled:opacity-60 dark:border-line-dark dark:bg-surface-dark-card dark:text-ink-dark dark:focus:border-accent-dark"
+            className="rounded-xl border border-line/80 bg-surface-alt/50 px-3.5 py-2.5 sm:px-4 sm:py-3 text-[14px] sm:text-[15px] text-ink outline-none transition-all focus:border-ink dark:focus:border-white focus:bg-surface-card dark:focus:bg-surface-dark-card disabled:cursor-not-allowed disabled:opacity-60 dark:border-line-dark/80 dark:bg-surface-dark-alt/50 dark:text-ink-dark"
           />
         </label>
       </div>
 
-      <label className="flex flex-col gap-2">
-        <span className="text-[13px] font-medium text-ink-secondary dark:text-ink-dark-secondary">
+      <label className="flex flex-col gap-1.5 sm:gap-2">
+        <span className="text-[12px] sm:text-[13px] font-medium text-ink-secondary dark:text-ink-dark-secondary">
           Message
         </span>
 
         <textarea
           name="message"
           required
-          rows={6}
+          rows={4}
           placeholder="What are you building?"
           disabled={status === "submitting"}
-          className="resize-none rounded-apple-sm border border-line bg-surface-card px-4 py-3 text-[15px] text-ink outline-none transition-colors focus:border-accent disabled:cursor-not-allowed disabled:opacity-60 dark:border-line-dark dark:bg-surface-dark-card dark:text-ink-dark dark:focus:border-accent-dark"
+          className="resize-none rounded-xl border border-line/80 bg-surface-alt/50 px-3.5 py-2.5 sm:px-4 sm:py-3 text-[14px] sm:text-[15px] text-ink outline-none transition-all focus:border-ink dark:focus:border-white focus:bg-surface-card dark:focus:bg-surface-dark-card disabled:cursor-not-allowed disabled:opacity-60 dark:border-line-dark/80 dark:bg-surface-dark-alt/50 dark:text-ink-dark"
         />
       </label>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+      <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-4 pt-1">
         <button
           type="submit"
           disabled={status === "submitting"}
-          className="inline-flex min-w-[160px] items-center justify-center rounded-full bg-ink px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_35px_-18px_rgba(0,0,0,0.45)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none dark:bg-white dark:text-black"
+          className="self-start w-fit inline-flex items-center justify-center rounded-full bg-ink px-4 sm:px-6 py-2 sm:py-2.5 text-[12.5px] sm:text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_35px_-18px_rgba(0,0,0,0.45)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none dark:bg-white dark:text-black"
         >
           {status === "submitting" ? "Sending…" : "Send message"}
         </button>

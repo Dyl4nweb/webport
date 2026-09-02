@@ -15,13 +15,19 @@ export default function SmoothScroll() {
   const rafRef = useRef<number>(0);
 
   useEffect(() => {
+    // If on admin, do not initialize Lenis at all, and destroy if existing
+    if (pathname.startsWith("/admin")) {
+      if (lenisRef.current) {
+        lenisRef.current.destroy();
+        lenisRef.current = null;
+        delete window.__lenis;
+      }
+      return;
+    }
+
     if (typeof history !== "undefined" && "scrollRestoration" in history) {
       history.scrollRestoration = "manual";
     }
-    window.scrollTo(0, 0);
-    if (document.documentElement) document.documentElement.scrollTop = 0;
-
-    let destroyed = false;
 
     // Never hijack touch scrolling on mobile / touch devices.
     // Native GPU momentum scrolling is 120Hz/60Hz, instant, and zero-latency.
@@ -33,6 +39,8 @@ export default function SmoothScroll() {
     if (isTouch) {
       return;
     }
+
+    let destroyed = false;
 
     const rafId = requestAnimationFrame(async () => {
       const { default: Lenis } = await import("lenis");
@@ -68,23 +76,6 @@ export default function SmoothScroll() {
         delete window.__lenis;
       }
     };
-  }, []);
-
-  const prevPath = useRef(pathname);
-  useEffect(() => {
-    if (prevPath.current === pathname) return;
-    prevPath.current = pathname;
-
-    const lenis = lenisRef.current;
-    if (!lenis) return;
-
-    lenis.stop();
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-
-    requestAnimationFrame(() => {
-      lenis.start();
-    });
   }, [pathname]);
 
   return null;

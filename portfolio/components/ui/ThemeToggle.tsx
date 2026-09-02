@@ -2,8 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import { cn } from "@/lib/utils";
 
 type Theme = "light" | "dark";
+
+interface ThemeToggleProps {
+  className?: string;
+}
 
 function getInitialTheme(): Theme {
   if (typeof window === "undefined") return "light";
@@ -14,7 +19,7 @@ function getInitialTheme(): Theme {
     : "light";
 }
 
-export default function ThemeToggle() {
+export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
   const [isDark, setIsDark] = useState(false);
   const [mounted, setMounted] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -56,17 +61,21 @@ export default function ThemeToggle() {
       return;
     }
 
-    // Exact toggle button center coordinates in viewport percentages (immune to DPI / browser zoom)
+    // Exact toggle button center coordinates and maximum corner hypotenuse radius
     const rect = buttonEl.getBoundingClientRect();
     const x = rect.left + rect.width / 2;
     const y = rect.top + rect.height / 2;
-
-    const xPct = ((x / window.innerWidth) * 100).toFixed(2) + "%";
-    const yPct = ((y / window.innerHeight) * 100).toFixed(2) + "%";
+    const endRadius = Math.ceil(
+      Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      )
+    );
 
     const root = document.documentElement;
-    root.style.setProperty("--view-tx", xPct);
-    root.style.setProperty("--view-ty", yPct);
+    root.style.setProperty("--view-tx", `${x.toFixed(1)}px`);
+    root.style.setProperty("--view-ty", `${y.toFixed(1)}px`);
+    root.style.setProperty("--view-tr", `${endRadius}px`);
 
     // State sync helper with synchronous commit for glitch-free snapshot capture
     const applyTheme = () => {
@@ -85,10 +94,12 @@ export default function ThemeToggle() {
     let unlockTimer: ReturnType<typeof setTimeout> | undefined;
     const unlock = () => {
       if (unlockTimer) clearTimeout(unlockTimer);
-      root.classList.remove("theme-swap");
-      root.style.removeProperty("--view-tx");
-      root.style.removeProperty("--view-ty");
-      animatingRef.current = false;
+      requestAnimationFrame(() => {
+        root.classList.remove("theme-swap");
+        root.style.removeProperty("--view-tx");
+        root.style.removeProperty("--view-ty");
+        animatingRef.current = false;
+      });
     };
 
     const reduceMotion =
@@ -103,6 +114,28 @@ export default function ThemeToggle() {
           applyTheme();
         });
 
+        if (transition.ready) {
+          transition.ready.then(() => {
+            root.classList.remove("theme-swap");
+            try {
+              document.documentElement.animate(
+                {
+                  clipPath: [
+                    `circle(0px at ${x.toFixed(1)}px ${y.toFixed(1)}px)`,
+                    `circle(${endRadius}px at ${x.toFixed(1)}px ${y.toFixed(1)}px)`,
+                  ],
+                },
+                {
+                  duration: 1450,
+                  easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+                  pseudoElement: "::view-transition-new(root)",
+                  fill: "forwards",
+                }
+              );
+            } catch {}
+          });
+        }
+
         transition.finished.then(unlock, unlock);
 
         // Safety net
@@ -111,7 +144,7 @@ export default function ThemeToggle() {
             transition.skipTransition();
           } catch {}
           unlock();
-        }, 2200);
+        }, 2600);
       } catch {
         applyTheme();
         unlock();
@@ -127,7 +160,11 @@ export default function ThemeToggle() {
   if (!mounted) {
     return (
       <div
-        className="h-8 w-8 min-[350px]:h-8.5 min-[350px]:w-8.5 min-[400px]:h-9 min-[400px]:w-9 sm:h-9.5 sm:w-9.5 rounded-full flex-shrink-0"
+        className={cn(
+          "flex items-center justify-center rounded-full shrink-0",
+          "w-[32px] h-[32px] min-[380px]:w-[35px] min-[380px]:h-[35px] sm:w-[39px] sm:h-[39px] md:w-[43px] md:h-[43px]",
+          className
+        )}
         aria-hidden="true"
       />
     );
@@ -142,28 +179,30 @@ export default function ThemeToggle() {
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       data-theme-toggle
       onClick={toggleTheme}
-      className={[
-        "group relative flex h-8 w-8 min-[350px]:h-8.5 min-[350px]:w-8.5 min-[400px]:h-9 min-[400px]:w-9 sm:h-9.5 sm:w-9.5 items-center justify-center rounded-full flex-shrink-0",
+      className={cn(
+        "group relative flex items-center justify-center rounded-full shrink-0 cursor-pointer",
+        "w-[32px] h-[32px] min-[380px]:w-[35px] min-[380px]:h-[35px] sm:w-[39px] sm:h-[39px] md:w-[43px] md:h-[43px]",
         "select-none touch-manipulation [-webkit-tap-highlight-color:transparent]",
-        "text-ink/80 dark:text-ink-dark/90 hover:text-ink dark:hover:text-white",
-        "bg-transparent hover:bg-black/[0.06] dark:hover:bg-white/[0.10]",
-        "active:scale-90 transition-all duration-200 ease-out",
+        "text-ink-secondary dark:text-ink-dark-secondary hover:text-ink dark:hover:text-ink-dark",
+        "hover:bg-black/[0.05] dark:hover:bg-white/[0.08]",
+        "active:scale-95 transition-[background-color,color,transform,box-shadow] duration-200 ease-out",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:focus-visible:ring-accent-dark",
-      ].join(" ")}
+        className
+      )}
     >
       <span
-        className={[
+        className={cn(
           "flex items-center justify-center transform-gpu will-change-transform",
-          "transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
-          isDark ? "rotate-180" : "rotate-0",
-        ].join(" ")}
+          "transition-transform duration-600 ease-[cubic-bezier(0.2,0.8,0.2,1)]",
+          isDark ? "rotate-180" : "rotate-0"
+        )}
       >
         <svg
           width="20"
           height="20"
           viewBox="0 0 24 24"
           fill="none"
-          className="w-[16.5px] h-[16.5px] min-[350px]:w-[18px] min-[350px]:h-[18px] min-[400px]:w-[19px] min-[400px]:h-[19px] sm:w-[20px] sm:h-[20px] transition-transform duration-300 group-hover:scale-110"
+          className="w-[16px] h-[16px] min-[380px]:w-[17px] min-[380px]:h-[17px] sm:w-[19px] sm:h-[19px] md:w-[20px] md:h-[20px] transition-transform duration-300 ease-out group-hover:scale-105"
           aria-hidden="true"
         >
           {/* Outer Circle Boundary Ring */}

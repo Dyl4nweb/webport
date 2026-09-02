@@ -8,13 +8,13 @@ export const experience: ExperienceItem[] = [
     end: "Present",
     location: "Remote",
     summary:
-      "Designed and built Motus end-to-end — a fitness analytics platform that turns raw workout data into one clear daily recommendation instead of a wall of charts.",
+      "Designed and built Motus end-to-end — a minimalist habit tracking platform that helps users build daily consistency with streak momentum, Pomodoro focus sessions, and progress analytics.",
     highlights: [
-      "Built the full stack solo: data model, sync logic, and the entire frontend.",
-      "Designed the interface to disappear — one recommendation a day, not forty metrics.",
-      "Deployed and maintain the product in production on Vercel.",
+      "Built the full stack solo: habit data models, streak calculation engine, and responsive UI.",
+      "Engineered built-in Pomodoro focus timers, milestone badges, and freeze protection mechanics.",
+      "Deployed and maintain the product in production on Vercel with PostgreSQL Row Level Security.",
     ],
-    stack: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS", "Vercel"],
+    stack: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS", "PostgreSQL", "Vercel"],
   },
   {
     company: "Local Government Unit — OJT Rotation",

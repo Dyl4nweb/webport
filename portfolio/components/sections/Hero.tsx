@@ -34,77 +34,130 @@ const socialIcons: Record<string, React.ReactNode> = {
 };
 
 const roles = [
+  "Software Engineer",
   "Tech Enthusiast",
   "Full Stack Developer",
-  "Software Engineer",
   "Info Tech Support",
   "Graphic Designer"
 ];
 
-const TYPE_SPEED = 95;
-const DELETE_SPEED = 60;
-const PAUSE_DURATION = 3000;
+const TYPE_SPEED = 80;
+const DELETE_SPEED = 40;
+const PAUSE_DURATION = 3500; // Mananatiling nakatigil (stuck) nang 3.5 seconds bago burahin!
+const PAUSE_BEFORE_NEXT = 500; // 0.5s pause bago mag-type ng susunod na role
 
-function HeroTypewriter() {
+const HeroTypewriter = memo(function HeroTypewriter() {
   const [text, setText] = useState("");
-  const phaseRef = useRef<"typing" | "pausing" | "deleting">("typing");
+  const phaseRef = useRef<"typing" | "deleting">("typing");
   const roleIndexRef = useRef(0);
   const displayLenRef = useRef(0);
 
   useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let fallbackId: ReturnType<typeof setTimeout> | null = null;
+    let isCancelled = false;
+    let hasStarted = false;
+
+    // Reset typing state on every mount so navigating back to Home always restarts cleanly
+    phaseRef.current = "typing";
+    roleIndexRef.current = 0;
+    displayLenRef.current = 0;
+    setText("");
 
     function tick() {
+      if (isCancelled) return;
+
       const currentRole = roles[roleIndexRef.current];
       const phase = phaseRef.current;
       const len = displayLenRef.current;
 
       if (phase === "typing") {
         if (len < currentRole.length) {
-          displayLenRef.current = len + 1;
-          setText(currentRole.slice(0, len + 1));
-          timeout = setTimeout(tick, TYPE_SPEED);
+          const nextLen = len + 1;
+          displayLenRef.current = nextLen;
+          setText(currentRole.slice(0, nextLen));
+
+          // Kapag nabuo na ang buong salita, mag-stuck / mag-pause nang 3.5 seconds bago simulang burahin!
+          if (nextLen === currentRole.length) {
+            phaseRef.current = "deleting";
+            timeoutId = setTimeout(tick, PAUSE_DURATION);
+            return;
+          }
+
+          timeoutId = setTimeout(tick, TYPE_SPEED);
           return;
         }
-        phaseRef.current = "pausing";
-        timeout = setTimeout(tick, PAUSE_DURATION);
-        return;
       }
 
-      if (phase === "pausing") {
-        phaseRef.current = "deleting";
-        timeout = setTimeout(tick, 0);
+      // Deleting phase
+      if (phase === "deleting") {
+        if (len > 0) {
+          const nextLen = len - 1;
+          displayLenRef.current = nextLen;
+          setText(currentRole.slice(0, nextLen));
+          timeoutId = setTimeout(tick, DELETE_SPEED);
+          return;
+        }
+
+        // Nabura na nang buo: lilipat sa susunod na role pagkatapos ng 500ms
+        roleIndexRef.current = (roleIndexRef.current + 1) % roles.length;
+        phaseRef.current = "typing";
+        timeoutId = setTimeout(tick, PAUSE_BEFORE_NEXT);
         return;
       }
-
-      if (len > 0) {
-        displayLenRef.current = len - 1;
-        setText(currentRole.slice(0, len - 1));
-        timeout = setTimeout(tick, DELETE_SPEED);
-        return;
-      }
-
-      roleIndexRef.current = (roleIndexRef.current + 1) % roles.length;
-      phaseRef.current = "typing";
-      timeout = setTimeout(tick, TYPE_SPEED);
     }
 
-    timeout = setTimeout(tick, PAUSE_DURATION);
-    return () => clearTimeout(timeout);
+    function startTyping() {
+      if (isCancelled || hasStarted) return;
+      hasStarted = true;
+      timeoutId = setTimeout(tick, 100);
+    }
+
+    const appMain = document.getElementById("app-main");
+    if (!appMain || appMain.classList.contains("is-ready")) {
+      startTyping();
+    } else {
+      const observer = new MutationObserver(() => {
+        if (appMain.classList.contains("is-ready")) {
+          observer.disconnect();
+          if (fallbackId) clearTimeout(fallbackId);
+          startTyping();
+        }
+      });
+
+      observer.observe(appMain, { attributes: true, attributeFilter: ["class"] });
+      fallbackId = setTimeout(() => {
+        observer.disconnect();
+        startTyping();
+      }, 1500);
+
+      return () => {
+        isCancelled = true;
+        observer.disconnect();
+        if (fallbackId) clearTimeout(fallbackId);
+        if (timeoutId) clearTimeout(timeoutId);
+      };
+    }
+
+    return () => {
+      isCancelled = true;
+      if (fallbackId) clearTimeout(fallbackId);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, []);
 
   return (
-    <div className="mt-6 flex h-8 items-center justify-center sm:mt-7">
-      <span className="inline-flex items-center font-mono text-[16px] font-medium tracking-tight text-accent dark:text-accent-dark sm:text-[18px]">
+    <div className="mt-6 flex h-9 items-center justify-center sm:mt-7">
+      <span className="inline-flex items-center font-mono text-[17px] min-[360px]:text-[19px] font-medium tracking-tight text-accent dark:text-accent-dark sm:text-[21px]">
         <span>{text}</span>
         <span
           aria-hidden="true"
-          className="ml-1.5 h-[19px] w-[8px] shrink-0 animate-pulse bg-accent dark:bg-accent-dark"
+          className="ml-2 h-[22px] w-[9px] shrink-0 animate-pulse bg-accent dark:bg-accent-dark"
         />
       </span>
     </div>
   );
-}
+});
 
 const DotGrid = memo(function DotGrid() {
   return (
@@ -142,7 +195,6 @@ function HeroName({ onOpenCard }: { onOpenCard: () => void }) {
   const [displayName, setDisplayName] = useState(originalName);
   const [isScrambling, setIsScrambling] = useState(false);
   const animRef = useRef<number | null>(null);
-  const hasTriggeredInitial = useRef(false);
 
   const handleScramble = useCallback(() => {
     if (animRef.current) cancelAnimationFrame(animRef.current);
@@ -180,10 +232,12 @@ function HeroName({ onOpenCard }: { onOpenCard: () => void }) {
 
   // Synchronize effect to play visibly when the hero page is revealed (after splash screen)
   useEffect(() => {
+    let timerId: ReturnType<typeof setTimeout> | null = null;
+    let isCancelled = false;
+
     function startEffect() {
-      if (hasTriggeredInitial.current) return;
-      hasTriggeredInitial.current = true;
-      setTimeout(() => {
+      if (isCancelled) return;
+      timerId = setTimeout(() => {
         handleScramble();
       }, 150);
     }
@@ -191,23 +245,32 @@ function HeroName({ onOpenCard }: { onOpenCard: () => void }) {
     const appMain = document.getElementById("app-main");
     if (!appMain || appMain.classList.contains("is-ready")) {
       startEffect();
-      return;
-    }
+    } else {
+      const observer = new MutationObserver(() => {
+        if (appMain.classList.contains("is-ready")) {
+          observer.disconnect();
+          startEffect();
+        }
+      });
 
-    const observer = new MutationObserver(() => {
-      if (appMain.classList.contains("is-ready")) {
+      observer.observe(appMain, { attributes: true, attributeFilter: ["class"] });
+      const fallback = setTimeout(() => {
         observer.disconnect();
         startEffect();
-      }
-    });
+      }, 1500);
 
-    observer.observe(appMain, { attributes: true, attributeFilter: ["class"] });
-
-    const fallback = setTimeout(startEffect, 2000);
+      return () => {
+        isCancelled = true;
+        observer.disconnect();
+        clearTimeout(fallback);
+        if (timerId) clearTimeout(timerId);
+        if (animRef.current) cancelAnimationFrame(animRef.current);
+      };
+    }
 
     return () => {
-      observer.disconnect();
-      clearTimeout(fallback);
+      isCancelled = true;
+      if (timerId) clearTimeout(timerId);
       if (animRef.current) cancelAnimationFrame(animRef.current);
     };
   }, [handleScramble]);
@@ -284,7 +347,7 @@ export default function Hero() {
         <div className="flex w-full max-w-5xl flex-col items-center">
           {/* Social Links Bar positioned with generous spacing above tap this / Hero */}
           <div
-            className="mb-7 sm:mb-10 md:mb-12 flex items-center justify-center gap-2 sm:gap-3 animate-fadeUp z-20"
+            className="mb-8 sm:mb-10 md:mb-12 flex items-center justify-center gap-2.5 sm:gap-3.5 animate-fadeUp z-20"
             style={{ animationDelay: "60ms" }}
           >
             {socialLinks.map((link) => (
@@ -295,7 +358,7 @@ export default function Hero() {
                 rel="noreferrer"
                 title={link.label}
                 aria-label={link.label}
-                className="group flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full text-ink-secondary/70 transition-all duration-200 hover:-translate-y-0.5 hover:bg-black/[0.06] hover:text-ink dark:text-ink-dark-secondary/70 dark:hover:bg-white/[0.1] dark:hover:text-ink-dark"
+                className="group flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full text-ink-secondary/75 transition-all duration-200 hover:-translate-y-0.5 hover:bg-black/[0.06] hover:text-ink dark:text-ink-dark-secondary/75 dark:hover:bg-white/[0.1] dark:hover:text-ink-dark"
               >
                 <span className="transition-transform duration-200 group-hover:scale-110">
                   {socialIcons[link.icon]}
@@ -304,7 +367,7 @@ export default function Hero() {
             ))}
           </div>
 
-          <h1 className="relative w-full text-balance animate-fadeUp text-[30px] min-[360px]:text-[34px] min-[400px]:text-[40px] sm:text-[60px] md:text-[88px] lg:text-[108px] font-bold leading-[0.96] tracking-[-0.05em] text-ink dark:text-ink-dark">
+          <h1 className="relative w-full text-balance animate-fadeUp text-[40px] min-[360px]:text-[48px] min-[400px]:text-[56px] sm:text-[68px] md:text-[88px] lg:text-[108px] font-bold leading-[0.96] tracking-[-0.05em] text-ink dark:text-ink-dark">
             <span className="inline-flex items-baseline justify-center whitespace-nowrap">
               <HeroName onOpenCard={openCard} />
               <span className="text-ink-tertiary transition-colors duration-300 dark:text-ink-dark-secondary select-none" aria-hidden="true">
@@ -328,14 +391,22 @@ export default function Hero() {
           <HeroTypewriter />
 
           <div
-            className="mt-8 flex w-full animate-fadeUp flex-col items-center justify-center gap-3 sm:mt-10 sm:w-auto sm:flex-row"
+            className="mt-7 sm:mt-10 flex w-auto animate-fadeUp flex-row items-center justify-center gap-2.5 sm:gap-3.5"
             style={{ animationDelay: "180ms" }}
           >
-            <Button href="/resume" variant="primary">
+            <Button
+              href="/resume"
+              variant="primary"
+              className="w-auto px-5 py-2.5 sm:px-7 sm:py-3 text-[13.5px] sm:text-[14px]"
+            >
               View Resume
             </Button>
 
-            <Button href="/contact" variant="secondary">
+            <Button
+              href="/contact"
+              variant="secondary"
+              className="w-auto px-5 py-2.5 sm:px-7 sm:py-3 text-[13.5px] sm:text-[14px]"
+            >
               Get in touch
             </Button>
           </div>

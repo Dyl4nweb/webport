@@ -2,278 +2,12 @@ import { Project } from "@/types";
 
 export const projects: Project[] = [
   {
-    slug: "motus",
-    name: "Motus",
-    tagline: "Movement tracking, reimagined.",
-    description:
-      "A fitness analytics platform that turns raw workout data into a coaching voice athletes actually trust.",
-    role: "Lead Product Engineer",
-    year: "2026 — Present",
-    category: "Web App",
-    image: "/images/projects/motus.png",
-    screenshots: [
-      {
-        src: "/images/projects/motus-1.png",
-        title: "Daily coaching feed",
-        description:
-          "One clear training recommendation surfaced each day instead of forty charts.",
-      },
-      {
-        src: "/images/projects/motus-2.png",
-        title: "Training load overview",
-        description:
-          "Real-time wearable data unified into a single model for smarter session planning.",
-      },
-      {
-        src: "/images/projects/motus-3.png",
-        title: "Performance trends",
-        description:
-          "Weekly and monthly views that highlight progress without overwhelming with numbers.",
-      },
-    ],
-    techStack: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS"],
-    liveUrl: "https://motus-tracker.vercel.app",
-    featured: true,
-  },
-  {
-    slug: "varex-ai",
-    name: "Varex AI",
-    tagline: "An assistant for people who read contracts for a living.",
-    description:
-      "An AI-assisted document review tool that helps legal teams find risk in minutes instead of days.",
-    role: "Founding Engineer",
-    year: "2026",
-    category: "Web App",
-    image: "/images/projects/varex-ai.png",
-    screenshots: [
-      {
-        src: "/images/projects/varex-ai-1.png",
-        title: "Risk flagging",
-        description:
-          "Clauses that deviate from a firm's playbook are highlighted with plain-language explanations.",
-      },
-      {
-        src: "/images/projects/varex-ai-2.png",
-        title: "Suggested redlines",
-        description:
-          "One-click redline suggestions reviewed and approved by a human before anything ships.",
-      },
-      {
-        src: "/images/projects/varex-ai-3.png",
-        title: "Review dashboard",
-        description:
-          "At-a-glance status for every document in the pipeline, from upload to signed off.",
-      },
-    ],
-    techStack: ["Next.js", "TypeScript", "OpenRouter API", "Tailwind CSS"],
-    liveUrl: "https://varexai.vercel.app",
-    featured: true,
-  },
-  {
-    slug: "brew-bloom",
-    name: "Brew & Bloom Coffee Co.",
-    tagline: "Craft Coffee, Cozy Vibes.",
-    description:
-      "A warm, responsive coffee shop landing page designed to showcase specialty drinks, fresh pastries, location details, and a QR-powered digital menu.",
-    role: "Frontend Developer",
-    year: "2026",
-    category: "Landing Page",
-    image: "/images/projects/brew-bloom.png",
-    screenshots: [
-      {
-        src: "/images/projects/brew-bloom-1.png",
-        title: "Warm hero experience",
-        description:
-          "A welcoming hero section with a clear menu call-to-action, cozy coffee-shop imagery, and a hand-roasted daily highlight.",
-      },
-      {
-        src: "/images/projects/brew-bloom-2.png",
-        title: "QR-powered menu",
-        description:
-          "A server-rendered QR code lets customers scan and open the full coffee menu directly from their phone.",
-      },
-      {
-        src: "/images/projects/brew-bloom-3.png",
-        title: "Location and contact",
-        description:
-          "A mobile-friendly location, hours, contact details, and map section makes visiting the shop simple.",
-      },
-    ],
-    techStack: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
-    liveUrl: "https://drcoffeeshop.vercel.app",
-    featured: true,
-  },
-  {
-    slug: "ip-tracker",
-    name: "Ip Tracker",
-    tagline: "Track your IP addresses with ease.",
-    description:
-      "A simple tool to track and manage your IP addresses across different networks.",
-    role: "Design & Engineering",
-    year: "2026",
-    category: "Web App",
-    image: "/images/projects/iptracker.png",
-    screenshots: [
-      {
-        src: "/images/projects/iptracker-1.png",
-        title: "Single-screen lookup",
-        description:
-          "One input, one number. No unnecessary UI competing for attention.",
-      },
-      {
-        src: "/images/projects/iptracker-2.png",
-        title: "Network history",
-        description:
-          "Past lookups stored locally so repeat checks are instant.",
-      },
-    ],
-    techStack: ["Next.js", "TypeScript", "Tailwind CSS", "IPinfo API"],
-    liveUrl: "https://iptrackaddress.vercel.app",
-    featured: true,
-  },
-  {
-    slug: "eims",
-    name: "EIMS",
-    tagline: "Inventory software for teams that hate inventory software.",
-    description:
-      "An enterprise inventory management system rebuilt from the ground up for speed and clarity.",
-    role: "Full-Stack Engineer",
-    year: "2026 — Present",
-    category: "Web App",
-    image: "/images/projects/eims.png",
-    screenshots: [
-      {
-        src: "/images/projects/eims-1.png",
-        title: "Two-step logging",
-        description:
-          "Core flow reduced from eleven clicks to two steps for faster shift handoffs.",
-      },
-      {
-        src: "/images/projects/eims-2.png",
-        title: "Multi-warehouse sync",
-        description:
-          "Real-time inventory across 24 warehouses with zero data loss during peak hours.",
-      },
-      {
-        src: "/images/projects/eims-3.png",
-        title: "Offline mode",
-        description:
-          "Floor staff keep scanning even without a connection — data syncs when back online.",
-      },
-    ],
-    techStack: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS"],
-    featured: false,
-  },
-
-  {
-    slug: "Poster-of-motus-v2",
-    name: "Poster of Motus V2.0",
-    tagline: "Motus v0.2",
-    description:
-      "A social-media-ready pubmat announcing Motus v0.2: focus sessions, breaks, and daily stats — all in one app. Built around bold typography and an energetic color system to drive downloads.",
-    role: "Graphic Designer",
-    year: "2026",
-    category: "Graphic Design",
-    image: "/images/pubmats/motus1.jpg",
-    screenshots: [
-      {
-        src: "/images/pubmats/motus1.jpg",
-        title: "Motus Poster V2.0",
-        description: "The hero layout used across Facebook and IG stories.",
-      },
-      {
-        src: "/images/pubmats/motus2.png",
-        title: "Motus Cover",
-        description: "Video cover for the YouTube promotion of Motus",
-      },
-    ],
-    techStack: ["Canva"],
-    featured: true,
-  },
-  {
-    slug: "varex-ai-cover",
-    name: "Varex AI Cover",
-    tagline: "Futuristic branding for an AI assistant.",
-    description:
-      "A single promotional cover for Varex AI — futuristic interface designed for productivity and development, inspired by next-generation personal assistants.",
-    role: "Graphic Designer",
-    year: "2026",
-    category: "Graphic Design",
-    image: "/images/pubmats/varexaicover.png",
-    screenshots: [
-      {
-        src: "/images/pubmats/varexaicover.png",
-        title: "Varex AI Cover",
-        description: "The hero visual used for the Varex AI promotion.",
-      },
-    ],
-    techStack: ["Canva"],
-    featured: false,
-  },
-  {
-    slug: "linkedin-cover-photo",
-    name: "LinkedIn Cover Photo",
-    tagline: "A professional profile banner.",
-    description:
-      "A wide-format LinkedIn cover photo — clean, modern branding that represents me as a developer and designer.",
-    role: "Graphic Designer",
-    year: "2026",
-    category: "Graphic Design",
-    image: "/images/pubmats/linkedin-cover.png",
-    screenshots: [
-      {
-        src: "/images/pubmats/linkedin-cover.png",
-        title: "LinkedIn Profile Banner",
-        description: "The wide-format hero visual used for the LinkedIn profile.",
-      },
-    ],
-    techStack: ["Canva"],
-    featured: false,
-  },
-  {
-    slug: "portfolio-platform",
-    name: "Portfolio Platform",
-    tagline: "Ideas I've turned into products.",
-    description:
-      "Built my portfolio as a full-stack platform, with the public website backed by a private Admin Dashboard for managing client inquiries, projects, bookings, visitors, analytics, activity, and Gmail integration.",
-    role: "Full-Stack Engineer",
-    year: "2026",
-    category: "Web App",
-    image: "/images/projects/portfolio.png",
-    screenshots: [
-      {
-        src: "/images/projects/portfolio.png",
-        title: "Public Portfolio",
-        description: "The public-facing website showcasing projects and contact.",
-      },
-      {
-        src: "/images/projects/portfolio-2.png",
-        title: "Admin Dashboard",
-        description: "Private dashboard for managing inquiries, bookings, and analytics.",
-      },
-      {
-        src: "/images/projects/portfolio-3.png",
-        title: "Gmail Integration",
-        description: "Unified inbox for viewing client communications directly.",
-      },
-    ],
-    techStack: [
-      "Next.js",
-      "TypeScript",
-      "Supabase",
-      "Tailwind CSS",
-      "Cal.com API",
-      "Gmail API",
-    ],
-    featured: false,
-  },
-  {
     slug: "motus-mobile",
     name: "Motus — Mobile App",
     tagline: "Discipline in motion — habit tracking, streak mechanics, and focus sessions.",
     description:
-      "A luxury dark-themed habit tracking mobile app built offline-first with React Native and Expo, featuring one-tap check-ins, freeze credits, Pomodoro focus sessions, milestone badges, and 70-day consistency heatmaps powered by AsyncStorage.",
-    role: "Software Engineer",
+      "A luxury dark-themed habit tracking mobile app built offline-first with React Native and Expo, featuring one-tap check-ins, freeze credits, Pomodoro focus sessions, milestone badges, and 70-day consistency heatmaps powered by AsyncStorage. Soon releasing on the Google Play Store, with iOS App Store rollout targeted by next month — stay updated!",
+    role: "Lead Mobile Developer",
     year: "2025 — Present",
     category: "Mobile App",
     image: "/images/projects/motus-mobile.png",
@@ -282,7 +16,7 @@ export const projects: Project[] = [
         src: "/images/projects/motus-mobile-1.png",
         title: "Today Protocol & Check-in",
         description:
-          "Morning Protocol greeting, daily habit progress, and one-tap habit logging with freeze credits.",
+          "Morning Protocol greeting, daily habit progress bar, and one-tap habit logging with freeze credits.",
       },
       {
         src: "/images/projects/motus-mobile-2.png",
@@ -298,35 +32,317 @@ export const projects: Project[] = [
       },
     ],
     techStack: ["React Native", "Expo", "TypeScript", "AsyncStorage"],
-    featured: false,
+    featured: true,
+  },
+  {
+    slug: "motus",
+    name: "Motus — Habit Tracker",
+    tagline: "Master your daily routines with distraction-free habit tracking.",
+    description:
+      "A minimal, distraction-free habit tracker web application engineered for speed and daily progress. Features real-time check-ins, Pomodoro focus sessions, habit consistency management, awards, and PostgreSQL Row Level Security.",
+    role: "Lead Full-Stack Engineer",
+    year: "2026 — Present",
+    category: "Web App",
+    image: "/images/projects/motus.png",
+    screenshots: [
+      {
+        src: "/images/projects/motus-1.png",
+        title: "Daily Habit Progress",
+        description:
+          "Clean daily progress tracker with one-tap completion, freeze credits, and habit streak counters.",
+      },
+      {
+        src: "/images/projects/motus-2.png",
+        title: "Pomodoro Focus Timer",
+        description:
+          "Integrated interval timer for Focus sessions (25:00), Short Breaks, and Long Breaks.",
+      },
+      {
+        src: "/images/projects/motus-3.png",
+        title: "Habit Management",
+        description:
+          "Organized habit directory to create, manage, and track individual active habits.",
+      },
+    ],
+    techStack: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS", "PostgreSQL"],
+    liveUrl: "https://motus-tracker.vercel.app",
+    featured: true,
+  },
+  {
+    slug: "varex-ai",
+    name: "Varex AI",
+    tagline: "Virtual Autonomous Reasoning & Execution System.",
+    description:
+      "A futuristic AI assistant web application with a cybernetic command interface. Features voice speech recognition, real-time AI reasoning, speech synthesis, and dark sci-fi HUD styling.",
+    role: "Founding Engineer",
+    year: "2026",
+    category: "Web App",
+    image: "/images/projects/varex-ai.png",
+    screenshots: [
+      {
+        src: "/images/projects/varex-ai.png",
+        title: "System Initialization",
+        description:
+          "Cybernetic boot sequence calibrating neural pathways, voice matrix, and secure connection.",
+      },
+      {
+        src: "/images/projects/varex-ai-1.png",
+        title: "Voice & Command Console",
+        description:
+          "Interactive AI terminal with microphone speech input, conversational reasoning, and command execution.",
+      },
+    ],
+    techStack: ["Next.js", "TypeScript", "OpenRouter API", "Tailwind CSS", "Web Speech API"],
+    liveUrl: "https://varexai.vercel.app",
+    featured: true,
+  },
+  {
+    slug: "brew-bloom",
+    name: "Brew & Bloom Coffee Co.",
+    tagline: "Craft Coffee, Cozy Vibes.",
+    description:
+      "A warm, responsive coffee shop landing page designed to showcase specialty single-origin coffee, fresh in-house pastries, café story, and location details with QR digital menu integration.",
+    role: "Frontend Developer",
+    year: "2026",
+    category: "Landing Page",
+    image: "/images/projects/brew-bloom-1.png",
+    screenshots: [
+      {
+        src: "/images/projects/brew-bloom-1.png",
+        title: "Warm Hero Experience",
+        description:
+          "Welcoming hero section with menu call-to-actions, hand-roasted daily highlights, and cozy cafe vibes.",
+      },
+      {
+        src: "/images/projects/brew-bloom-2.png",
+        title: "Our Story & Roasting",
+        description:
+          "Story section showcasing small-batch roasting, farm-fresh ingredients, and artisan baking.",
+      },
+      {
+        src: "/images/projects/brew-bloom-3.png",
+        title: "Get in Touch & Location",
+        description:
+          "Responsive contact cards with direct email, phone call links, and physical store hours.",
+      },
+    ],
+    techStack: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
+    liveUrl: "https://drcoffeeshop.vercel.app",
+    featured: true,
+  },
+  {
+    slug: "ip-tracker",
+    name: "IP Tracker",
+    tagline: "Real-time IP geolocation and network intelligence tool.",
+    description:
+      "A sleek cybersecurity-themed IP geolocation web app. Look up any IP address to inspect ISP provider, city, region, coordinates, timezone, and interactive Leaflet map rendering.",
+    role: "Design & Engineering",
+    year: "2026",
+    category: "Web App",
+    image: "/images/projects/iptracker.png",
+    screenshots: [
+      {
+        src: "/images/projects/iptracker.png",
+        title: "Access Portal & Home Page",
+        description:
+          "High-security password-gated home page entry screen with cybernetic neon glow.",
+      },
+      {
+        src: "/images/projects/iptracker-1.png",
+        title: "IP Geolocation Dashboard",
+        description:
+          "Live query dashboard displaying ISP details, coordinate breakdown, and interactive Leaflet map.",
+      },
+    ],
+    techStack: ["Next.js", "TypeScript", "Tailwind CSS", "Leaflet", "IPinfo API"],
+    liveUrl: "https://iptrackaddress.vercel.app",
+    featured: true,
   },
   {
     slug: "pantry-to-plate",
     name: "Filipino Pantry to Plate",
     tagline: "Walang tapon, walang sayang. Sagot ka ng Kusina.",
     description:
-      "Tuklasin ang mga masasarap at abot-kayang pagkaing Pinoy gamit lamang ang mga sangkap na nasa kusina mo na ngayon—kahit walang internet o mobile load.",
-    role: "Lead - Front End Developer",
+      "Isang zero-waste Pinoy recipe discovery web app at offline-ready PWA na 100% libre at walang database. Pumili o mag-type ng mga tirang sangkap sa ref o kusina (bahaw, sardinas, itlog, gulay) para agad makahanap ng mga masasarap na lutuing Pinoy kahit walang internet o mobile load.",
+    role: "Lead Front-End Developer",
     year: "2026",
-    category: "Landing Page",
+    category: "Web App",
     image: "/images/projects/pantry.png",
     screenshots: [
       {
+        src: "/images/projects/pantry.png",
+        title: "Zero-Waste Home Page",
+        description:
+          "Offline-ready landing and hero banner promoting zero food waste with instant recipe matching.",
+      },
+      {
         src: "/images/projects/pantry-1.png",
-        title: "Pantry to Plate",
-        description: "Mobile-friendly recipe discovery interface.",
+        title: "Pinoy Recipe Matcher",
+        description:
+          "Interactive ingredient selector by protein, gulay, and carbs/tira to match Filipino recipes.",
       },
     ],
-    techStack: ["Next.js", "Tailwind CSS", "TypeScript"],
+    techStack: ["Next.js", "TypeScript", "Tailwind CSS", "PWA / Offline Storage"],
     liveUrl: "https://filipino-pantrymate.vercel.app/",
+    featured: false,
+  },
+  {
+    slug: "eims",
+    name: "EMPLINFOMASYS (EIMS)",
+    tagline: "Enterprise workforce, attendance, and payroll management system.",
+    description:
+      "A comprehensive Employee Information Management System (EMPLINFOMASYS) designed for enterprise administrative operations. Features centralized employee directory records, attendance tracking, automated payroll calculations with payslip generation, and employee leave request processing.",
+    role: "Full-Stack Engineer",
+    year: "2026",
+    category: "Web App",
+    image: "/images/projects/eims.png",
+    screenshots: [
+      {
+        src: "/images/projects/eims.png",
+        title: "Secure Access Portal",
+        description:
+          "Enterprise authentication portal for secure workforce and administrative access.",
+      },
+      {
+        src: "/images/projects/eims-1.png",
+        title: "Admin Dashboard",
+        description:
+          "Executive overview showing total employees, active/inactive count, pending leaves, and recent staff.",
+      },
+      {
+        src: "/images/projects/eims-2.png",
+        title: "Payroll Management",
+        description:
+          "Compensation tracking with total disbursed salary, pending amounts, and pay slip generation.",
+      },
+      {
+        src: "/images/projects/eims-3.png",
+        title: "Leave Requests",
+        description:
+          "Interactive leave application approval workflow for sick and vacation leaves.",
+      },
+    ],
+    techStack: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS", "PostgreSQL"],
+    featured: false,
+  },
+  {
+    slug: "portfolio-platform",
+    name: "Portfolio Platform & Admin Suite",
+    tagline: "Full-stack personal portfolio backed by a private real-time admin suite.",
+    description:
+      "A full-stack portfolio platform built with Next.js App Router and Supabase. Includes a private authenticated Admin Dashboard for monitoring real-time visitor analytics, client inquiries, meeting bookings, and Gmail inbox integration.",
+    role: "Full-Stack Engineer",
+    year: "2026",
+    category: "Web App",
+    image: "/images/projects/portfolio.png",
+    screenshots: [
+      {
+        src: "/images/projects/portfolio.png",
+        title: "Public Portfolio",
+        description: "Modern dark-mode public website showcasing selected work, tech stack, and contact integrations.",
+      },
+      {
+        src: "/images/projects/portfolio-2.png",
+        title: "Admin Dashboard",
+        description: "Real-time command center for visitor tracking, page views, inquiry conversion, and system stats.",
+      },
+      {
+        src: "/images/projects/portfolio-3.png",
+        title: "Analytics & Insights",
+        description: "Privacy-friendly analytics tracking 14-day page view trends, device distribution, and top referrers.",
+      },
+    ],
+    techStack: [
+      "Next.js",
+      "TypeScript",
+      "Supabase",
+      "Tailwind CSS",
+      "Cal.com API",
+      "Gmail API",
+    ],
+    liveUrl: "https://www.dylanramos.site",
+    featured: false,
+  },
+  {
+    slug: "Poster-of-motus-v2",
+    name: "Poster of Motus V2.0",
+    tagline: "Promotional pubmat for Motus v0.2 Pomodoro release.",
+    description:
+      "A social-media marketing poster and YouTube cover design announcing the Motus v0.2 Pomodoro update. Built around bold typography, vibrant energetic color palette, and QR code download callouts.",
+    role: "Graphic Designer",
+    year: "2026",
+    category: "Graphic Design",
+    image: "/images/pubmats/motus1.jpg",
+    screenshots: [
+      {
+        src: "/images/pubmats/motus1.jpg",
+        title: "Motus Poster V2.0",
+        description: "Mobile-framed pubmat design announcing Pomodoro feature release with QR code link.",
+      },
+      {
+        src: "/images/pubmats/motus2.png",
+        title: "Motus Cover & Feature Showcase",
+        description: "Full-stack habit tracker showcase graphic highlighting Next.js, Supabase, and Tailwind tech stack.",
+      },
+    ],
+    techStack: ["Canva", "Photoshop"],
+    featured: true,
+  },
+  {
+    slug: "varex-ai-cover",
+    name: "Varex AI Promo & Branding",
+    tagline: "Futuristic cybernetic branding for an AI assistant.",
+    description:
+      "Promotional banner and visual assets designed for Varex AI, showcasing the cybernetic aesthetic, voice interface console, and GCash prompt unlock integration.",
+    role: "Graphic Designer",
+    year: "2026",
+    category: "Graphic Design",
+    image: "/images/pubmats/varexaicover.png",
+    screenshots: [
+      {
+        src: "/images/pubmats/varexaicover.png",
+        title: "Varex AI Promo Banner",
+        description: "Full-stack Next.js AI assistant branding showcasing conversational UI and GCash payment flow.",
+      },
+    ],
+    techStack: ["Canva", "Figma"],
+    featured: false,
+  },
+  {
+    slug: "linkedin-cover-photo",
+    name: "LinkedIn Cover Photo",
+    tagline: "Minimalist developer & engineer profile banner.",
+    description:
+      "A sleek, dark desk aesthetic banner for LinkedIn featuring professional contact details, title badge, and scannable portfolio QR code.",
+    role: "Graphic Designer",
+    year: "2026",
+    category: "Graphic Design",
+    image: "/images/pubmats/linkedin-cover.png",
+    screenshots: [
+      {
+        src: "/images/pubmats/linkedin-cover.png",
+        title: "LinkedIn Profile Banner",
+        description: "High-resolution header visual with contact information and portfolio QR badge.",
+      },
+    ],
+    techStack: ["Canva"],
     featured: false,
   },
 ];
 
 export function getFeaturedProjects(): Project[] {
-  return projects.filter((p) => p.featured);
+  const featured = projects.filter((p) => p.featured || p.slug === "motus-mobile");
+  return featured.sort((a, b) => {
+    const aIsMobile = a.slug === "motus-mobile" || a.category === "Mobile App";
+    const bIsMobile = b.slug === "motus-mobile" || b.category === "Mobile App";
+    if (aIsMobile && !bIsMobile) return -1;
+    if (!aIsMobile && bIsMobile) return 1;
+    return 0;
+  });
 }
 
 export function getProjectsByCategory(category: string): Project[] {
-  return projects.filter((p) => p.category === category);
+  return projects.filter(
+    (p) => p.category.toLowerCase() === category.toLowerCase()
+  );
 }

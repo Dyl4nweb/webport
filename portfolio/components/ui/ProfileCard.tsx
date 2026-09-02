@@ -111,15 +111,23 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
     [onClose],
   );
 
+  const tiltRafRef = useRef<number | null>(null);
+
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    const rect = cardRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    setTilt({ x: y * -5, y: x * 5 });
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+    if (tiltRafRef.current) cancelAnimationFrame(tiltRafRef.current);
+    tiltRafRef.current = requestAnimationFrame(() => {
+      const rect = cardRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const x = (clientX - rect.left) / rect.width - 0.5;
+      const y = (clientY - rect.top) / rect.height - 0.5;
+      setTilt({ x: y * -5, y: x * 5 });
+    });
   }, []);
 
   const handleMouseLeave = useCallback(() => {
+    if (tiltRafRef.current) cancelAnimationFrame(tiltRafRef.current);
     setTilt({ x: 0, y: 0 });
   }, []);
 

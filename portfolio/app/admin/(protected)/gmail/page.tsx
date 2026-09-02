@@ -268,7 +268,7 @@ function GmailInner() {
             type="button"
             onClick={connect}
             disabled={busy}
-            className="mt-6 inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-6 py-2.5 text-[14px] font-medium text-white shadow-sm transition-all duration-150 hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 disabled:pointer-events-none disabled:opacity-40 dark:bg-accent-dark"
+            className="mt-6 inline-flex items-center justify-center gap-1.5 rounded-full bg-ink px-6 py-2.5 text-[14px] font-medium text-white shadow-sm transition-all duration-150 hover:bg-black hover:opacity-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 disabled:pointer-events-none disabled:opacity-40 dark:bg-white dark:text-black dark:font-semibold dark:hover:bg-white/90 dark:focus-visible:ring-white/50"
           >
             {busy ? "Redirecting…" : "Connect Gmail"}
           </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import Container from "@/components/ui/Container";
 import { projects } from "@/data/projects";
 import { skills } from "@/data/skills";
@@ -14,6 +15,7 @@ interface StatItem {
   suffix?: string;
   padZero?: boolean;
   label: string;
+  href: string;
 }
 
 const CIPHER_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_#*+~";
@@ -117,7 +119,8 @@ function StatCard({
   }, []);
 
   return (
-    <div
+    <Link
+      href={item.href}
       onMouseEnter={triggerAnimation}
       onTouchStart={triggerAnimation}
       className={cn(
@@ -131,14 +134,14 @@ function StatCard({
         "hover:shadow-[0_12px_28px_-10px_rgba(0,0,0,0.12)] sm:hover:shadow-[0_22px_44px_-14px_rgba(0,0,0,0.14)]",
         "dark:shadow-[0_4px_20px_-8px_rgba(0,0,0,0.5)] dark:hover:shadow-[0_16px_40px_-10px_rgba(0,0,0,0.85)]",
         "transition-all duration-300 ease-out",
-        "hover:-translate-y-0.5 sm:hover:-translate-y-1.5 hover:border-black/15 dark:hover:border-white/15",
-        "cursor-default select-none overflow-hidden"
+        "hover:-translate-y-1 sm:hover:-translate-y-2 hover:scale-[1.02] sm:hover:scale-[1.03] active:scale-95 hover:border-black/20 dark:hover:border-white/25",
+        "cursor-pointer select-none overflow-hidden"
       )}
     >
       {/* Subtle hover background highlight */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -inset-px rounded-xl min-[370px]:rounded-2xl sm:rounded-[24px] md:rounded-[28px] opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-white/[0.02]"
+        className="pointer-events-none absolute -inset-px rounded-xl min-[370px]:rounded-2xl sm:rounded-[24px] md:rounded-[28px] opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-white/[0.03]"
       />
 
       {/* Number with refined subtle jitter and slot stability */}
@@ -192,11 +195,11 @@ function StatCard({
             );
           })}
       </span>
-    </div>
+    </Link>
   );
 }
 
-const ROLES_MARQUEE = [
+const ROLES_MARQUEE_TOP = [
   "Tech Enthusiast",
   "Full Stack Developer",
   "Software Engineer",
@@ -204,27 +207,68 @@ const ROLES_MARQUEE = [
   "Graphic Designer",
 ];
 
-function MarqueeRow({ direction = "left" }: { direction?: "left" | "right" }) {
-  const repeated = useMemo(
-    () => [...ROLES_MARQUEE, ...ROLES_MARQUEE, ...ROLES_MARQUEE, ...ROLES_MARQUEE],
-    []
+const ROLES_MARQUEE_BOTTOM = [
+  "Offline-First Systems",
+  "Clean Code Architecture",
+  "Responsive UI/UX",
+  "API & Database Engineering",
+  "Performance Focused",
+];
+
+function MarqueeRow({
+  items = ROLES_MARQUEE_TOP,
+  direction = "left",
+  speed = 35,
+}: {
+  items?: string[];
+  direction?: "left" | "right";
+  speed?: number;
+}) {
+  const trackItems = useMemo(
+    () => [...items, ...items, ...items],
+    [items]
   );
 
   return (
     <div
       aria-hidden="true"
-      className="relative w-full overflow-hidden select-none py-1 sm:py-2 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
+      className="group relative flex w-full overflow-hidden select-none py-1 sm:py-1.5 [mask-image:linear-gradient(to_right,transparent_0%,black_10%,black_90%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_10%,black_90%,transparent_100%)]"
     >
+      {/* Track 1 */}
       <div
         className={cn(
-          "flex w-max items-center gap-6 sm:gap-10 will-change-transform",
+          "flex shrink-0 items-center gap-6 sm:gap-10 pr-6 sm:pr-10 will-change-transform",
           direction === "left"
-            ? "animate-marquee-left [animation-duration:30s] hover:[animation-play-state:paused]"
-            : "animate-marquee-right [animation-duration:30s] hover:[animation-play-state:paused]"
+            ? "animate-marquee-left group-hover:[animation-play-state:paused]"
+            : "animate-marquee-right group-hover:[animation-play-state:paused]"
         )}
+        style={{ animationDuration: `${speed}s` }}
       >
-        {repeated.map((role, idx) => (
-          <div key={idx} className="flex items-center gap-6 sm:gap-10 shrink-0">
+        {trackItems.map((role, idx) => (
+          <div key={`t1-${role}-${idx}`} className="flex items-center gap-6 sm:gap-10 shrink-0">
+            <span className="font-mono text-[11px] sm:text-[12px] md:text-[13px] font-semibold uppercase tracking-[0.22em] text-ink-secondary/50 dark:text-ink-dark-secondary/50 hover:text-ink dark:hover:text-ink-dark transition-colors duration-200">
+              {role}
+            </span>
+            <span className="text-accent/50 dark:text-accent-dark/50 text-[9px] sm:text-[11px] select-none">
+              •
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* Track 2 (Duplicate for 100% seamless infinite loop without cutoffs or jumps) */}
+      <div
+        className={cn(
+          "flex shrink-0 items-center gap-6 sm:gap-10 pr-6 sm:pr-10 will-change-transform",
+          direction === "left"
+            ? "animate-marquee-left group-hover:[animation-play-state:paused]"
+            : "animate-marquee-right group-hover:[animation-play-state:paused]"
+        )}
+        style={{ animationDuration: `${speed}s` }}
+        aria-hidden="true"
+      >
+        {trackItems.map((role, idx) => (
+          <div key={`t2-${role}-${idx}`} className="flex items-center gap-6 sm:gap-10 shrink-0">
             <span className="font-mono text-[11px] sm:text-[12px] md:text-[13px] font-semibold uppercase tracking-[0.22em] text-ink-secondary/50 dark:text-ink-dark-secondary/50 hover:text-ink dark:hover:text-ink-dark transition-colors duration-200">
               {role}
             </span>
@@ -262,6 +306,7 @@ export default memo(function StatsBanner() {
         prefix: "+",
         padZero: false,
         label: "Projects",
+        href: "/projects?from=home",
       },
       {
         id: "technologies",
@@ -269,6 +314,7 @@ export default memo(function StatsBanner() {
         prefix: "+",
         padZero: false,
         label: "Technologies",
+        href: "/tech-stack?from=home",
       },
       {
         id: "certificates",
@@ -276,6 +322,7 @@ export default memo(function StatsBanner() {
         prefix: "+",
         padZero: true, // Formats as +08
         label: "Certificates",
+        href: "/certifications?from=home",
       },
     ];
   }, []);
@@ -313,7 +360,7 @@ export default memo(function StatsBanner() {
     >
       {/* Top Sliding Marquee with Side Margins */}
       <Container className="w-full max-w-5xl px-4 sm:px-6 md:px-8">
-        <MarqueeRow direction="left" />
+        <MarqueeRow items={ROLES_MARQUEE_TOP} direction="left" speed={38} />
       </Container>
 
       {/* Center 3 Stat Cards */}
@@ -332,7 +379,7 @@ export default memo(function StatsBanner() {
 
       {/* Bottom Sliding Marquee with Side Margins */}
       <Container className="w-full max-w-5xl px-4 sm:px-6 md:px-8">
-        <MarqueeRow direction="right" />
+        <MarqueeRow items={ROLES_MARQUEE_BOTTOM} direction="right" speed={42} />
       </Container>
     </section>
   );

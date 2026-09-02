@@ -41,11 +41,13 @@ function SkillPill({ name }: { name: string }) {
     <div
       className={cn(
         "flex shrink-0 items-center gap-2 sm:gap-2.5",
-        "rounded-full border border-black/8 dark:border-white/10",
-        "bg-white/75 dark:bg-white/[0.04]",
-        "backdrop-blur-md shadow-[0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.25)]",
+        "rounded-full border border-black/[0.08] dark:border-white/[0.08]",
+        "bg-white dark:bg-[#141416]",
+        "shadow-[0_2px_8px_rgba(0,0,0,0.03)] dark:shadow-[0_2px_10px_rgba(0,0,0,0.35)]",
         "px-3.5 py-1.5 sm:px-4.5 sm:py-2",
-        "transition-all duration-200 hover:-translate-y-0.5 hover:bg-white dark:hover:bg-white/10 hover:border-black/20 dark:hover:border-white/25"
+        "transition-[background-color,border-color,box-shadow,transform] duration-200",
+        "hover:-translate-y-0.5 hover:bg-white dark:hover:bg-[#1c1c1f] hover:border-black/20 dark:hover:border-white/20 hover:shadow-md",
+        "cursor-default select-none"
       )}
     >
       <TechIcon name={name} />
@@ -67,28 +69,45 @@ const MarqueeRow = memo(function MarqueeRow({
   direction = "left",
   speed = 32,
 }: MarqueeRowProps) {
-  const repeated = useMemo(() => [...items, ...items, ...items, ...items], [items]);
+  // Quadruple the items per track to guarantee wide, continuous coverage on all screen sizes
+  const trackItems = useMemo(() => [...items, ...items, ...items, ...items], [items]);
 
   if (!items.length) return null;
 
   return (
     <div
       aria-hidden="true"
-      className="relative w-full overflow-hidden select-none py-1 sm:py-1.5 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
+      className="group relative flex w-full overflow-hidden select-none py-1 sm:py-1.5 [mask-image:linear-gradient(to_right,transparent_0%,black_8%,black_92%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_8%,black_92%,transparent_100%)]"
     >
       <div
         className={cn(
-          "flex w-max items-center gap-2.5 sm:gap-3.5 will-change-transform",
+          "flex shrink-0 items-center gap-3 sm:gap-3.5 pr-3 sm:pr-3.5 will-change-transform",
           direction === "left"
-            ? "animate-marquee-left hover:[animation-play-state:paused]"
-            : "animate-marquee-right hover:[animation-play-state:paused]"
+            ? "animate-marquee-left group-hover:[animation-play-state:paused]"
+            : "animate-marquee-right group-hover:[animation-play-state:paused]"
         )}
         style={{
           animationDuration: `${speed}s`,
         }}
       >
-        {repeated.map((name, idx) => (
-          <SkillPill key={`${name}-${idx}`} name={name} />
+        {trackItems.map((name, idx) => (
+          <SkillPill key={`track1-${name}-${idx}`} name={name} />
+        ))}
+      </div>
+      <div
+        className={cn(
+          "flex shrink-0 items-center gap-3 sm:gap-3.5 pr-3 sm:pr-3.5 will-change-transform",
+          direction === "left"
+            ? "animate-marquee-left group-hover:[animation-play-state:paused]"
+            : "animate-marquee-right group-hover:[animation-play-state:paused]"
+        )}
+        style={{
+          animationDuration: `${speed}s`,
+        }}
+        aria-hidden="true"
+      >
+        {trackItems.map((name, idx) => (
+          <SkillPill key={`track2-${name}-${idx}`} name={name} />
         ))}
       </div>
     </div>
@@ -99,15 +118,8 @@ export default function Skills() {
   return (
     <section
       aria-label="Technologies & Skills"
-      className="relative overflow-hidden py-12 sm:py-16 md:py-24"
-      style={{ contain: "layout style" }}
+      className="relative overflow-hidden py-14 sm:py-18 md:py-24"
     >
-      {/* Ambient background glow */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-0 h-[300px] w-[600px] -translate-x-1/2 rounded-full bg-gradient-to-b from-accent/[0.04] via-transparent to-transparent blur-xl dark:from-accent-dark/[0.04]"
-      />
-
       <div className="relative flex flex-col items-center gap-8 sm:gap-10">
         {/* Section Heading */}
         <Container>
@@ -116,7 +128,6 @@ export default function Skills() {
               <SectionHeading
                 eyebrow="Technologies"
                 title="What I build with"
-                deck="A working set, not a wish list — every tool here shipped in production this year."
                 align="center"
               />
             </div>
@@ -126,10 +137,10 @@ export default function Skills() {
         {/* Compact 3-Row Sliding Marquee Tracks with Side Margins */}
         <Container className="w-full max-w-5xl px-4 sm:px-6 md:px-8">
           <Reveal delay={100} className="w-full">
-            <div className="flex w-full flex-col gap-2.5 sm:gap-3">
-              <MarqueeRow items={CORE_SKILLS_ROW_1} direction="left" speed={32} />
-              <MarqueeRow items={CORE_SKILLS_ROW_2} direction="right" speed={38} />
-              <MarqueeRow items={CORE_SKILLS_ROW_3} direction="left" speed={34} />
+            <div className="flex w-full flex-col gap-3 sm:gap-3.5">
+              <MarqueeRow items={CORE_SKILLS_ROW_1} direction="left" speed={45} />
+              <MarqueeRow items={CORE_SKILLS_ROW_2} direction="right" speed={50} />
+              <MarqueeRow items={CORE_SKILLS_ROW_3} direction="left" speed={48} />
             </div>
           </Reveal>
         </Container>

@@ -18,26 +18,47 @@ export default function PageViewTracker() {
   useEffect(() => {
     if (!pathname || pathname.startsWith("/admin")) return;
 
+    // Track origin page (Home vs About) for smart contextual back buttons
     try {
-      const key = `pv:${pathname}`;
-      if (sessionStorage.getItem(key)) return;
-      sessionStorage.setItem(key, "1");
+      if (pathname === "/") {
+        sessionStorage.setItem("portfolio_prev_origin", "home");
+      } else if (pathname === "/about" || pathname.startsWith("/about/")) {
+        sessionStorage.setItem("portfolio_prev_origin", "about");
+      }
     } catch {
-      // Storage unavailable (e.g. private mode) — track anyway.
+      // Storage unavailable in private modes
     }
 
-    try {
-      void fetch("/api/track", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          path: pathname,
-          referrer: document.referrer || "",
-        }),
-        keepalive: true,
-      });
-    } catch {
-      // Analytics is best-effort by design.
+    const scheduleTrack = () => {
+      try {
+        const key = `pv:${pathname}`;
+        if (sessionStorage.getItem(key)) return;
+        sessionStorage.setItem(key, "1");
+      } catch {
+        // Storage unavailable (e.g. private mode) — track anyway.
+      }
+
+      try {
+        void fetch("/api/track", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            path: pathname,
+            referrer: document.referrer || "",
+          }),
+          keepalive: true,
+        });
+      } catch {
+        // Analytics is best-effort by design.
+      }
+    };
+
+    if ("requestIdleCallback" in window) {
+      const handle = (window as any).requestIdleCallback(scheduleTrack, { timeout: 1500 });
+      return () => (window as any).cancelIdleCallback(handle);
+    } else {
+      const timer = setTimeout(scheduleTrack, 300);
+      return () => clearTimeout(timer);
     }
   }, [pathname]);
 

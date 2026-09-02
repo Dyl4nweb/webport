@@ -1,20 +1,16 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+"use client";
 
+import { useState } from "react";
+import Link from "next/link";
 import Container from "@/components/ui/Container";
 import Reveal from "@/components/ui/Reveal";
 import GlitchText from "@/components/ui/GlitchText";
-
 import { SITE } from "@/lib/constants";
-import { socialLinks } from "@/data/social";
 import ContactForm from "./ContactForm";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: `Get in touch with ${SITE.name}.`,
-};
-
 export default function ContactPage() {
+  const [copied, setCopied] = useState(false);
+
   const gmailUrl =
     `https://mail.google.com/mail/?view=cm&fs=1` +
     `&to=${encodeURIComponent(SITE.email)}` +
@@ -22,195 +18,199 @@ export default function ContactPage() {
 
   const calUrl = "https://cal.com/dylanweb444";
 
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText(SITE.email);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
-    <>
-      {/* Hero */}
-      <header className="relative overflow-hidden pb-12 pt-8 sm:pt-12 md:pb-16 md:pt-14">
-        {/* Ambient glow */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[480px] w-[900px] -translate-x-1/2 transform-gpu rounded-full bg-gradient-to-b from-accent/[0.045] via-transparent to-transparent blur-xl md:blur-3xl dark:from-accent-dark/[0.045]"
-        />
+    <main className="relative min-h-screen overflow-hidden pb-24 pt-8 sm:pt-12 md:pb-32 md:pt-14">
+      {/* Subtle Monochrome Ambient Glow */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-0 -z-20 h-[360px] w-[600px] -translate-x-1/2 rounded-full bg-black/[0.02] dark:bg-white/[0.03] blur-3xl"
+      />
 
-        <Container>
-          {/* Back to home */}
-          <Reveal>
-            <div className="mb-6 sm:mb-8">
-              <Link
-                href="/"
-                className="group inline-flex items-center gap-1.5 rounded-full bg-surface-alt px-3.5 py-1.5 text-[13px] font-medium text-ink-secondary transition-all hover:bg-black/[0.06] hover:text-ink dark:bg-surface-dark-alt dark:text-ink-dark-secondary dark:hover:bg-white/[0.08] dark:hover:text-ink-dark"
+      <Container>
+        {/* Back to home Link matching other pages */}
+        <Reveal>
+          <div className="mb-6 sm:mb-8">
+            <Link
+              href="/"
+              className="group inline-flex items-center gap-1.5 rounded-full bg-surface-alt px-3.5 py-1.5 text-[13px] font-medium text-ink-secondary transition-all hover:bg-black/[0.06] hover:text-ink dark:bg-surface-dark-alt dark:text-ink-dark-secondary dark:hover:bg-white/[0.08] dark:hover:text-ink-dark"
+            >
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="transition-transform duration-200 group-hover:-translate-x-0.5"
               >
-                <svg
-                  width="15"
-                  height="15"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="transition-transform duration-200 group-hover:-translate-x-0.5"
-                >
-                  <path d="m15 18-6-6 6-6" />
-                </svg>
-                <span>Back to home</span>
-              </Link>
-            </div>
-          </Reveal>
-
-          {/* Heading */}
-          <div className="flex flex-col items-center text-center">
-            <Reveal delay={80}>
-              <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-accent dark:text-accent-dark">
-                Contact
-              </span>
-            </Reveal>
-
-            <Reveal delay={140}>
-              <h1 className="mt-5 max-w-3xl text-balance text-[28px] min-[360px]:text-[32px] min-[400px]:text-[36px] sm:text-[48px] md:text-[56px] lg:text-[64px] font-semibold leading-[1.2] sm:leading-[1.08] tracking-[-0.03em] text-ink dark:text-ink-dark pb-1">
-                <GlitchText text="Let's build something worth using." />
-              </h1>
-            </Reveal>
-
-            <Reveal delay={200}>
-              <p className="mt-6 max-w-xl text-balance text-[17px] leading-[1.8] text-ink-secondary dark:text-ink-dark-secondary md:text-[19px]">
-                Have an idea, project, or question? Send me a message and
-                I&apos;ll get back to you.
-              </p>
-            </Reveal>
+                <path d="m15 18-6-6 6-6" />
+              </svg>
+              <span>Back to home</span>
+            </Link>
           </div>
-        </Container>
-      </header>
+        </Reveal>
 
-      {/* Contact content */}
-      <section className="relative overflow-hidden pb-28">
-        <Container narrow className="flex flex-col gap-16">
-          {/* Form */}
-          <Reveal delay={260}>
-            <div className="rounded-[28px] border border-line/70 bg-surface-card p-6 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.3)] sm:p-8 md:p-10 dark:border-line-dark/70 dark:bg-surface-dark-card">
-              <ContactForm />
+        {/* Header content */}
+        <div className="flex flex-col items-center text-center">
+          {/* Availability Status (Minimalist, no card container) */}
+          <Reveal delay={60}>
+            <div className="inline-flex items-center gap-2 text-[12.5px] sm:text-[13px] text-ink-secondary dark:text-ink-dark-secondary select-none">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+              </span>
+              <span className="font-medium text-ink dark:text-ink-dark">Available for new opportunities</span>
+              <span className="text-ink-tertiary dark:text-ink-dark-secondary">·</span>
+              <span>Manila (UTC+8)</span>
             </div>
           </Reveal>
 
-          {/* Book a call */}
-          <Reveal delay={320}>
-            <div className="flex flex-col gap-6 rounded-[28px] border border-line/70 bg-surface-card p-7 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.28)] sm:flex-row sm:items-center sm:justify-between sm:p-8 md:p-10 dark:border-line-dark/70 dark:bg-surface-dark-card">
-              <div className="max-w-lg">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-accent dark:text-accent-dark">
-                  Schedule a call
-                </span>
+          {/* Main Headline matching Hero style */}
+          <Reveal delay={120}>
+            <h1 className="mt-3.5 sm:mt-5 max-w-3xl text-balance text-2xl min-[360px]:text-[28px] sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.12] sm:leading-[1.08]">
+              <GlitchText text="Let's build something exceptional." />
+            </h1>
+          </Reveal>
 
-                <h2 className="mt-3 text-[24px] font-semibold tracking-[-0.03em] text-ink dark:text-ink-dark sm:text-[28px]">
-                  Prefer to talk things through?
-                </h2>
+          {/* Punchy, Clean Subhead */}
+          <Reveal delay={180}>
+            <p className="mt-3 sm:mt-4 max-w-xl text-[14px] sm:text-[17px] leading-relaxed text-ink-secondary dark:text-ink-dark-secondary">
+              Open for full-time engineering roles, freelance builds, and technical consultations.
+            </p>
+          </Reveal>
+        </div>
 
-                <p className="mt-3 text-[15px] leading-[1.75] text-ink-secondary dark:text-ink-dark-secondary">
-                  Book a quick call and let&apos;s talk about your idea,
-                  project, or timeline.
-                </p>
+        {/* 2-Column Action Grid */}
+        <div className="mt-8 sm:mt-12 lg:mt-16 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-7 lg:gap-10 items-stretch max-w-md sm:max-w-xl lg:max-w-none mx-auto w-full">
+          {/* Left Column: Direct Action Hub (5 cols) */}
+          <Reveal delay={180} className="lg:col-span-5 h-full">
+            <div className="flex flex-col gap-3.5 sm:gap-6 h-full">
+              {/* Quick Discovery Call Card */}
+              <div className="flex-1 rounded-[18px] sm:rounded-[24px] border border-line/70 bg-surface-card p-4 sm:p-6 md:p-7 shadow-sm dark:border-line-dark/70 dark:bg-surface-dark-card flex flex-col justify-between gap-3.5 sm:gap-5">
+                <div className="flex flex-col gap-2.5 sm:gap-3">
+                  <div className="flex items-center gap-2.5 sm:gap-3">
+                    <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-lg sm:rounded-xl bg-surface-alt dark:bg-surface-dark-alt border border-line/60 dark:border-line-dark/60 text-ink dark:text-ink-dark">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-[18px] sm:h-[18px]">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-[14px] sm:text-base font-bold text-ink dark:text-ink-dark">
+                        Quick Discovery Call
+                      </h3>
+                      <p className="text-[10.5px] sm:text-xs text-ink-secondary dark:text-ink-dark-secondary">
+                        15–30 min sync via Cal.com
+                      </p>
+                    </div>
+                  </div>
+
+                  <p className="text-[12px] sm:text-[13.5px] leading-normal sm:leading-relaxed text-ink-secondary dark:text-ink-dark-secondary">
+                    Discuss your product roadmap, engineering requirements, or open roles directly on a call.
+                  </p>
+                </div>
+
+                <a
+                  href={calUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-auto self-start w-fit inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-ink px-4 sm:px-5 py-2 sm:py-2.5 text-[12px] sm:text-[13px] font-semibold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] dark:bg-white dark:text-black"
+                >
+                  <span>Book a call</span>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-[15px] sm:h-[15px]">
+                    <path d="M5 12h14M13 6l6 6-6 6" />
+                  </svg>
+                </a>
               </div>
 
-              <a
-                href={calUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-ink px-5 py-3 text-[13px] font-semibold text-white transition-transform duration-300 hover:-translate-y-0.5 dark:bg-white dark:text-black"
-              >
-                <span>Book a call</span>
-                <svg
-                  width="15"
-                  height="15"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  aria-hidden="true"
-                  className="transition-transform duration-300 group-hover:translate-x-0.5"
-                >
-                  <path
-                    d="M5 12h14M13 6l6 6-6 6"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </a>
-            </div>
-          </Reveal>
+              {/* Direct Email Card */}
+              <div className="flex-1 rounded-[18px] sm:rounded-[24px] border border-line/70 bg-surface-card p-4 sm:p-6 md:p-7 shadow-sm dark:border-line-dark/70 dark:bg-surface-dark-card flex flex-col justify-between gap-3.5 sm:gap-5">
+                <div className="flex flex-col gap-1.5 sm:gap-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-tertiary dark:text-ink-dark-secondary">
+                      Direct Email
+                    </span>
+                    <span className="text-[10px] sm:text-[11px] text-ink-secondary dark:text-ink-dark-secondary">
+                      {SITE.location}
+                    </span>
+                  </div>
 
-          {/* Direct contact */}
-          <Reveal delay={380}>
-            <div className="border-t border-line/60 pt-10 dark:border-line-dark/60">
-              <div className="grid gap-10 sm:grid-cols-2">
-                {/* Email */}
-                <div className="flex flex-col gap-2">
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-tertiary dark:text-ink-dark-secondary">
-                    Direct
-                  </span>
+                  <p className="font-mono text-[12.5px] min-[360px]:text-[13px] sm:text-base font-medium text-ink dark:text-ink-dark select-all">
+                    {SITE.email}
+                  </p>
+                </div>
+
+                <div className="mt-auto flex items-center gap-2 pt-0.5 sm:pt-1">
+                  <button
+                    type="button"
+                    onClick={handleCopyEmail}
+                    className="w-fit inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full border border-line/80 bg-surface-alt px-3.5 sm:px-4 py-1.5 sm:py-2 text-[11.5px] sm:text-[12.5px] font-medium text-ink transition-colors hover:bg-black/[0.06] dark:border-line-dark/80 dark:bg-surface-dark-alt dark:text-ink-dark dark:hover:bg-white/[0.08]"
+                  >
+                    {copied ? (
+                      <>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                        </svg>
+                        <span>Copy email</span>
+                      </>
+                    )}
+                  </button>
 
                   <a
                     href={gmailUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group inline-flex w-fit items-center gap-2 text-[17px] font-medium text-ink transition-colors duration-300 hover:text-accent dark:text-ink-dark dark:hover:text-accent-dark"
+                    className="inline-flex items-center justify-center rounded-full border border-line/80 bg-surface-alt p-1.5 sm:p-2.5 text-ink transition-colors hover:bg-black/[0.06] dark:border-line-dark/80 dark:bg-surface-dark-alt dark:text-ink-dark dark:hover:bg-white/[0.08]"
+                    title="Open in Gmail"
                   >
-                    <span>{SITE.email}</span>
-
-                    <svg
-                      width="15"
-                      height="15"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      aria-hidden="true"
-                      className="transition-transform duration-300 group-hover:translate-x-0.5"
-                    >
-                      <path
-                        d="M5 12h14M13 6l6 6-6 6"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-[16px] sm:h-[16px]">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                      <polyline points="15 3 21 3 21 9" />
+                      <line x1="10" y1="14" x2="21" y2="3" />
                     </svg>
                   </a>
-
-                  <span className="text-[14px] text-ink-secondary dark:text-ink-dark-secondary">
-                    {SITE.location}
-                  </span>
-                </div>
-
-                {/* Social */}
-                <div className="flex flex-col gap-2">
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-tertiary dark:text-ink-dark-secondary">
-                    Connect
-                  </span>
-
-                  <div className="flex flex-wrap gap-x-5 gap-y-2">
-                    {socialLinks.map((link) => (
-                      <a
-                        key={link.label}
-                        href={link.url}
-                        target={
-                          link.url.startsWith("http")
-                            ? "_blank"
-                            : undefined
-                        }
-                        rel={
-                          link.url.startsWith("http")
-                            ? "noopener noreferrer"
-                            : undefined
-                        }
-                        className="text-[14px] font-medium text-ink-secondary transition-colors duration-200 hover:text-ink dark:text-ink-dark-secondary dark:hover:text-ink-dark"
-                      >
-                        {link.label}
-                      </a>
-                    ))}
-                  </div>
                 </div>
               </div>
             </div>
           </Reveal>
-        </Container>
-      </section>
-    </>
+
+          {/* Right Column: Send Message Form (7 cols) */}
+          <Reveal delay={220} className="lg:col-span-7 h-full">
+            <div className="rounded-[18px] sm:rounded-[24px] border border-line/70 bg-surface-card p-4 sm:p-7 md:p-9 shadow-sm dark:border-line-dark/70 dark:bg-surface-dark-card h-full flex flex-col justify-between">
+              <div>
+                <div className="mb-3.5 sm:mb-6 flex flex-col gap-0.5 sm:gap-1">
+                  <h3 className="text-base sm:text-xl font-bold text-ink dark:text-ink-dark">
+                    Send a message
+                  </h3>
+                  <p className="text-[11.5px] sm:text-sm text-ink-secondary dark:text-ink-dark-secondary">
+                    Drop a brief summary of your project or role. I respond within 24 hours.
+                  </p>
+                </div>
+
+                <ContactForm />
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </Container>
+    </main>
   );
 }

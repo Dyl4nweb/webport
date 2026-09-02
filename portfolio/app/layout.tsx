@@ -154,7 +154,7 @@ export default function RootLayout({
                   if (nRect.width > 0 && nRect.height > 0) {
                     var clone = splashLogo.cloneNode(true);
                     clone.id = "splash-flying-clone";
-                    clone.style.cssText = "position:fixed;left:" + sRect.left + "px;top:" + sRect.top + "px;width:" + sRect.width + "px;height:" + sRect.height + "px;z-index:10000;pointer-events:none;border-radius:12px;will-change:transform,opacity,border-radius;transform-origin:center center;box-shadow:0 10px 30px -10px rgba(0,0,0,0.25);";
+                    clone.style.cssText = "position:fixed;left:" + sRect.left + "px;top:" + sRect.top + "px;width:" + sRect.width + "px;height:" + sRect.height + "px;z-index:10000;pointer-events:none;border-radius:12px;will-change:transform,opacity,border-radius,box-shadow;transform-origin:center center;box-shadow:0 10px 30px -10px rgba(0,0,0,0.25);";
                     document.body.appendChild(clone);
 
                     // Hide original inside splash so only flying clone moves
@@ -171,15 +171,15 @@ export default function RootLayout({
                     var scaleX = nRect.width / sRect.width;
                     var scaleY = nRect.height / sRect.height;
 
-                    // Trigger ultra-smooth GPU flight with silky Apple bezier
+                    // Trigger calm, slow, and ultra-smooth Apple bezier flight (1.25s)
                     requestAnimationFrame(function(){
                       requestAnimationFrame(function(){
-                        clone.style.transition = "transform 0.88s cubic-bezier(0.22, 1, 0.36, 1), border-radius 0.88s ease, box-shadow 0.88s ease";
+                        clone.style.transition = "transform 1.25s cubic-bezier(0.22, 1, 0.36, 1), border-radius 1.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 1.25s cubic-bezier(0.22, 1, 0.36, 1)";
                         clone.style.transform = "translate3d(" + dx + "px, " + dy + "px, 0) scale(" + scaleX + ", " + scaleY + ")";
                         clone.style.borderRadius = "6px";
                         clone.style.boxShadow = "none";
 
-                        // Reveal navbar logo exactly as clone reaches the destination
+                        // Reveal navbar logo smoothly right as the clone lands
                         setTimeout(function(){
                           if (navLogo) {
                             navLogo.classList.add("is-revealed");
@@ -191,14 +191,14 @@ export default function RootLayout({
                             allLogos[j].style.opacity = "1";
                           }
                           if (clone) {
-                            clone.style.transition = "opacity 0.12s ease-out";
+                            clone.style.transition = "opacity 0.18s ease-out";
                             clone.style.opacity = "0";
                           }
-                        }, 860);
+                        }, 1200);
 
                         setTimeout(function(){
                           if (clone && clone.parentNode) clone.parentNode.removeChild(clone);
-                        }, 1050);
+                        }, 1450);
                       });
                     });
                   }
@@ -206,25 +206,25 @@ export default function RootLayout({
 
                 if (s) {
                   s.classList.add("is-done");
-                  setTimeout(function(){ s.style.display = "none"; }, 1050);
+                  setTimeout(function(){ s.style.display = "none"; }, 1450);
                 }
                 if (m) {
                   m.classList.add("is-ready");
                 }
               }
 
-              // Run when DOM and navbar are painted, with an intentional pause (1400ms)
+              // Run when DOM and navbar are painted, synchronized with progress bar completion
               function checkReady(){
                 var navLogo = getVisibleNavLogo();
                 if (navLogo && navLogo.getBoundingClientRect().width > 0) {
-                  setTimeout(startFlight, 1200);
+                  setTimeout(startFlight, 1400);
                 } else {
                   setTimeout(checkReady, 50);
                 }
               }
 
-              // Safety timeout: Maximum 2.2s fallback guarantees home screen always loads smoothly
-              setTimeout(startFlight, 2200);
+              // Safety timeout: Maximum 2.4s fallback guarantees home screen always loads smoothly
+              setTimeout(startFlight, 2400);
 
               if (document.readyState === "complete") {
                 checkReady();

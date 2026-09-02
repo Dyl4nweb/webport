@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { Project } from "@/types";
-import Badge from "@/components/ui/Badge";
 
 interface ProjectCardProps {
   project: Project;
@@ -14,57 +13,67 @@ export default function ProjectCard({ project, priority = false, onOpen }: Proje
   return (
     <button
       onClick={() => onOpen(project)}
-      className="group flex h-full w-full min-w-0 flex-col overflow-hidden rounded-apple border border-line/70 bg-surface-card text-left transition-transform duration-300 ease-apple hover:-translate-y-1 dark:border-line-dark/70 dark:bg-surface-dark-card"
+      className="group flex h-full w-full min-w-0 flex-col overflow-hidden rounded-xl sm:rounded-2xl border border-black/[0.08] bg-surface-card text-left transition-all duration-300 hover:-translate-y-1 hover:border-black/20 hover:shadow-lg dark:border-white/[0.08] dark:bg-surface-dark-card dark:hover:border-white/20 dark:hover:shadow-[0_12px_30px_-10px_rgba(0,0,0,0.5)]"
     >
-      <div className="relative block aspect-[16/10] w-full overflow-hidden bg-surface-alt dark:bg-surface-dark-alt">
+      {/* Image Container with Sleek 16:9 Proportion */}
+      <div className="relative aspect-[16/9] w-full overflow-hidden bg-black/[0.03] dark:bg-white/[0.03]">
         <Image
           src={project.image}
           alt={`${project.name} preview`}
           fill
           priority={priority}
-          sizes="(min-width: 1024px) 380px, 100vw"
-          className="object-cover transition-transform duration-500 ease-apple group-hover:scale-105"
+          sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
+          className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
         />
+        <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/5 dark:ring-white/5" />
       </div>
 
-      <div className="flex flex-1 flex-col gap-3 p-6">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-tertiary dark:text-ink-dark-secondary">
-          {project.category}
-        </span>
-
-        <div className="flex items-center justify-between gap-3">
-          <h3 className="line-clamp-1 text-[19px] font-semibold tracking-tight text-ink dark:text-ink-dark">
-            {project.name}
-          </h3>
-          <span className="shrink-0 text-[13px] text-ink-tertiary dark:text-ink-dark-secondary">
+      {/* Content Area */}
+      <div className="flex flex-1 flex-col gap-2 sm:gap-2.5 p-3.5 sm:p-5">
+        {/* Category & Year */}
+        <div className="flex items-center justify-between gap-2">
+          <span className="font-mono text-[10.5px] sm:text-[11px] font-semibold uppercase tracking-wider text-accent dark:text-accent-dark">
+            {project.category}
+          </span>
+          <span className="font-mono text-[10.5px] sm:text-[11px] text-ink-tertiary dark:text-ink-dark-secondary">
             {project.year}
           </span>
         </div>
 
-        <p className="line-clamp-2 h-[48px] text-[15px] leading-relaxed text-ink-secondary dark:text-ink-dark-secondary">
+        {/* Title */}
+        <h3 className="line-clamp-1 text-[15px] sm:text-[17px] font-bold tracking-tight text-ink transition-colors group-hover:text-accent dark:text-ink-dark dark:group-hover:text-accent-dark">
+          {project.name}
+        </h3>
+
+        {/* Tagline */}
+        <p className="line-clamp-2 text-[12px] sm:text-[13px] leading-relaxed text-ink-secondary dark:text-ink-dark-secondary">
           {project.tagline}
         </p>
 
-        <div className="flex min-h-[34px] flex-wrap gap-2">
-          {project.techStack.slice(0, 4).map((tech) => (
-            <Badge key={tech} className="whitespace-nowrap">
+        {/* Tech Stack Pills */}
+        <div className="flex flex-wrap gap-1 sm:gap-1.5 pt-0.5 sm:pt-1">
+          {project.techStack.slice(0, 3).map((tech) => (
+            <span
+              key={tech}
+              className="rounded-md border border-black/[0.06] bg-black/[0.02] px-1.5 sm:px-2 py-0.5 text-[10.5px] sm:text-[11px] font-medium text-ink-secondary dark:border-white/[0.06] dark:bg-white/[0.03] dark:text-ink-dark-secondary"
+            >
               {tech}
-            </Badge>
+            </span>
           ))}
+          {project.techStack.length > 3 && (
+            <span className="rounded-md px-1.5 py-0.5 text-[10px] sm:text-[10.5px] font-mono text-ink-tertiary dark:text-ink-dark-secondary">
+              +{project.techStack.length - 3}
+            </span>
+          )}
         </div>
 
-        <span className="mt-auto inline-flex items-center gap-1.5 self-start rounded-full bg-ink px-4 py-2.5 text-[14px] font-medium text-white transition-opacity group-hover:opacity-85 dark:bg-ink-dark dark:text-surface-dark">
-          View Details
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path
-              d="M7 17 17 7M17 7H9M17 7v8"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </span>
+        {/* Subtle Action Footer */}
+        <div className="mt-auto flex items-center justify-between pt-1.5 sm:pt-2 border-t border-black/[0.05] dark:border-white/[0.05]">
+          <span className="text-[12px] sm:text-[12.5px] font-semibold text-ink group-hover:text-accent dark:text-ink-dark dark:group-hover:text-accent-dark flex items-center gap-1 transition-colors">
+            View Details
+            <span className="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+          </span>
+        </div>
       </div>
     </button>
   );

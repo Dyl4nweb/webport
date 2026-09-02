@@ -19,21 +19,21 @@ export default function SectionHeading({
   return (
     <div
       className={cn(
-        "flex flex-col gap-4",
+        "flex flex-col gap-3.5 sm:gap-4",
         align === "center" ? "items-center text-center" : "items-start text-left",
         className
       )}
     >
       {eyebrow && (
-        <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-accent dark:text-accent-dark">
+        <span className="text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.16em] text-accent dark:text-accent-dark">
           {eyebrow}
         </span>
       )}
-      <h2 className="max-w-2xl text-[32px] font-semibold leading-[1.1] tracking-tight text-ink dark:text-ink-dark md:text-[44px]">
+      <h2 className="max-w-2xl text-balance text-2xl min-[360px]:text-[26px] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-ink dark:text-ink-dark leading-[1.14] sm:leading-[1.08]">
         <GlitchText text={title} />
       </h2>
       {deck && (
-        <p className="max-w-xl text-[19px] leading-relaxed text-ink-secondary dark:text-ink-dark-secondary">
+        <p className="max-w-xl text-[15px] sm:text-[17px] leading-relaxed text-ink-secondary dark:text-ink-dark-secondary">
           {deck}
         </p>
       )}

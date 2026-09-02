@@ -33,7 +33,7 @@ export default function ExperiencePage() {
           <Reveal>
             <div className="mb-6 sm:mb-8">
               <Link
-                href="/"
+                href="/about"
                 className="group inline-flex items-center gap-1.5 rounded-full bg-surface-alt px-3.5 py-1.5 text-[13px] font-medium text-ink-secondary transition-all hover:bg-black/[0.06] hover:text-ink dark:bg-surface-dark-alt dark:text-ink-dark-secondary dark:hover:bg-white/[0.08] dark:hover:text-ink-dark"
               >
                 <svg
@@ -49,7 +49,7 @@ export default function ExperiencePage() {
                 >
                   <path d="m15 18-6-6 6-6" />
                 </svg>
-                <span>Back to home</span>
+                <span>Back to about</span>
               </Link>
             </div>
           </Reveal>
@@ -57,13 +57,13 @@ export default function ExperiencePage() {
           {/* Heading */}
           <div className="flex flex-col items-center text-center">
             <Reveal delay={80}>
-              <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-accent dark:text-accent-dark">
+              <span className="font-mono text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.18em] text-accent dark:text-accent-dark">
                 Experience
               </span>
             </Reveal>
 
             <Reveal delay={140}>
-              <h1 className="mt-5 max-w-3xl text-balance text-[28px] min-[360px]:text-[32px] min-[400px]:text-[36px] sm:text-[48px] md:text-[56px] lg:text-[64px] font-semibold leading-[1.2] sm:leading-[1.08] tracking-[-0.03em] text-ink dark:text-ink-dark pb-1">
+              <h1 className="mt-4 max-w-3xl text-balance text-3xl min-[360px]:text-4xl sm:text-5xl md:text-6xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.08]">
                 <GlitchText text="Where I've built and learned." />
               </h1>
             </Reveal>

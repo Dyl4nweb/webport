@@ -557,6 +557,24 @@ export default function AdminStoragePage() {
     load();
   }, [load]);
 
+  useEffect(() => {
+    if (!modal) {
+      document.body.style.overflow = "";
+      return;
+    }
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !modalBusy) setModal(null);
+    };
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [modal, modalBusy]);
+
   async function callStorageApi(
     body: Record<string, unknown>
   ): Promise<({ ok: boolean; reason?: string } & Record<string, unknown>) | null> {
@@ -1345,8 +1363,19 @@ export default function AdminStoragePage() {
 
       {/* Confirmation modal */}
       {modal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
-          <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-apple-lg border border-line/70 bg-surface-card p-6 shadow-xl dark:border-line-dark/70 dark:bg-surface-dark-card">
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm animate-in fade-in duration-150"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !modalBusy) setModal(null);
+          }}
+        >
+          <div
+            data-lenis-prevent
+            className="admin-scrollbar max-h-[90vh] w-full max-w-md overflow-y-auto overscroll-contain rounded-apple-lg border border-line/70 bg-surface-card p-6 shadow-xl dark:border-line-dark/70 dark:bg-surface-dark-card"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-[16px] font-semibold tracking-tight text-ink dark:text-ink-dark">
               Confirm deletion
             </h3>

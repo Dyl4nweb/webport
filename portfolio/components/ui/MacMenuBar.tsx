@@ -214,7 +214,13 @@ export const MacMenuBar = memo(function MacMenuBar() {
               Experience
             </Link>
             <Link
-              href="/certifications"
+              href={
+                pathname === "/about" || pathname?.startsWith("/about/")
+                  ? "/certifications?from=about"
+                  : pathname === "/"
+                  ? "/certifications?from=home"
+                  : "/certifications"
+              }
               className="hover:text-ink dark:hover:text-ink-dark px-1 py-0.5 rounded transition-colors"
             >
               Certifications

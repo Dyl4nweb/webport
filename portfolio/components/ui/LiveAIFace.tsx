@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface LiveAIFaceProps {
@@ -16,8 +16,11 @@ export const LiveAIFace = memo(function LiveAIFace({
   isHovered = false,
   isActive = false,
 }: LiveAIFaceProps) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const [isBlinking, setIsBlinking] = useState(false);
   const [lookOffset, setLookOffset] = useState({ x: 0, y: 0 });
+  const isTrackingMouseRef = useRef(false);
+  const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Natural periodic blinking loop
   useEffect(() => {
@@ -33,29 +36,87 @@ export const LiveAIFace = memo(function LiveAIFace({
     return () => clearTimeout(blinkTimer);
   }, []);
 
-  // Subtle curious autonomous eye glances
+  // Smooth Cursor Tracking across the viewport
+  useEffect(() => {
+    let rafId: number;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        if (!containerRef.current) return;
+        const rect = containerRef.current.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const deltaX = e.clientX - centerX;
+        const deltaY = e.clientY - centerY;
+        const distance = Math.hypot(deltaX, deltaY);
+
+        if (distance === 0) {
+          setLookOffset({ x: 0, y: 0 });
+          return;
+        }
+
+        // Maximum displacement radius based on face size
+        const maxOffset = Math.max(1.8, size * 0.13);
+        const pull = Math.min(1, distance / 220);
+        const factor = pull * maxOffset;
+
+        const offsetX = (deltaX / distance) * factor;
+        const offsetY = (deltaY / distance) * factor;
+
+        setLookOffset({
+          x: Number(offsetX.toFixed(2)),
+          y: Number(offsetY.toFixed(2)),
+        });
+
+        // Set tracking active and reset idle timer
+        isTrackingMouseRef.current = true;
+        if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+        idleTimerRef.current = setTimeout(() => {
+          isTrackingMouseRef.current = false;
+        }, 4000);
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(rafId);
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    };
+  }, [size]);
+
+  // Subtle curious autonomous glances when idle (e.g. inactive mouse or touch devices)
   useEffect(() => {
     let glanceTimer: NodeJS.Timeout;
     const triggerGlance = () => {
-      const angles = [
-        { x: 0, y: 0 },
-        { x: 1, y: -0.6 },
-        { x: -1, y: -0.4 },
-        { x: 0.8, y: 0.5 },
-        { x: 0, y: 0 },
-      ];
-      const randomAngle = angles[Math.floor(Math.random() * angles.length)];
-      setLookOffset(randomAngle);
-      const nextDelay = 3000 + Math.random() * 4000;
+      if (!isTrackingMouseRef.current) {
+        const maxOffset = Math.max(1.2, size * 0.09);
+        const angles = [
+          { x: 0, y: 0 },
+          { x: maxOffset * 0.85, y: -maxOffset * 0.45 },
+          { x: -maxOffset * 0.85, y: -maxOffset * 0.3 },
+          { x: maxOffset * 0.6, y: maxOffset * 0.5 },
+          { x: 0, y: 0 },
+        ];
+        const randomAngle = angles[Math.floor(Math.random() * angles.length)];
+        setLookOffset(randomAngle);
+      }
+      const nextDelay = 3200 + Math.random() * 3800;
       glanceTimer = setTimeout(triggerGlance, nextDelay);
     };
 
-    glanceTimer = setTimeout(triggerGlance, 3500);
+    glanceTimer = setTimeout(triggerGlance, 3000);
     return () => clearTimeout(glanceTimer);
-  }, []);
+  }, [size]);
 
   return (
     <div
+      ref={containerRef}
       className={cn("relative flex items-center justify-center select-none", className)}
       style={{ width: size, height: size }}
     >
@@ -87,7 +148,7 @@ export const LiveAIFace = memo(function LiveAIFace({
 
         {/* Dynamic Eye Container */}
         <div
-          className="relative flex items-center justify-center gap-[4px] transition-transform duration-300 ease-out"
+          className="relative flex items-center justify-center gap-[4px] transition-transform duration-100 ease-out will-change-transform"
           style={{
             transform: `translate(${lookOffset.x}px, ${lookOffset.y}px)`,
           }}

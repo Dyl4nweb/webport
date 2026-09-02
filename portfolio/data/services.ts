@@ -2,21 +2,31 @@ import { Service } from "@/types";
 
 export const services: Service[] = [
   {
-    title: "Website & Landing Pages",
+    title: "Full-Stack Web Applications",
     description:
-      "Full responsive websites for companies — built to convert and perform. From simple landing pages to multi-page business websites.",
+      "Custom web platforms, SaaS apps, and responsive business portals engineered for high performance, security, and scalability.",
     icon: "layers",
+    tags: ["Next.js & React", "APIs & Databases", "Supabase & Postgres"],
   },
   {
     title: "Mobile App Development",
     description:
-      "Native and cross-platform mobile applications for iOS and Android. Designed for performance, usability, and scalability.",
+      "Cross-platform iOS and Android applications with offline-first synchronization, clean architecture, and responsive UX.",
     icon: "mobile",
+    tags: ["Cross-Platform", "Offline-First", "Fluid Interfaces"],
   },
   {
-    title: "Graphic Design & Branding",
+    title: "IT Support & Systems Administration",
     description:
-      "Professional graphic design services including flyers, promotional materials, and pubmats using GIMP and Canva.",
+      "Technical troubleshooting, workflow automations, database maintenance, and IT operations support for organizations.",
+    icon: "gauge",
+    tags: ["System Admin", "Database Backups", "Technical Support"],
+  },
+  {
+    title: "Graphic Design & Digital Branding",
+    description:
+      "Modern marketing collaterals, social media pubmats, brand kits, and visual assets crafted to capture attention.",
     icon: "paint",
+    tags: ["Pubmats & Flyers", "Brand Assets", "UI Visuals"],
   },
 ];

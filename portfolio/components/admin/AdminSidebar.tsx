@@ -111,7 +111,10 @@ export default function AdminSidebar({
         </div>
       </div>
 
-      <nav className="flex flex-1 flex-col gap-0.5 border-t border-line/50 pt-3 dark:border-line-dark/50">
+      <nav
+        data-lenis-prevent
+        className="admin-scrollbar flex flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain border-t border-line/50 pt-3 dark:border-line-dark/50"
+      >
         {NAV_ITEMS.map((item) => {
           const active =
             pathname === item.href ||

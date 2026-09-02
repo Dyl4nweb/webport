@@ -1,12 +1,8 @@
 import Hero from "@/components/sections/Hero";
 import StatsBanner from "@/components/sections/StatsBanner";
-import About from "@/components/sections/About";
-import FeaturedProjects from "@/components/sections/FeaturedProjects";
-import Skills from "@/components/sections/Skills";
-import Experience from "@/components/sections/Experience";
-import Certifications from "@/components/sections/Certifications";
 import Services from "@/components/sections/Services";
-import Testimonials from "@/components/sections/Testimonials";
+import Skills from "@/components/sections/Skills";
+import FeaturedProjects from "@/components/sections/FeaturedProjects";
 import Contact from "@/components/sections/Contact";
 import { SITE } from "@/lib/constants";
 import { socialLinks } from "@/data/social";
@@ -47,13 +43,9 @@ export default function HomePage() {
       />
       <Hero />
       <StatsBanner />
-      <About />
-      <FeaturedProjects />
-      <Skills />
-      <Experience />
-      <Certifications />
       <Services />
-      <Testimonials />
+      <Skills />
+      <FeaturedProjects />
       <Contact />
     </>
   );

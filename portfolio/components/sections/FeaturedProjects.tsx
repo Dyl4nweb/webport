@@ -13,12 +13,11 @@ export default async function FeaturedProjects() {
         <SectionHeading
           eyebrow="Selected Work"
           title="Projects, in depth"
-          deck="A few pieces of work I'd stand behind in a room full of critics."
         />
 
-        <ProjectsGrid projects={projects} />
+        <ProjectsGrid projects={projects} showSearch={false} showFilters={false} />
 
-        <Button href="/projects" variant="secondary" className="self-center">
+        <Button href="/projects?from=home" variant="secondary" className="self-center px-5 py-2.5 sm:px-8 sm:py-3 text-[13px] sm:text-[14px]">
           View all projects
         </Button>
       </Container>

@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Container from "@/components/ui/Container";
 import VisitorCount from "@/components/ui/VisitorCount";
@@ -31,71 +34,111 @@ const socialIcons: Record<string, React.ReactNode> = {
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const [manilaTime, setManilaTime] = useState<string>("");
+
+  useEffect(() => {
+    function updateClock() {
+      const now = new Date();
+      const formatted = now.toLocaleTimeString("en-US", {
+        timeZone: "Asia/Manila",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      });
+      setManilaTime(formatted);
+    }
+    updateClock();
+    const interval = setInterval(updateClock, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <footer className="public-footer relative border-t border-line/40 bg-surface-alt/50 backdrop-blur-sm dark:border-line-dark/30 dark:bg-surface-dark-alt/40">
-      <Container className="pt-10 sm:pt-14 pb-28 sm:pb-32 md:pb-36">
-        {/* Top Row: Large Brand, Role, Availability & Icon-Only Socials */}
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex flex-col gap-1.5">
-            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-              <Link
-                href="/"
-                className="text-2xl font-bold tracking-tight text-ink transition-opacity hover:opacity-80 dark:text-ink-dark sm:text-3xl md:text-4xl"
-              >
-                <GlitchText text={`${SITE.name}.`} />
-              </Link>
-
-              <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-ink-secondary dark:text-ink-dark-secondary">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-                </span>
-                Available for new projects
-              </span>
-            </div>
-
-            <p className="text-[13px] font-medium text-ink-secondary dark:text-ink-dark-secondary">
-              Software Engineer
+    <footer className="public-footer w-full border-t border-black/[0.08] dark:border-white/[0.08] bg-surface dark:bg-surface-dark pt-12 sm:pt-16 pb-28 sm:pb-32 md:pb-36">
+      <Container className="flex flex-col gap-8 sm:gap-10 md:gap-12">
+        {/* Top Row: Name & Role on Left, Quick Nav & Socials on Right */}
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          {/* Left: Brand Name & Subtitle */}
+          <div className="flex flex-col gap-2 items-center md:items-start text-center md:text-left">
+            <Link
+              href="/"
+              className="text-3xl min-[360px]:text-4xl sm:text-5xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark transition-opacity hover:opacity-85 inline-block"
+            >
+              <GlitchText text={`${SITE.name}.`} />
+            </Link>
+            <p className="font-mono text-xs sm:text-sm font-medium uppercase tracking-[0.22em] text-ink-secondary dark:text-ink-dark-secondary">
+              SOFTWARE ENGINEER
             </p>
           </div>
 
-          {/* Social Links (Icon-Only with Tooltip & Hover Micro-Lift) */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            {socialLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.url}
-                target={link.url.startsWith("http") ? "_blank" : undefined}
-                rel="noreferrer"
-                title={link.label}
-                aria-label={link.label}
-                className="group flex h-9 w-9 items-center justify-center rounded-full text-ink-secondary transition-all duration-200 hover:-translate-y-0.5 hover:bg-black/[0.05] hover:text-ink dark:text-ink-dark-secondary dark:hover:bg-white/[0.08] dark:hover:text-ink-dark"
-              >
-                <span className="transition-transform duration-200 group-hover:scale-110">
+          {/* Right: Quick Links + Social Icons */}
+          <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-8 justify-center md:justify-end">
+            {/* Quick Navigation */}
+            <nav className="flex items-center gap-4 sm:gap-6 font-mono text-[12px] sm:text-[13px] font-medium text-ink-secondary dark:text-ink-dark-secondary">
+              <Link href="/" className="hover:text-ink dark:hover:text-ink-dark transition-colors">
+                Home
+              </Link>
+              <Link href="/about" className="hover:text-ink dark:hover:text-ink-dark transition-colors">
+                About
+              </Link>
+              <Link href="/projects" className="hover:text-ink dark:hover:text-ink-dark transition-colors">
+                Projects
+              </Link>
+              <Link href="/contact" className="hover:text-ink dark:hover:text-ink-dark transition-colors">
+                Contact
+              </Link>
+            </nav>
+
+            <span className="hidden sm:inline h-4 w-px bg-black/10 dark:bg-white/10" aria-hidden="true" />
+
+            {/* Social Icons */}
+            <div className="flex items-center gap-3">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.url}
+                  target={link.url.startsWith("http") ? "_blank" : undefined}
+                  rel="noreferrer"
+                  title={link.label}
+                  aria-label={link.label}
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] text-ink-secondary transition-all duration-200 hover:scale-105 hover:bg-black/[0.08] hover:text-ink dark:text-ink-dark-secondary dark:hover:bg-white/[0.1] dark:hover:text-ink-dark"
+                >
                   {socialIcons[link.icon]}
-                </span>
-              </a>
-            ))}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Bottom Row: Legal & Live Meta (Seamless, no internal divider line) */}
-        <div className="mt-8 flex flex-col items-start justify-between gap-4 text-[12px] text-ink-tertiary dark:text-ink-dark-secondary sm:flex-row sm:items-center">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            <span>Copyright © {year} {SITE.name}.</span>
-            <span className="hidden select-none sm:inline" aria-hidden="true">·</span>
-            <span>All rights reserved.</span>
-          </div>
+        {/* Bottom Row: Copyright on Left, Unbreakable Manila Time & Visitor Badges on Right */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-6 border-t border-black/[0.06] dark:border-white/[0.06] text-[12.5px] text-ink-tertiary dark:text-ink-dark-secondary">
+          <span className="text-center md:text-left order-2 md:order-1 font-sans">
+            © {year} <span className="font-medium text-ink dark:text-ink-dark">{SITE.name}</span>. All rights reserved.
+          </span>
 
-          <div className="flex flex-wrap items-center gap-4">
-            <VisitorCount />
-            <span className="hidden select-none text-line/60 dark:text-line-dark/60 sm:inline" aria-hidden="true">
-              ·
-            </span>
-            <span className="text-[11px] uppercase tracking-wider text-ink-tertiary dark:text-ink-dark-secondary">
-              Manila, PH
-            </span>
+          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 order-1 md:order-2">
+            {/* Live Manila Time Status Pill (Always 1 single clean line, never broken) */}
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-full bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] backdrop-blur-sm shrink-0 select-none whitespace-nowrap">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              <span className="font-mono text-[11px] sm:text-[12px] font-medium text-ink dark:text-ink-dark">
+                Manila, PH
+              </span>
+              <span className="text-ink-tertiary dark:text-ink-dark-secondary text-[10px]">·</span>
+              <span className="tabular-nums font-mono font-semibold text-[11px] sm:text-[12px] text-emerald-600 dark:text-emerald-400">
+                {manilaTime || "--:--:-- --"}
+              </span>
+              <span className="text-[9.5px] font-mono font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 dark:bg-emerald-400/15 text-emerald-600 dark:text-emerald-400">
+                UTC+8
+              </span>
+            </div>
+
+            {/* Visitor Counter Pill */}
+            <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] backdrop-blur-sm shrink-0">
+              <VisitorCount />
+            </div>
           </div>
         </div>
       </Container>

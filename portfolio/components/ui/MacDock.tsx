@@ -3,69 +3,54 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { memo, useCallback, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { SITE } from "@/lib/constants";
 import ThemeToggle from "@/components/ui/ThemeToggle";
-
 import LiveAIFace from "@/components/ui/LiveAIFace";
 
-interface DockItem {
-  id: string;
-  label: string;
-  href?: string;
-  onClick?: () => void;
-  icon: React.ReactNode;
-}
-
 const DOCK_ICONS: Record<string, React.ReactNode> = {
-  "/": (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-      <polyline points="9 22 9 12 15 12 15 22" />
-    </svg>
-  ),
   "/about": (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
+    <div className="relative flex items-center justify-center w-[27px] h-[27px] min-[380px]:w-[30px] min-[380px]:h-[30px] sm:w-[33px] sm:h-[33px] md:w-[36px] md:h-[36px] rounded-[7px] min-[380px]:rounded-[8px] sm:rounded-[9px] md:rounded-[10px] bg-gradient-to-b from-[#475569] via-[#334155] to-[#1E293B] shadow-[0_2px_8px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.35)] border border-white/20 dark:border-white/15 overflow-hidden shrink-0 select-none before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/25 before:via-white/5 before:to-transparent before:pointer-events-none">
+      <Image
+        src="/images/emoji/user-silhouette.png"
+        alt="About"
+        width={40}
+        height={40}
+        className="w-[17px] h-[17px] min-[380px]:w-[19px] min-[380px]:h-[19px] sm:w-[21px] sm:h-[21px] md:w-[23px] md:h-[23px] object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)] select-none pointer-events-none transition-transform duration-200"
+        priority
+      />
+    </div>
   ),
   "/projects": (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <rect width="20" height="14" x="2" y="3" rx="2" />
-      <line x1="8" x2="16" y1="21" y2="21" />
-      <line x1="12" x2="12" y1="17" y2="21" />
-      <path d="m7 8 2 2-2 2" />
-      <path d="M12 12h3" />
-    </svg>
-  ),
-  "/experience": (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
-      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-    </svg>
-  ),
-  "/certifications": (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="8" r="6" />
-      <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
-    </svg>
+    <div className="relative flex items-center justify-center w-[27px] h-[27px] min-[380px]:w-[30px] min-[380px]:h-[30px] sm:w-[33px] sm:h-[33px] md:w-[36px] md:h-[36px] rounded-[7px] min-[380px]:rounded-[8px] sm:rounded-[9px] md:rounded-[10px] bg-gradient-to-b from-[#5c3116] via-[#3d1f0d] to-[#241207] shadow-[0_2px_8px_rgba(61,31,13,0.45),inset_0_1px_0_rgba(255,255,255,0.35)] border border-amber-500/25 dark:border-amber-400/20 overflow-hidden shrink-0 select-none before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/25 before:via-white/5 before:to-transparent before:pointer-events-none">
+      <Image
+        src="/images/emoji/briefcase.png"
+        alt="Projects"
+        width={40}
+        height={40}
+        className="w-[17px] h-[17px] min-[380px]:w-[19px] min-[380px]:h-[19px] sm:w-[21px] sm:h-[21px] md:w-[23px] md:h-[23px] object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.45)] select-none pointer-events-none transition-transform duration-200"
+        priority
+      />
+    </div>
   ),
   "/contact": (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 2 11 13" />
-      <path d="m22 2-7 20-4-9-9-4 20-7z" />
-    </svg>
+    <div className="relative flex items-center justify-center w-[27px] h-[27px] min-[380px]:w-[30px] min-[380px]:h-[30px] sm:w-[33px] sm:h-[33px] md:w-[36px] md:h-[36px] rounded-[7px] min-[380px]:rounded-[8px] sm:rounded-[9px] md:rounded-[10px] bg-gradient-to-b from-[#38BDF8] via-[#0284C7] to-[#0369A1] shadow-[0_2px_8px_rgba(2,132,199,0.35),inset_0_1px_0_rgba(255,255,255,0.4)] border border-sky-300/35 dark:border-sky-300/25 overflow-hidden shrink-0 select-none before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/30 before:via-white/5 before:to-transparent before:pointer-events-none">
+      <Image
+        src="/images/emoji/envelope.png"
+        alt="Contact"
+        width={40}
+        height={40}
+        className="w-[17px] h-[17px] min-[380px]:w-[19px] min-[380px]:h-[19px] sm:w-[21px] sm:h-[21px] md:w-[23px] md:h-[23px] object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] select-none pointer-events-none transition-transform duration-200"
+        priority
+      />
+    </div>
   ),
 };
 
 const NAV_PAGES = [
-  { id: "overview", label: "Overview", href: "/", className: "hidden sm:inline-flex" },
   { id: "about", label: "About", href: "/about" },
   { id: "projects", label: "Projects", href: "/projects" },
-  { id: "experience", label: "Experience", href: "/experience" },
-  { id: "certifications", label: "Certifications", href: "/certifications" },
   { id: "contact", label: "Contact", href: "/contact" },
 ];
 
@@ -134,12 +119,40 @@ export const MacDock = memo(function MacDock() {
   const router = useRouter();
   const [mouseX, setMouseX] = useState<number | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [activeRevealedId, setActiveRevealedId] = useState<string | null>(null);
+  const touchFadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dockRef = useRef<HTMLDivElement | null>(null);
   const themeRef = useRef<HTMLDivElement | null>(null);
 
   // Pure Back to Top: Always smoothly scrolls to y=0 of the current page
   const scrollToTop = useCallback(() => {
     performSmoothScrollToTop();
+  }, []);
+
+  // When user opens/navigates to a page, briefly reveal its label indicator (e.g. Home, About, Projects, Contact)
+  useEffect(() => {
+    let currentId: string | null = null;
+    if (pathname === "/") currentId = "logo";
+    else if (pathname === "/about") currentId = "about";
+    else if (pathname === "/projects") currentId = "projects";
+    else if (pathname === "/contact") currentId = "contact";
+
+    if (currentId) {
+      setActiveRevealedId(currentId);
+      const timer = setTimeout(() => {
+        setActiveRevealedId(null);
+      }, 2200);
+      return () => clearTimeout(timer);
+    }
+  }, [pathname]);
+
+  // Touch trigger on mobile: reveals label immediately, stays visible for 1.8s
+  const handleTouchItem = useCallback((id: string) => {
+    if (touchFadeTimeoutRef.current) clearTimeout(touchFadeTimeoutRef.current);
+    setHoveredId(id);
+    touchFadeTimeoutRef.current = setTimeout(() => {
+      setHoveredId(null);
+    }, 1800);
   }, []);
 
   // D Logo: Navigates to Home if on subpage, or smoothly scrolls up if on Home
@@ -151,14 +164,33 @@ export const MacDock = memo(function MacDock() {
     }
   }, [pathname, router]);
 
+  const dockRafRef = useRef<number | null>(null);
+
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    setMouseX(e.clientX);
+    const clientX = e.clientX;
+    if (dockRafRef.current) cancelAnimationFrame(dockRafRef.current);
+    dockRafRef.current = requestAnimationFrame(() => {
+      setMouseX(clientX);
+    });
   }, []);
 
   const handleMouseLeave = useCallback(() => {
+    if (dockRafRef.current) cancelAnimationFrame(dockRafRef.current);
     setMouseX(null);
     setHoveredId(null);
   }, []);
+
+  // Touch move on dock: sliding finger previews the label under touch
+  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    const touch = e.touches[0];
+    if (!touch) return;
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    const dockItem = el?.closest("[data-dock-id]");
+    if (dockItem) {
+      const id = dockItem.getAttribute("data-dock-id");
+      if (id) handleTouchItem(id);
+    }
+  }, [handleTouchItem]);
 
   const toggleChat = useCallback(() => {
     window.dispatchEvent(new CustomEvent("aichat:toggle"));
@@ -174,52 +206,57 @@ export const MacDock = memo(function MacDock() {
       ref={dockRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchMove={handleTouchMove}
       className={cn(
-        "relative inline-flex items-center gap-0.5 min-[350px]:gap-1 min-[400px]:gap-1.5 px-2 min-[350px]:px-2.5 min-[400px]:px-3.5 py-1.5 min-[350px]:py-2 sm:py-2.5 rounded-full",
-        "bg-white/85 dark:bg-[#161618]/85",
-        "border border-black/[0.08] dark:border-white/[0.12]",
-        "backdrop-blur-xl [-webkit-backdrop-filter:blur(20px)]",
-        "shadow-[0_8px_32px_-4px_rgba(0,0,0,0.12),0_2px_6px_rgba(0,0,0,0.04)]",
-        "dark:shadow-[0_8px_32px_-4px_rgba(0,0,0,0.5),0_2px_6px_rgba(0,0,0,0.3)]",
+        "relative inline-flex items-center rounded-full",
+        "gap-1 min-[380px]:gap-1.5 sm:gap-2 md:gap-2",
+        "px-2 min-[380px]:px-2.5 sm:px-3 md:px-3.5",
+        "py-1.5 sm:py-1.5 md:py-2",
+        "bg-white/95 dark:bg-[#161618]/95",
+        "border border-black/[0.09] dark:border-white/[0.14]",
+        "backdrop-blur-2xl [-webkit-backdrop-filter:blur(24px)]",
+        "shadow-[0_6px_24px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.04)]",
+        "dark:shadow-[0_8px_28px_rgba(0,0,0,0.5),0_1px_3px_rgba(0,0,0,0.3)]",
+        "md:shadow-[0_10px_32px_rgba(0,0,0,0.1),0_1px_3px_rgba(0,0,0,0.05)]",
+        "dark:md:shadow-[0_12px_36px_rgba(0,0,0,0.6),0_1px_3px_rgba(0,0,0,0.35)]",
         "transition-[background-color,border-color,box-shadow] duration-300",
-        "overflow-visible"
+        "overflow-visible isolate transform-gpu [transform:translateZ(0)] [-webkit-backface-visibility:hidden]"
       )}
     >
+      {/* 1. Home Brand Logo */}
       <DockItemButton
         id="logo"
         label="Home"
         onClick={handleLogoClick}
         mouseX={mouseX}
         isHovered={hoveredId === "logo"}
+        isRevealed={activeRevealedId === "logo"}
         onHoverStart={() => setHoveredId("logo")}
         onHoverEnd={() => setHoveredId(null)}
-        active={false}
+        onTouchStart={() => handleTouchItem("logo")}
+        active={pathname === "/"}
       >
         <Image
           id="navbar-logo-dock"
           src="/icon.png"
           alt={SITE.name}
-          width={24}
-          height={24}
+          width={40}
+          height={40}
           priority
-          className="h-4.5 w-4.5 min-[350px]:h-5 min-[350px]:w-5 min-[400px]:h-5.5 min-[400px]:w-5.5 sm:h-6 sm:w-6 object-contain navbar-logo-target"
-          style={{ width: "auto", height: "auto" }}
+          className="w-[27px] h-[27px] min-[380px]:w-[30px] min-[380px]:h-[30px] sm:w-[33px] sm:h-[33px] md:w-[36px] md:h-[36px] rounded-[7px] min-[380px]:rounded-[8px] sm:rounded-[9px] md:rounded-[10px] shadow-[0_2px_8px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.35)] border border-white/20 dark:border-white/15 object-contain navbar-logo-target select-none pointer-events-none transition-transform duration-200"
         />
-        {pathname === "/" && (
-          <span
-            aria-hidden="true"
-            className="sm:hidden absolute -bottom-1 h-1 w-1 rounded-full bg-accent dark:bg-accent-dark animate-pulse shadow-[0_0_6px_currentColor]"
-          />
-        )}
       </DockItemButton>
 
+      {/* Divider */}
       <span
         aria-hidden="true"
-        className="h-4 min-[350px]:h-4.5 sm:h-5.5 w-[1px] bg-black/10 dark:bg-white/15 mx-[0.5px] min-[350px]:mx-0.5 sm:mx-1 shrink-0"
+        className="h-3 min-[380px]:h-3.5 sm:h-4 md:h-4.5 w-[1px] bg-black/[0.12] dark:bg-white/[0.16] shrink-0 self-center opacity-80"
       />
 
+      {/* 2. Main Navigation Links (About, Projects, Contact) */}
       {NAV_PAGES.map((page) => {
         const active = pathname === page.href;
+
         return (
           <DockItemLink
             key={page.id}
@@ -229,50 +266,114 @@ export const MacDock = memo(function MacDock() {
             active={active}
             mouseX={mouseX}
             isHovered={hoveredId === page.id}
+            isRevealed={activeRevealedId === page.id}
             onHoverStart={() => setHoveredId(page.id)}
             onHoverEnd={() => setHoveredId(null)}
-            className={page.className}
+            onTouchStart={() => handleTouchItem(page.id)}
           >
             {DOCK_ICONS[page.href]}
           </DockItemLink>
         );
       })}
 
+      {/* Divider */}
       <span
         aria-hidden="true"
-        className="h-4 min-[350px]:h-4.5 sm:h-5.5 w-[1px] bg-black/10 dark:bg-white/15 mx-[0.5px] min-[350px]:mx-0.5 sm:mx-1 shrink-0"
+        className="h-3 min-[380px]:h-3.5 sm:h-4 md:h-4.5 w-[1px] bg-black/[0.12] dark:bg-white/[0.16] shrink-0 self-center opacity-80"
       />
 
+      {/* 3. Theme Toggle Button */}
+      <div
+        ref={themeRef}
+        data-dock-id="theme"
+        onMouseEnter={() => setHoveredId("theme")}
+        onMouseLeave={() => setHoveredId(null)}
+        onTouchStart={() => handleTouchItem("theme")}
+        className="relative flex items-center justify-center origin-center shrink-0 w-[32px] h-[32px] min-[380px]:w-[35px] min-[380px]:h-[35px] sm:w-[39px] sm:h-[39px] md:w-[43px] md:h-[43px]"
+        style={{
+          transform: `scale(${themeScale}) translateY(${themeTranslateY}px)`,
+          transition: mouseX !== null
+            ? "transform 0.08s ease-out"
+            : "transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1)",
+          transformOrigin: "bottom center",
+        }}
+      >
+        <ThemeToggle className="w-full h-full" />
+
+        {/* Floating Tooltip — Works on both Desktop and Mobile Touch */}
+        <span
+          aria-hidden="true"
+          className={cn(
+            "inline-flex absolute -top-8 md:-top-9 left-1/2 -translate-x-1/2 pointer-events-none z-[100]",
+            "items-center justify-center whitespace-nowrap rounded-full px-2.5 py-1",
+            "font-sans text-[11px] md:text-[11.5px] font-medium tracking-normal leading-none",
+            "bg-[#18181b]/95 text-[#f4f4f5] dark:bg-[#f4f4f6]/95 dark:text-[#18181b]",
+            "shadow-[0_4px_16px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.12)]",
+            "border border-white/15 dark:border-black/10",
+            "backdrop-blur-md",
+            "transition-all duration-200 ease-out",
+            hoveredId === "theme" || activeRevealedId === "theme"
+              ? "opacity-100 translate-y-0 scale-100"
+              : "opacity-0 translate-y-1 scale-90 pointer-events-none"
+          )}
+        >
+          Theme
+        </span>
+      </div>
+
+      {/* 4. Varex AI Assistant */}
       <DockItemButton
         id="aichat"
         label="Varex AI"
         onClick={toggleChat}
         mouseX={mouseX}
         isHovered={hoveredId === "aichat"}
+        isRevealed={activeRevealedId === "aichat"}
         onHoverStart={() => setHoveredId("aichat")}
         onHoverEnd={() => setHoveredId(null)}
+        onTouchStart={() => handleTouchItem("aichat")}
         active={false}
       >
-        <LiveAIFace
-          size={19}
-          isHovered={hoveredId === "aichat"}
-        />
+        <span className="flex items-center justify-center">
+          <LiveAIFace
+            size={16}
+            className="min-[380px]:hidden"
+            isHovered={hoveredId === "aichat"}
+          />
+          <LiveAIFace
+            size={17}
+            className="hidden min-[380px]:inline-flex sm:hidden"
+            isHovered={hoveredId === "aichat"}
+          />
+          <LiveAIFace
+            size={19}
+            className="hidden sm:inline-flex md:hidden"
+            isHovered={hoveredId === "aichat"}
+          />
+          <LiveAIFace
+            size={21}
+            className="hidden md:inline-flex"
+            isHovered={hoveredId === "aichat"}
+          />
+        </span>
       </DockItemButton>
 
-      {/* Back to top — visible on both mobile and desktop */}
+      {/* 5. Back to top */}
       <DockItemButton
         id="backtotop"
         label="Back to top"
         onClick={scrollToTop}
         mouseX={mouseX}
         isHovered={hoveredId === "backtotop"}
+        isRevealed={activeRevealedId === "backtotop"}
         onHoverStart={() => setHoveredId("backtotop")}
         onHoverEnd={() => setHoveredId(null)}
+        onTouchStart={() => handleTouchItem("backtotop")}
         active={false}
       >
         <svg
-          width="19"
-          height="19"
+          width="20"
+          height="20"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -283,43 +384,6 @@ export const MacDock = memo(function MacDock() {
           <path d="M12 19V5M5 12l7-7 7 7" />
         </svg>
       </DockItemButton>
-
-      {/* 5. Theme Toggle Button */}
-      <div
-        ref={themeRef}
-        onMouseEnter={() => setHoveredId("theme")}
-        onMouseLeave={() => setHoveredId(null)}
-        className="relative flex items-center justify-center origin-center shrink-0"
-        style={{
-          transform: `scale(${themeScale}) translateY(${themeTranslateY}px)`,
-          transition: mouseX !== null
-            ? "transform 0.08s ease-out"
-            : "transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1)",
-          transformOrigin: "bottom center",
-        }}
-      >
-        <ThemeToggle />
-
-        {/* Floating Tooltip */}
-        <span
-          aria-hidden="true"
-          className={cn(
-            "absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none z-[100]",
-            "whitespace-nowrap rounded-md px-2.5 py-1",
-            "font-sans text-[11px] font-semibold tracking-tight leading-none",
-            "bg-[#161618]/95 text-white dark:bg-[#fbfbfd]/95 dark:text-black",
-            "shadow-[0_4px_16px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.45)]",
-            "border border-white/15 dark:border-black/10",
-            "backdrop-blur-md",
-            "transition-all duration-200 ease-out",
-            hoveredId === "theme"
-              ? "opacity-100 translate-y-0 scale-100"
-              : "opacity-0 translate-y-1 scale-90"
-          )}
-        >
-          Theme
-        </span>
-      </div>
     </div>
   );
 });
@@ -336,38 +400,45 @@ interface DockItemCommonProps {
   active?: boolean;
   mouseX: number | null;
   isHovered?: boolean;
+  isRevealed?: boolean;
   onHoverStart?: () => void;
   onHoverEnd?: () => void;
+  onTouchStart?: () => void;
   className?: string;
   children: React.ReactNode;
 }
 
 const DockItemLink = memo(function DockItemLink({
+  id,
   label,
   href,
   active,
   mouseX,
   isHovered,
+  isRevealed,
   onHoverStart,
   onHoverEnd,
+  onTouchStart,
   className,
   children,
 }: DockItemCommonProps & { href: string }) {
   const ref = useRef<HTMLAnchorElement | null>(null);
   const { scale, translateY } = calculateMagnification(mouseX, ref.current);
+  const isVisible = Boolean(isHovered || isRevealed);
 
   return (
     <Link
       ref={ref}
       href={href}
+      data-dock-id={id}
       onMouseEnter={onHoverStart}
       onMouseLeave={onHoverEnd}
+      onTouchStart={onTouchStart}
       className={cn(
-        "relative flex items-center justify-center h-8 w-8 min-[350px]:h-8.5 min-[350px]:w-8.5 min-[400px]:h-9 min-[400px]:w-9 sm:h-9.5 sm:w-9.5 rounded-full cursor-pointer shrink-0",
-        "transition-[background-color,color,box-shadow] duration-200 select-none",
-        active
-          ? "bg-accent/15 text-accent dark:bg-accent-dark/20 dark:text-accent-dark shadow-[0_0_12px_rgba(0,102,204,0.25)] dark:shadow-[0_0_12px_rgba(41,151,255,0.35)]"
-          : "text-ink-secondary dark:text-ink-dark-secondary hover:text-ink dark:hover:text-ink-dark hover:bg-black/[0.05] dark:hover:bg-white/[0.08]",
+        "relative flex items-center justify-center",
+        "w-[32px] h-[32px] min-[380px]:w-[35px] min-[380px]:h-[35px] sm:w-[39px] sm:h-[39px] md:w-[43px] md:h-[43px]",
+        "rounded-full cursor-pointer shrink-0",
+        "transition-[color,transform] duration-200 select-none",
         className
       )}
       style={{
@@ -376,34 +447,35 @@ const DockItemLink = memo(function DockItemLink({
           ? "transform 0.08s ease-out"
           : "transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1)",
         transformOrigin: "bottom center",
+        willChange: mouseX !== null ? "transform" : "auto",
       }}
       aria-label={label}
     >
-      <span className="flex items-center justify-center [&>svg]:w-[16.5px] [&>svg]:h-[16.5px] min-[350px]:[&>svg]:w-[18px] min-[350px]:[&>svg]:h-[18px] min-[400px]:[&>svg]:w-[19px] min-[400px]:[&>svg]:h-[19px] sm:[&>svg]:w-[20px] sm:[&>svg]:h-[20px]">{children}</span>
+      <span className="flex items-center justify-center transition-transform duration-200">{children}</span>
 
-      {/* Active dot */}
+      {/* Active running dot */}
       {active && (
         <span
           aria-hidden="true"
-          className="absolute -bottom-1 h-1 w-1 rounded-full bg-accent dark:bg-accent-dark animate-pulse shadow-[0_0_6px_currentColor]"
+          className="absolute -bottom-0.5 h-1 w-1 md:h-1.5 md:w-1.5 rounded-full bg-accent dark:bg-accent-dark shadow-[0_0_6px_currentColor]"
         />
       )}
 
-      {/* Floating tooltip */}
+      {/* Floating Tooltip — Works on both Desktop and Mobile Touch */}
       <span
         aria-hidden="true"
         className={cn(
-          "absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none z-[100]",
-          "whitespace-nowrap rounded-md px-2.5 py-1",
-          "font-sans text-[11px] font-semibold tracking-tight leading-none",
-          "bg-[#161618]/95 text-white dark:bg-[#fbfbfd]/95 dark:text-black",
-          "shadow-[0_4px_16px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.45)]",
+          "inline-flex absolute -top-8 md:-top-9 left-1/2 -translate-x-1/2 pointer-events-none z-[100]",
+          "items-center justify-center whitespace-nowrap rounded-full px-2.5 py-1",
+          "font-sans text-[11px] md:text-[11.5px] font-medium tracking-normal leading-none",
+          "bg-[#18181b]/95 text-[#f4f4f5] dark:bg-[#f4f4f6]/95 dark:text-[#18181b]",
+          "shadow-[0_4px_16px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.12)]",
           "border border-white/15 dark:border-black/10",
           "backdrop-blur-md",
           "transition-all duration-200 ease-out",
-          isHovered
+          isVisible
             ? "opacity-100 translate-y-0 scale-100"
-            : "opacity-0 translate-y-1 scale-90"
+            : "opacity-0 translate-y-1 scale-90 pointer-events-none"
         )}
       >
         {label}
@@ -413,31 +485,39 @@ const DockItemLink = memo(function DockItemLink({
 });
 
 const DockItemButton = memo(function DockItemButton({
+  id,
   label,
   onClick,
   active,
   mouseX,
   isHovered,
+  isRevealed,
   onHoverStart,
   onHoverEnd,
+  onTouchStart,
   className,
   children,
 }: DockItemCommonProps & { onClick?: (e: React.MouseEvent) => void }) {
   const ref = useRef<HTMLButtonElement | null>(null);
   const { scale, translateY } = calculateMagnification(mouseX, ref.current);
+  const isVisible = Boolean(isHovered || isRevealed);
 
   return (
     <button
       ref={ref}
       type="button"
+      data-dock-id={id}
       onClick={onClick}
       onMouseEnter={onHoverStart}
       onMouseLeave={onHoverEnd}
+      onTouchStart={onTouchStart}
       className={cn(
-        "relative flex items-center justify-center h-8 w-8 min-[350px]:h-8.5 min-[350px]:w-8.5 min-[400px]:h-9 min-[400px]:w-9 sm:h-9.5 sm:w-9.5 rounded-full cursor-pointer shrink-0",
-        "transition-[background-color,color,box-shadow] duration-200 select-none",
+        "relative flex items-center justify-center",
+        "w-[32px] h-[32px] min-[380px]:w-[35px] min-[380px]:h-[35px] sm:w-[39px] sm:h-[39px] md:w-[43px] md:h-[43px]",
+        "rounded-full cursor-pointer shrink-0",
+        "transition-[background-color,color,box-shadow,transform] duration-200 select-none",
         active
-          ? "bg-accent/15 text-accent dark:bg-accent-dark/20 dark:text-accent-dark shadow-[0_0_12px_rgba(0,102,204,0.25)] dark:shadow-[0_0_12px_rgba(41,151,255,0.35)]"
+          ? "text-accent dark:text-accent-dark"
           : "text-ink-secondary dark:text-ink-dark-secondary hover:text-ink dark:hover:text-ink-dark hover:bg-black/[0.05] dark:hover:bg-white/[0.08]",
         className
       )}
@@ -447,26 +527,35 @@ const DockItemButton = memo(function DockItemButton({
           ? "transform 0.08s ease-out"
           : "transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1)",
         transformOrigin: "bottom center",
+        willChange: mouseX !== null ? "transform" : "auto",
       }}
       aria-label={label}
     >
-      <span className="flex items-center justify-center [&>svg]:w-[16.5px] [&>svg]:h-[16.5px] min-[350px]:[&>svg]:w-[18px] min-[350px]:[&>svg]:h-[18px] min-[400px]:[&>svg]:w-[19px] min-[400px]:[&>svg]:h-[19px] sm:[&>svg]:w-[20px] sm:[&>svg]:h-[20px]">{children}</span>
+      <span className="flex items-center justify-center transition-transform duration-200">{children}</span>
 
-      {/* Floating tooltip */}
+      {/* Active running dot */}
+      {active && (
+        <span
+          aria-hidden="true"
+          className="absolute -bottom-0.5 h-1 w-1 md:h-1.5 md:w-1.5 rounded-full bg-accent dark:bg-accent-dark shadow-[0_0_6px_currentColor]"
+        />
+      )}
+
+      {/* Floating Tooltip — Works on both Desktop and Mobile Touch */}
       <span
         aria-hidden="true"
         className={cn(
-          "absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none z-[100]",
-          "whitespace-nowrap rounded-md px-2.5 py-1",
-          "font-sans text-[11px] font-semibold tracking-tight leading-none",
-          "bg-[#161618]/95 text-white dark:bg-[#fbfbfd]/95 dark:text-black",
-          "shadow-[0_4px_16px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.45)]",
+          "inline-flex absolute -top-8 md:-top-9 left-1/2 -translate-x-1/2 pointer-events-none z-[100]",
+          "items-center justify-center whitespace-nowrap rounded-full px-2.5 py-1",
+          "font-sans text-[11px] md:text-[11.5px] font-medium tracking-normal leading-none",
+          "bg-[#18181b]/95 text-[#f4f4f5] dark:bg-[#f4f4f6]/95 dark:text-[#18181b]",
+          "shadow-[0_4px_16px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.12)]",
           "border border-white/15 dark:border-black/10",
           "backdrop-blur-md",
           "transition-all duration-200 ease-out",
-          isHovered
+          isVisible
             ? "opacity-100 translate-y-0 scale-100"
-            : "opacity-0 translate-y-1 scale-90"
+            : "opacity-0 translate-y-1 scale-90 pointer-events-none"
         )}
       >
         {label}

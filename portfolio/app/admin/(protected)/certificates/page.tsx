@@ -106,6 +106,24 @@ export default function AdminCertificatesPage() {
     };
   }, [fetchRows]);
 
+  useEffect(() => {
+    if (!formOpen) {
+      document.body.style.overflow = "";
+      return;
+    }
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setFormOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [formOpen]);
+
   const sorted = useMemo(
     () =>
       [...rows].sort((a, b) => {
@@ -237,7 +255,7 @@ export default function AdminCertificatesPage() {
             type="button"
             onClick={openCreate}
             disabled={busy}
-            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-4 py-2 text-[13px] font-medium text-white shadow-sm transition-all duration-150 hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 disabled:pointer-events-none disabled:opacity-40 dark:bg-accent-dark dark:text-accent dark:focus-visible:ring-accent-dark/50"
+            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-ink px-4 py-2 text-[13px] font-medium text-white shadow-sm transition-all duration-150 hover:bg-black hover:opacity-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 disabled:pointer-events-none disabled:opacity-40 dark:bg-white dark:text-black dark:font-semibold dark:hover:bg-white/90 dark:focus-visible:ring-white/50"
           >
             New certificate
           </button>
@@ -338,155 +356,191 @@ export default function AdminCertificatesPage() {
       {/* Editor modal */}
       {formOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 p-4 backdrop-blur-sm sm:p-8"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="cert-modal-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150 overflow-y-auto"
           onClick={(e) => {
             if (e.target === e.currentTarget) setFormOpen(false);
           }}
         >
-          <div className="my-8 w-full max-w-2xl rounded-apple-lg border border-line/70 bg-surface p-6 shadow-xl dark:border-line-dark/70 dark:bg-surface-dark sm:p-8">
-            <div className="flex items-center justify-between gap-4">
-              <h2 className="text-[18px] font-semibold tracking-tight text-ink dark:text-ink-dark">
-                {editingId ? "Edit certificate" : "New certificate"}
-              </h2>
+          <div
+            className="flex max-h-[88vh] w-full max-w-2xl min-h-0 flex-col rounded-apple-lg border border-line/80 bg-surface shadow-2xl dark:border-line-dark/80 dark:bg-surface-dark overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Sticky Header */}
+            <div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-line/60 bg-surface/95 px-6 py-4 backdrop-blur-md dark:border-line-dark/60 dark:bg-surface-dark/95 sm:px-8">
+              <div>
+                <h2
+                  id="cert-modal-title"
+                  className="text-[18px] font-semibold tracking-tight text-ink dark:text-ink-dark"
+                >
+                  {editingId ? "Edit certificate" : "New certificate"}
+                </h2>
+                <p className="mt-0.5 text-[12px] text-ink-secondary dark:text-ink-dark-secondary">
+                  {editingId
+                    ? "Update certification details and badges below."
+                    : "Fill out the fields to publish a new certification."}
+                </p>
+              </div>
 
               <button
                 type="button"
                 onClick={() => setFormOpen(false)}
                 aria-label="Close editor"
-                className="rounded-full px-3 py-1.5 text-[13px] text-ink-secondary transition-colors hover:bg-ink/[0.05] dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.08]"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-full text-ink-secondary transition-colors hover:bg-ink/[0.08] hover:text-ink dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.1] dark:hover:text-ink-dark"
               >
-                Cancel
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
               </button>
             </div>
 
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              <label className="flex flex-col gap-1.5 sm:col-span-2">
-                <span className={labelClass}>Title *</span>
-                <input
-                  className={inputClass}
-                  value={form.title}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, title: e.target.value }))
-                  }
-                />
-              </label>
+            {/* Scrollable Form Content */}
+            <div
+              data-lenis-prevent
+              className="admin-scrollbar flex-1 min-h-0 overflow-y-auto overscroll-contain px-6 py-6 sm:px-8"
+            >
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="flex flex-col gap-1.5 sm:col-span-2">
+                  <span className={labelClass}>Title *</span>
+                  <input
+                    className={inputClass}
+                    value={form.title}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, title: e.target.value }))
+                    }
+                  />
+                </label>
 
-              <label className="flex flex-col gap-1.5">
-                <span className={labelClass}>Issuer</span>
-                <input
-                  className={inputClass}
-                  value={form.issuer}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, issuer: e.target.value }))
-                  }
-                />
-              </label>
+                <label className="flex flex-col gap-1.5">
+                  <span className={labelClass}>Issuer</span>
+                  <input
+                    className={inputClass}
+                    value={form.issuer}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, issuer: e.target.value }))
+                    }
+                  />
+                </label>
 
-              <label className="flex flex-col gap-1.5">
-                <span className={labelClass}>Category</span>
-                <input
-                  className={inputClass}
-                  value={form.category}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, category: e.target.value }))
-                  }
-                />
-              </label>
+                <label className="flex flex-col gap-1.5">
+                  <span className={labelClass}>Category</span>
+                  <input
+                    className={inputClass}
+                    value={form.category}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, category: e.target.value }))
+                    }
+                  />
+                </label>
 
-              <label className="flex flex-col gap-1.5">
-                <span className={labelClass}>Year</span>
-                <input
-                  className={inputClass}
-                  value={form.year}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, year: e.target.value }))
-                  }
-                />
-              </label>
+                <label className="flex flex-col gap-1.5">
+                  <span className={labelClass}>Year</span>
+                  <input
+                    className={inputClass}
+                    value={form.year}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, year: e.target.value }))
+                    }
+                  />
+                </label>
 
-              <label className="flex flex-col gap-1.5">
-                <span className={labelClass}>Sort order</span>
-                <input
-                  type="number"
-                  className={inputClass}
-                  value={form.sortOrder}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      sortOrder: Number(e.target.value) || 0,
-                    }))
-                  }
-                />
-              </label>
+                <label className="flex flex-col gap-1.5">
+                  <span className={labelClass}>Sort order</span>
+                  <input
+                    type="number"
+                    className={inputClass}
+                    value={form.sortOrder}
+                    onChange={(e) =>
+                      setForm((f) => ({
+                        ...f,
+                        sortOrder: Number(e.target.value) || 0,
+                      }))
+                    }
+                  />
+                </label>
 
-              <label className="flex flex-col gap-1.5">
-                <span className={labelClass}>Logo path</span>
-                <input
-                  className={inputClass}
-                  placeholder="/certificates/logos/CC.png"
-                  value={form.logo}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, logo: e.target.value }))
-                  }
-                />
-              </label>
+                <label className="flex flex-col gap-1.5">
+                  <span className={labelClass}>Logo path</span>
+                  <input
+                    className={inputClass}
+                    placeholder="/certificates/logos/CC.png"
+                    value={form.logo}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, logo: e.target.value }))
+                    }
+                  />
+                </label>
 
-              <label className="flex flex-col gap-1.5">
-                <span className={labelClass}>Image path</span>
-                <input
-                  className={inputClass}
-                  placeholder="/certificates/CTM.png"
-                  value={form.image}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, image: e.target.value }))
-                  }
-                />
-              </label>
+                <label className="flex flex-col gap-1.5">
+                  <span className={labelClass}>Image path</span>
+                  <input
+                    className={inputClass}
+                    placeholder="/certificates/CTM.png"
+                    value={form.image}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, image: e.target.value }))
+                    }
+                  />
+                </label>
 
-              <label className="flex flex-col gap-1.5 sm:col-span-2">
-                <span className={labelClass}>Description</span>
-                <textarea
-                  rows={3}
-                  className={inputClass}
-                  value={form.description}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, description: e.target.value }))
-                  }
-                />
-              </label>
+                <label className="flex flex-col gap-1.5 sm:col-span-2">
+                  <span className={labelClass}>Description</span>
+                  <textarea
+                    rows={3}
+                    className={inputClass}
+                    value={form.description}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, description: e.target.value }))
+                    }
+                  />
+                </label>
 
-              <label className="flex flex-col gap-1.5 sm:col-span-2">
-                <span className={labelClass}>Verification URL</span>
-                <input
-                  className={inputClass}
-                  placeholder="https://www.credly.com/badges/…"
-                  value={form.verifyUrl}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, verifyUrl: e.target.value }))
-                  }
-                />
-              </label>
+                <label className="flex flex-col gap-1.5 sm:col-span-2">
+                  <span className={labelClass}>Verification URL</span>
+                  <input
+                    className={inputClass}
+                    placeholder="https://www.credly.com/badges/…"
+                    value={form.verifyUrl}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, verifyUrl: e.target.value }))
+                    }
+                  />
+                </label>
 
-              <label className="flex items-center gap-2 sm:col-span-2">
-                <input
-                  type="checkbox"
-                  checked={form.published}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, published: e.target.checked }))
-                  }
-                  className="h-4 w-4 accent-[var(--accent)]"
-                />
-                <span className="text-[13px] font-medium text-ink dark:text-ink-dark">
-                  Published on the certifications page
-                </span>
-              </label>
+                <label className="flex items-center gap-2 sm:col-span-2">
+                  <input
+                    type="checkbox"
+                    checked={form.published}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, published: e.target.checked }))
+                    }
+                    className="h-4 w-4 accent-[var(--accent)]"
+                  />
+                  <span className="text-[13px] font-medium text-ink dark:text-ink-dark">
+                    Published on the certifications page
+                  </span>
+                </label>
+              </div>
             </div>
 
-            <div className="mt-8 flex justify-end gap-3">
+            {/* Sticky Footer */}
+            <div className="sticky bottom-0 z-10 flex shrink-0 items-center justify-end gap-3 border-t border-line/60 bg-surface/95 px-6 py-4 backdrop-blur-md dark:border-line-dark/60 dark:bg-surface-dark/95 sm:px-8">
               <button
                 type="button"
                 onClick={() => setFormOpen(false)}
-                className="rounded-full px-4 py-2 text-[13px] font-medium text-ink-secondary transition-colors hover:bg-ink/[0.05] dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.08]"
+                className="inline-flex items-center justify-center rounded-full border border-line/70 px-4 py-2 text-[13px] font-medium text-ink-secondary transition-colors duration-150 hover:bg-ink/[0.05] hover:text-ink dark:border-line-dark/70 dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.08] dark:hover:text-ink-dark"
               >
                 Cancel
               </button>
@@ -495,9 +549,36 @@ export default function AdminCertificatesPage() {
                 type="button"
                 onClick={saveForm}
                 disabled={busy || !form.title.trim()}
-                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-5 py-2 text-[13px] font-medium text-white shadow-sm transition-all duration-150 hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 disabled:pointer-events-none disabled:opacity-40 dark:bg-accent-dark"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-ink px-5 py-2 text-[13px] font-medium text-white shadow-sm transition-all duration-150 hover:bg-black hover:opacity-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 disabled:pointer-events-none disabled:opacity-40 dark:bg-white dark:text-black dark:font-semibold dark:hover:bg-white/90 dark:focus-visible:ring-white/50"
               >
-                {busy ? "Saving…" : editingId ? "Save changes" : "Publish certificate"}
+                {busy && (
+                  <svg
+                    className="h-3.5 w-3.5 animate-spin"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8H4z"
+                    />
+                  </svg>
+                )}
+                <span>
+                  {busy
+                    ? "Saving…"
+                    : editingId
+                    ? "Save changes"
+                    : "Publish certificate"}
+                </span>
               </button>
             </div>
           </div>

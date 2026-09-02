@@ -59,40 +59,69 @@ const icons: Record<string, React.ReactNode> = {
 
 export default function Services() {
   return (
-    <section className="relative overflow-hidden py-24 md:py-32" style={{ contain: "layout style" }}>
-      {/* Ambient glow */}
+    <section className="relative overflow-hidden py-12 sm:py-20 md:py-28" style={{ contain: "layout style" }}>
+      {/* Subtle ambient background glow */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[420px] w-[720px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/[0.06] blur-xl dark:bg-accent-dark/[0.06]"
+        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[400px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/[0.04] blur-3xl dark:bg-accent-dark/[0.04]"
       />
 
-      <Container className="flex flex-col gap-14">
+      <Container className="flex flex-col gap-8 sm:gap-14">
         <Reveal>
           <SectionHeading
-            eyebrow="How I can help"
-            title="Ways we could work together"
+            eyebrow="Services"
+            title="How I can help your team or business"
+            align="left"
           />
         </Reveal>
 
-        <div className="grid gap-px overflow-hidden rounded-apple border border-line/70 bg-line/70 dark:border-line-dark/70 dark:bg-line-dark/70 sm:grid-cols-2">
+        {/* Linear-Style Horizontal Editorial Rows (No Boxy Cards) */}
+        <div className="flex flex-col border-t border-black/[0.08] dark:border-white/[0.08]">
           {services.map((service, i) => (
-            <Reveal key={service.title} delay={i * 90}>
-              <div className="group flex h-full flex-col gap-4 bg-surface-card p-8 transition-all duration-300 hover:bg-surface hover:shadow-[0_8px_30px_-10px_rgba(0,0,0,0.12)] dark:bg-surface-dark-card dark:hover:bg-surface-dark-alt dark:hover:shadow-[0_8px_30px_-10px_rgba(0,0,0,0.4)]">
-                <svg
-                  width="26"
-                  height="26"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  className="text-accent transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-110 dark:text-accent-dark"
-                >
-                  {icons[service.icon]}
-                </svg>
-                <h3 className="text-[18px] font-semibold tracking-tight text-ink dark:text-ink-dark">
-                  {service.title}
-                </h3>
-                <p className="text-[15px] leading-relaxed text-ink-secondary dark:text-ink-dark-secondary">
-                  {service.description}
-                </p>
+            <Reveal key={service.title} delay={i * 80}>
+              <div className="group relative border-b border-black/[0.08] dark:border-white/[0.08] py-4 sm:py-7 md:py-9 px-1.5 sm:px-4 -mx-1.5 sm:-mx-4 rounded-xl transition-all duration-300 hover:bg-black/[0.025] dark:hover:bg-white/[0.025]">
+                <div className="grid gap-2.5 sm:gap-4 md:grid-cols-[0.9fr_1.1fr] md:gap-8 lg:gap-12 md:items-start">
+                  
+                  {/* Left Column: Number Index + Icon + Title */}
+                  <div className="flex flex-col gap-1.5 sm:gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <span className="font-mono text-[10px] sm:text-[12px] font-semibold tracking-[0.2em] text-accent dark:text-accent-dark">
+                        0{i + 1}
+                      </span>
+                      <div className="h-px w-4 sm:w-6 bg-accent/40 dark:bg-accent-dark/40" />
+                      <div className="flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-lg text-accent dark:text-accent-dark transition-transform duration-300 group-hover:scale-110">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" className="sm:w-[18px] sm:h-[18px]">
+                          {icons[service.icon]}
+                        </svg>
+                      </div>
+                    </div>
+
+                    <h3 className="text-[16px] min-[360px]:text-[17px] sm:text-[22px] md:text-[24px] font-bold tracking-tight text-ink transition-colors duration-300 group-hover:text-accent dark:text-ink-dark dark:group-hover:text-accent-dark">
+                      {service.title}
+                    </h3>
+                  </div>
+
+                  {/* Right Column: Description + Capability Tags */}
+                  <div className="flex flex-col gap-2.5 sm:gap-4 md:pt-1">
+                    <p className="text-[13px] sm:text-[15px] leading-normal sm:leading-relaxed text-ink-secondary dark:text-ink-dark-secondary">
+                      {service.description}
+                    </p>
+
+                    {service.tags && (
+                      <div className="flex flex-wrap gap-1 sm:gap-1.5 pt-0.5 sm:pt-1">
+                        {service.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-md border border-black/[0.06] dark:border-white/[0.07] bg-black/[0.02] dark:bg-white/[0.03] px-2 py-0.5 sm:px-2.5 sm:py-1 text-[10px] sm:text-[11px] font-mono text-ink-tertiary dark:text-ink-dark-secondary transition-colors duration-200 group-hover:border-black/15 dark:group-hover:border-white/15"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                </div>
               </div>
             </Reveal>
           ))}

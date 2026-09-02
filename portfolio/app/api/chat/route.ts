@@ -5,8 +5,37 @@ type ChatMessage = {
   content: string;
 };
 
+const MAX_MESSAGES_PER_USER = 5;
+const RATE_LIMIT_WINDOW_MS = 24 * 60 * 60 * 1000; // 24-hour window per visitor
+
+type RateLimitRecord = { count: number; resetAt: number };
+const ipRateLimits = new Map<string, RateLimitRecord>();
+
+function checkRateLimit(ip: string): { allowed: boolean; remaining: number; resetAt: number } {
+  const now = Date.now();
+  const record = ipRateLimits.get(ip);
+
+  if (!record || now > record.resetAt) {
+    const nextReset = now + RATE_LIMIT_WINDOW_MS;
+    ipRateLimits.set(ip, { count: 1, resetAt: nextReset });
+    return { allowed: true, remaining: MAX_MESSAGES_PER_USER - 1, resetAt: nextReset };
+  }
+
+  if (record.count >= MAX_MESSAGES_PER_USER) {
+    return { allowed: false, remaining: 0, resetAt: record.resetAt };
+  }
+
+  record.count += 1;
+  return { allowed: true, remaining: MAX_MESSAGES_PER_USER - record.count, resetAt: record.resetAt };
+}
+
 export async function POST(request: Request) {
   try {
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request.headers.get("x-real-ip") ||
+      "anonymous";
+
     const body = await request.json();
 
     const messages = body.messages as ChatMessage[];
@@ -15,6 +44,21 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: "No messages provided." },
         { status: 400 }
+      );
+    }
+
+    // Enforce 24-hour rolling rate limit per visitor IP
+    const { allowed, remaining, resetAt } = checkRateLimit(ip);
+    if (!allowed) {
+      const msLeft = Math.max(0, resetAt - Date.now());
+      const hoursLeft = Math.max(1, Math.ceil(msLeft / (1000 * 60 * 60)));
+      return NextResponse.json(
+        {
+          error: `Daily limit reached (${MAX_MESSAGES_PER_USER}/${MAX_MESSAGES_PER_USER}). Resets in ${hoursLeft}h. Please contact Dylan directly at /contact.`,
+          remaining: 0,
+          resetAt,
+        },
+        { status: 429 }
       );
     }
 
@@ -48,10 +92,12 @@ ABOUT DYLAN RAMOS:
 - Core Stack: Next.js, React, TypeScript, React Native, Tailwind CSS, PostgreSQL, Supabase, Node.js, Prisma, MongoDB.
 
 KEY PROJECTS BY DYLAN:
-- Motus: A friendly habit tracking PWA with streak momentum, PostgreSQL Row Level Security, and community analytics.
-- Varex AI: Intelligent desktop assistant with conversational AI, voice interaction, and desktop automation.
-- Employee Information Management System: Comprehensive web system for employee records, payroll, attendance, and payslips.
-- Pomodoro: Minimalist productivity app for focused work sessions.
+- Motus (Mobile & Web): Habit tracking ecosystem (React Native/Expo mobile app with offline AsyncStorage, and Next.js habit tracker web app with Pomodoro timer, streak mechanics, and Supabase PostgreSQL RLS).
+- Varex AI: Futuristic AI assistant with cybernetic interface, voice speech recognition, real-time AI reasoning, and command execution.
+- Filipino Pantry to Plate: Zero-waste Pinoy recipe discovery web app & offline-ready PWA running 100% without database or internet.
+- EMPLINFOMASYS (EIMS): Enterprise Employee Information Management System managing employee directory, attendance, payroll disbursement, and leave approvals.
+- IP Tracker: Cybersecurity-themed real-time IP lookup & geolocation tool with interactive Leaflet map.
+- Brew & Bloom Coffee Co.: Specialty coffee house landing page with digital menu, small-batch roasting story, and contact integration.
 
 INQUIRIES & CONTACT:
 - If visitors ask about hiring Dylan, freelance work, or collaborations, enthusiastically guide them to Dylan's Contact page (/contact) or invite them to email him directly.
@@ -81,7 +127,7 @@ IMPORTANT RULES:
         },
         body: JSON.stringify({
           model: "openrouter/free",
-          messages: [systemMessage, ...messages],
+          messages: [systemMessage, ...messages.slice(-6)],
           temperature: 0.7,
           max_tokens: 500,
         }),
@@ -114,6 +160,8 @@ IMPORTANT RULES:
 
     return NextResponse.json({
       message: content.trim(),
+      remaining,
+      resetAt,
     });
   } catch (error) {
     console.error("Chat API error:", error);

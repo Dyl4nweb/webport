@@ -8,28 +8,16 @@ import Button from "@/components/ui/Button";
 import Reveal from "@/components/ui/Reveal";
 import GlitchText from "@/components/ui/GlitchText";
 import Contact from "@/components/sections/Contact";
+import HobbiesInterests from "@/components/about/HobbiesInterests";
+import AboutCredentials from "@/components/about/AboutCredentials";
+import TechSlider from "@/components/about/TechSlider";
 
 import { SITE } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "About",
-  description: `Learn more about ${SITE.name}, a Full Stack Engineer focused on building modern digital experiences.`,
+  description: `Learn more about ${SITE.name}, a Software Engineer & Full Stack Developer focused on building modern digital experiences.`,
 };
-
-const values = [
-  {
-    title: "Build with purpose",
-    body: "I focus on practical solutions that solve real problems without unnecessary complexity.",
-  },
-  {
-    title: "Keep it clean",
-    body: "I value readable code, thoughtful architecture, and simple interfaces.",
-  },
-  {
-    title: "Learn by building",
-    body: "I learn best by turning new concepts into real projects and experiments.",
-  },
-];
 
 export default function AboutPage() {
   return (
@@ -95,123 +83,61 @@ export default function AboutPage() {
 
             {/* About Me */}
             <Reveal delay={160}>
-              <div className="flex flex-col items-start">
-                <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-accent dark:text-accent-dark">
+              <div className="flex flex-col items-start gap-3.5 sm:gap-4">
+                <span className="text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.16em] text-accent dark:text-accent-dark">
                   About me
                 </span>
 
-                <h1 className="mt-5 max-w-3xl text-[24px] min-[360px]:text-[28px] sm:text-[38px] md:text-[54px] font-semibold leading-[1.12] sm:leading-[1.04] tracking-[-0.03em] text-ink dark:text-ink-dark">
-                  <GlitchText text={`I'm ${SITE.name}, a Full Stack Engineer building modern digital experiences.`} />
+                <h1 className="max-w-2xl text-balance text-3xl min-[360px]:text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-ink dark:text-ink-dark leading-[1.08]">
+                  <GlitchText text={`I'm ${SITE.name} — Software Engineer and Full-Stack Developer.`} />
                 </h1>
 
-                <p className="mt-7 max-w-2xl text-[16px] sm:text-[18px] leading-[1.8] text-ink-secondary dark:text-ink-dark-secondary">
-                  I&apos;m passionate about creating modern, scalable, and
-                  user-centered web applications that are fast, responsive,
-                  and intuitive.
-                </p>
+                {/* Clean, Non-Redundant Narrative */}
+                <div className="mt-1 flex flex-col gap-3.5 text-[15px] sm:text-[16px] leading-[1.75] text-ink-secondary dark:text-ink-dark-secondary max-w-xl">
+                  <p>
+                    Passionate about building scalable, user-centered web and mobile applications that bridge clean architecture with polished, intuitive design.
+                  </p>
 
-                <p className="mt-5 max-w-2xl text-[15px] sm:text-[17px] leading-[1.8] text-ink-secondary dark:text-ink-dark-secondary">
-                  As an Information Technology graduate, I primarily work with{" "}
-                  <span className="font-medium text-ink dark:text-ink-dark">
-                    Next.js, TypeScript, Tailwind CSS, PostgreSQL, and Supabase.
-                  </span>
-                </p>
+                  <p>
+                    I primarily build with{" "}
+                    <span className="font-semibold text-ink dark:text-ink-dark">
+                      Next.js, TypeScript, React, Tailwind CSS, PostgreSQL, and Supabase
+                    </span>
+                    , taking full ownership from database schemas and AI integrations to fluid frontend interactions.
+                  </p>
+                </div>
 
-                <Button
-                  href="/resume"
-                  variant="secondary"
-                  className="mt-8 transition-transform duration-300 hover:-translate-y-0.5"
-                >
-                  View resume
-                </Button>
+                {/* Actions */}
+                <div className="mt-8 flex flex-wrap items-center gap-3">
+                  <Button
+                    href="/resume"
+                    variant="primary"
+                    className="transition-transform duration-300 hover:-translate-y-0.5 text-[13px] px-5 py-2.5"
+                  >
+                    View resume
+                  </Button>
+                  <Button
+                    href="/contact"
+                    variant="secondary"
+                    className="transition-transform duration-300 hover:-translate-y-0.5 text-[13px] px-5 py-2.5"
+                  >
+                    Get in touch
+                  </Button>
+                </div>
               </div>
             </Reveal>
           </div>
         </Container>
       </header>
 
-      {/* My Approach */}
-      <section className="relative overflow-hidden py-20 sm:py-24 md:py-28">
-        <Container narrow className="flex flex-col gap-8">
-          <Reveal>
-            <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-accent dark:text-accent-dark">
-              My approach
-            </span>
-          </Reveal>
+      {/* Tech Stack Slider Marquee */}
+      <TechSlider />
 
-          <Reveal delay={100}>
-            <h2 className="max-w-3xl text-[22px] min-[360px]:text-[25px] sm:text-[32px] md:text-[42px] font-semibold leading-[1.12] sm:leading-[1.08] tracking-[-0.03em] text-ink dark:text-ink-dark">
-              <GlitchText text="I like turning ideas into products that feel simple, useful, and intentional." />
-            </h2>
-          </Reveal>
+      {/* Credentials & Education */}
+      <AboutCredentials />
 
-          <Reveal delay={160}>
-            <div className="flex max-w-2xl flex-col gap-5 text-[17px] leading-[1.8] text-ink-secondary dark:text-ink-dark-secondary">
-              <p>
-                I enjoy working at the intersection of engineering, design,
-                and product. For me, building software is not just about
-                making something work — it&apos;s about making it clear,
-                reliable, and enjoyable to use.
-              </p>
-
-              <p>
-                I usually start by understanding the problem, breaking it
-                down into something manageable, and then building with
-                simplicity in mind. I care about clean architecture,
-                thoughtful interfaces, performance, and details that make the
-                final experience feel polished.
-              </p>
-
-              <p>
-                I also believe the best way to learn is by building. Side
-                projects, experiments, and real applications help me
-                strengthen my fundamentals while giving me space to explore
-                new technologies.
-              </p>
-            </div>
-          </Reveal>
-        </Container>
-      </section>
-
-      {/* Principles */}
-      <section className="relative overflow-hidden py-24 md:py-28">
-        <Container className="flex flex-col gap-14">
-          <Reveal>
-            <div className="mx-auto w-full max-w-3xl text-center">
-              <SectionHeading
-                eyebrow="Principles"
-                title="How I work"
-                deck="Simple principles that guide how I build."
-                align="center"
-              />
-            </div>
-          </Reveal>
-
-          <div className="grid gap-5 md:grid-cols-3">
-            {values.map((value, index) => (
-              <Reveal key={value.title} delay={index * 90}>
-                <div className="group relative flex h-full flex-col overflow-hidden rounded-[24px] border border-line/70 bg-surface-card p-7 shadow-[0_15px_40px_-30px_rgba(0,0,0,0.25)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_25px_60px_-30px_rgba(0,0,0,0.3)] dark:border-line-dark/70 dark:bg-surface-dark-card">
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-tertiary dark:text-ink-dark-secondary">
-                    0{index + 1}
-                  </span>
-
-                  <h3 className="mt-6 text-[19px] font-semibold tracking-[-0.02em] text-ink dark:text-ink-dark">
-                    {value.title}
-                  </h3>
-
-                  <p className="mt-3 text-[15px] leading-[1.7] text-ink-secondary dark:text-ink-dark-secondary">
-                    {value.body}
-                  </p>
-
-                  <div className="mt-auto pt-7">
-                    <div className="h-px bg-line/60 transition-colors duration-500 group-hover:bg-accent/30 dark:bg-line-dark/60 dark:group-hover:bg-accent-dark/30" />
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </section>
+      {/* Outside the IDE / Memory Card Stack */}
+      <HobbiesInterests />
 
       {/* Contact */}
       <Contact />

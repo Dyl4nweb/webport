@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import Link from "next/link";
 import Container from "@/components/ui/Container";
 import ProjectsGrid from "@/components/projects/ProjectsGrid";
 import Reveal from "@/components/ui/Reveal";
@@ -60,13 +60,13 @@ export default async function ProjectsPage() {
 
           <div className="flex flex-col items-center text-center">
             <Reveal delay={80}>
-              <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-accent dark:text-accent-dark">
+              <span className="font-mono text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.18em] text-accent dark:text-accent-dark">
                 Projects
               </span>
             </Reveal>
 
             <Reveal delay={140}>
-              <h1 className="mt-5 max-w-3xl text-balance text-[28px] min-[360px]:text-[32px] min-[400px]:text-[36px] sm:text-[48px] md:text-[56px] lg:text-[64px] font-semibold leading-[1.2] sm:leading-[1.08] tracking-[-0.03em] text-ink dark:text-ink-dark pb-1">
+              <h1 className="mt-4 max-w-3xl text-balance text-3xl min-[360px]:text-4xl sm:text-5xl md:text-6xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.08]">
                 <GlitchText text="Ideas I've Turned Into Products." />
               </h1>
             </Reveal>

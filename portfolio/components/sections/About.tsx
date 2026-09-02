@@ -7,14 +7,14 @@ import GlitchText from "@/components/ui/GlitchText";
 
 export default function About() {
   return (
-    <section className="relative overflow-hidden py-20 sm:py-24 md:py-32" style={{ contain: "layout style" }}>
-      <Container className="relative grid gap-12 md:grid-cols-[0.85fr_1.15fr] md:items-center md:gap-20">
+    <section className="relative overflow-hidden py-16 sm:py-20 md:py-28" style={{ contain: "layout style" }}>
+      <Container className="relative grid gap-10 md:grid-cols-[0.85fr_1.15fr] md:items-center md:gap-16 lg:gap-20">
         {/* Portrait */}
         <Reveal
           className="
-            relative mx-auto w-full max-w-[200px] min-[380px]:max-w-[230px]
+            relative mx-auto w-full max-w-[220px] min-[380px]:max-w-[250px]
             sm:max-w-[300px]
-            md:max-w-[380px]
+            md:max-w-[360px]
           "
         >
           {/* Soft glow */}
@@ -56,12 +56,12 @@ export default function About() {
               overflow-hidden rounded-[26px]
               border border-line/70
               bg-surface-card
-              shadow-[0_30px_80px_-30px_rgba(0,0,0,0.38)]
+              shadow-[0_20px_60px_-25px_rgba(0,0,0,0.35)]
               transition-[transform,box-shadow,border-color]
               duration-700
               ease-[cubic-bezier(0.22,1,0.36,1)]
               hover:-translate-y-1
-              hover:shadow-[0_40px_95px_-30px_rgba(0,0,0,0.44)]
+              hover:shadow-[0_30px_80px_-25px_rgba(0,0,0,0.4)]
               hover:border-line
               dark:border-line-dark/70
               dark:bg-surface-dark-card
@@ -70,12 +70,12 @@ export default function About() {
           >
             <Image
               src="/images/profile/profile.png"
-              alt="Portrait"
+              alt="Portrait of Dylan Ramos"
               fill
               sizes="(max-width: 639px) 270px, (max-width: 767px) 320px, 380px"
               className="
                 object-cover
-                grayscale-[10%]
+                grayscale-[8%]
                 transition-transform
                 duration-[1400ms]
                 ease-[cubic-bezier(0.16,1,0.3,1)]
@@ -89,26 +89,11 @@ export default function About() {
               className="
                 pointer-events-none absolute inset-0
                 bg-gradient-to-t
-                from-black/20
+                from-black/25
                 via-transparent
                 to-white/[0.04]
                 transition-opacity duration-700
                 group-hover:opacity-90
-              "
-            />
-
-            {/* Soft hover glow */}
-            <div
-              aria-hidden="true"
-              className="
-                pointer-events-none absolute inset-0
-                bg-gradient-to-br
-                from-white/[0.05]
-                via-transparent
-                to-transparent
-                opacity-0
-                transition-opacity duration-700
-                group-hover:opacity-100
               "
             />
 
@@ -121,7 +106,7 @@ export default function About() {
                 absolute bottom-4 left-4
                 rounded-2xl
                 border border-white/20
-                bg-black/20
+                bg-black/40
                 px-3 py-2.5
                 text-white
                 backdrop-blur-md
@@ -129,12 +114,12 @@ export default function About() {
                 duration-500
                 ease-[cubic-bezier(0.22,1,0.36,1)]
                 group-hover:-translate-y-0.5
-                group-hover:bg-black/25
+                group-hover:bg-black/50
                 sm:bottom-5 sm:left-5
                 sm:px-4 sm:py-3
               "
             >
-              <span className="block text-[9px] font-semibold uppercase tracking-[0.16em] text-white/60 sm:text-[10px]">
+              <span className="block text-[9px] font-semibold uppercase tracking-[0.16em] text-white/70 sm:text-[10px]">
                 About me
               </span>
 
@@ -150,81 +135,44 @@ export default function About() {
           delay={120}
           className="flex max-w-2xl flex-col items-start"
         >
-          <span
-            className="
-              mb-5
-              text-[12px]
-              font-semibold
-              uppercase
-              tracking-[0.16em]
-              text-accent
-              dark:text-accent-dark
-            "
-          >
+          <span className="mb-3 sm:mb-4 font-mono text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.18em] text-accent dark:text-accent-dark">
             About
           </span>
 
-          <h2
-            className="
-              text-[24px]
-              min-[360px]:text-[28px]
-              sm:text-[36px]
-              md:text-[46px]
-              lg:text-[52px]
-              font-semibold
-              leading-[1.12]
-              sm:leading-[1.05]
-              tracking-[-0.03em]
-              text-ink
-              dark:text-ink-dark
-            "
-          >
-            <GlitchText text="I turn complex problems into " />
-            <span className="text-ink-secondary dark:text-ink-dark-secondary">
-              <GlitchText text="simple, useful experiences." />
-            </span>
+          <h2 className="text-3xl min-[360px]:text-4xl sm:text-5xl md:text-5xl lg:text-[56px] font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.08]">
+            <GlitchText text="I turn complex problems into simple, useful experiences." />
           </h2>
 
           <div
             className="
-              mt-6
+              mt-5 sm:mt-6
               max-w-xl
-              space-y-5
-              text-[16px]
+              space-y-4
+              text-[15px] sm:text-[17px]
               leading-[1.8]
               text-ink-secondary
               dark:text-ink-dark-secondary
-              sm:mt-7
-              sm:text-[17px]
             "
           >
             <p>
               I work at the intersection of engineering, product, and design —
-              building the systems behind a product and the interface people
-              actually use.
+              building scalable systems behind the scenes and clean, intuitive
+              interfaces people actually enjoy using.
             </p>
 
             <p>
-              I enjoy messy problems: unclear workflows, noisy dashboards, and
-              ideas that need a clearer direction. My goal is usually the same
-              — find the simplest useful idea and build around it.
+              I enjoy solving messy challenges: offline-first architectures,
+              real-time databases, and workflows that need clear direction.
             </p>
           </div>
 
           {/* Actions */}
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+          <div className="mt-7 sm:mt-8 flex flex-wrap items-center gap-4">
             <Button href="/about" variant="primary">
               More about me
             </Button>
 
-            <span
-              className="
-                text-[13px]
-                text-ink-tertiary
-                transition-colors duration-500
-                dark:text-ink-dark-secondary
-              "
-            >
+            <span className="font-mono text-[12px] sm:text-[13px] text-ink-tertiary dark:text-ink-dark-secondary">
               Engineering × Product × Design
             </span>
           </div>

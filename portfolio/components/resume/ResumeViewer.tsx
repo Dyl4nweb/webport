@@ -408,7 +408,7 @@ export default function ResumeViewer() {
             </p>
           </div>
 
-          <div className="flex w-full flex-col gap-2.5 sm:w-auto sm:flex-row">
+          <div className="flex w-auto flex-row items-center gap-2.5 sm:w-auto">
             <Link
               href="/contact"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-line bg-surface px-5 py-2.5 text-[13px] font-medium text-ink transition-all hover:bg-black/[0.04] active:scale-95 dark:border-line-dark dark:bg-surface-dark dark:text-ink-dark dark:hover:bg-white/[0.06]"

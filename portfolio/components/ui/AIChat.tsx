@@ -19,6 +19,55 @@ const createWelcomeMessage = (): Message => ({
     "Hello! I am Varex AI, Dylan Ramos's intelligent assistant. Ask me anything about Dylan's projects, tech stack, experience, or how to work together.",
 });
 
+const MAX_USER_MESSAGES = 5;
+const RATE_LIMIT_WINDOW_MS = 24 * 60 * 60 * 1000; // 24-hour rolling window
+
+interface VarexUsage {
+  count: number;
+  resetAt: number;
+}
+
+function getStoredUsage(): VarexUsage {
+  if (typeof window === "undefined") return { count: 0, resetAt: 0 };
+  try {
+    const raw = localStorage.getItem("varex_ai_usage_v2");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (typeof parsed?.count === "number" && typeof parsed?.resetAt === "number") {
+        if (Date.now() >= parsed.resetAt) {
+          // 24 hours have elapsed! Reset usage
+          localStorage.removeItem("varex_ai_usage_v2");
+          localStorage.removeItem("varex_user_msg_count");
+          return { count: 0, resetAt: 0 };
+        }
+        return parsed;
+      }
+    }
+    // Migration: If user was locked under old key, reset it so they can chat
+    if (localStorage.getItem("varex_user_msg_count")) {
+      localStorage.removeItem("varex_user_msg_count");
+    }
+  } catch {}
+  return { count: 0, resetAt: 0 };
+}
+
+function saveStoredUsage(count: number, resetAt: number) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem("varex_ai_usage_v2", JSON.stringify({ count, resetAt }));
+  } catch {}
+}
+
+function formatRemainingTime(targetResetAt: number): string {
+  if (!targetResetAt) return "24h";
+  const diffMs = targetResetAt - Date.now();
+  if (diffMs <= 0) return "soon";
+  const hours = Math.floor(diffMs / (1000 * 60 * 60));
+  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+  if (hours > 0) return `${hours}h ${minutes}m`;
+  return `${Math.max(1, minutes)}m`;
+}
+
 const suggestions = [
   "What projects did Dylan build?",
   "What is Dylan's tech stack?",
@@ -32,10 +81,25 @@ export default function AIChat() {
     createWelcomeMessage(),
   ]);
   const [loading, setLoading] = useState(false);
+  const [userMessageCount, setUserMessageCount] = useState<number>(0);
+  const [resetAt, setResetAt] = useState<number>(0);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
+
+  // Sync stored usage on mount and periodically check 24-hour expiration
+  useEffect(() => {
+    const syncUsage = () => {
+      const usage = getStoredUsage();
+      setUserMessageCount(usage.count);
+      setResetAt(usage.resetAt);
+    };
+
+    syncUsage();
+    const interval = setInterval(syncUsage, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
@@ -45,12 +109,12 @@ export default function AIChat() {
   }, [messages, loading]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || userMessageCount >= MAX_USER_MESSAGES) return;
     const timer = window.setTimeout(() => {
       inputRef.current?.focus();
     }, 350);
     return () => window.clearTimeout(timer);
-  }, [open]);
+  }, [open, userMessageCount]);
 
   useEffect(() => {
     if (!open) return;
@@ -104,6 +168,25 @@ export default function AIChat() {
     const trimmed = input.trim();
     if (!trimmed || loading) return;
 
+    // Check if 24 hours have passed before rejecting
+    const currentUsage = getStoredUsage();
+    if (currentUsage.count >= MAX_USER_MESSAGES) {
+      setUserMessageCount(currentUsage.count);
+      setResetAt(currentUsage.resetAt);
+      return;
+    }
+
+    const now = Date.now();
+    const activeResetAt =
+      currentUsage.resetAt && now < currentUsage.resetAt
+        ? currentUsage.resetAt
+        : now + RATE_LIMIT_WINDOW_MS;
+
+    const nextCount = currentUsage.count + 1;
+    setUserMessageCount(nextCount);
+    setResetAt(activeResetAt);
+    saveStoredUsage(nextCount, activeResetAt);
+
     const userMessage: Message = {
       id: crypto.randomUUID(),
       role: "user",
@@ -128,8 +211,21 @@ export default function AIChat() {
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Failed to get a response.");
+      if (!response.ok) {
+        if (response.status === 429) {
+          const serverResetAt = data.resetAt || activeResetAt;
+          setUserMessageCount(MAX_USER_MESSAGES);
+          setResetAt(serverResetAt);
+          saveStoredUsage(MAX_USER_MESSAGES, serverResetAt);
+        }
+        throw new Error(data.error || "Failed to get a response.");
+      }
       if (!data.message) throw new Error("AI returned an empty response.");
+
+      if (data.resetAt) {
+        setResetAt(data.resetAt);
+        saveStoredUsage(nextCount, data.resetAt);
+      }
 
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
@@ -137,7 +233,7 @@ export default function AIChat() {
         content: data.message,
       };
       setMessages((current) => [...current, assistantMessage]);
-    } catch (error) {
+    } catch (error: any) {
       console.error("AI chat error:", error);
       setMessages((current) => [
         ...current,
@@ -145,7 +241,9 @@ export default function AIChat() {
           id: crypto.randomUUID(),
           role: "assistant",
           content:
-            "I'm having trouble connecting right now. Please try again in a moment.",
+            error?.message?.includes("limit reached")
+              ? `You have reached the 5-message daily limit. Resets in ${formatRemainingTime(resetAt || activeResetAt)}. Please feel free to contact Dylan directly at /contact!`
+              : "I'm having trouble connecting right now. Please try again in a moment.",
         },
       ]);
     } finally {
@@ -154,7 +252,7 @@ export default function AIChat() {
   }
 
   function handleSuggestion(question: string) {
-    if (loading) return;
+    if (loading || userMessageCount >= MAX_USER_MESSAGES) return;
     setInput(question);
     setTimeout(() => inputRef.current?.focus(), 50);
   }
@@ -163,7 +261,12 @@ export default function AIChat() {
     if (loading) return;
     setMessages([createWelcomeMessage()]);
     setInput("");
-    setTimeout(() => inputRef.current?.focus(), 100);
+    const usage = getStoredUsage();
+    setUserMessageCount(usage.count);
+    setResetAt(usage.resetAt);
+    if (usage.count < MAX_USER_MESSAGES) {
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }
   }
 
   return (
@@ -171,12 +274,13 @@ export default function AIChat() {
       {/* Chat panel — Apple-style glass card positioned comfortably above bottom dock */}
       <div
         ref={panelRef}
+        data-lenis-prevent
         className={[
           "fixed bottom-[112px] min-[360px]:bottom-[116px] min-[400px]:bottom-[120px] sm:bottom-[88px] md:bottom-[96px] right-2.5 min-[360px]:right-3.5 sm:right-6 z-[150]",
-          "w-[calc(100vw-1rem)] min-[360px]:w-[calc(100vw-1.75rem)] max-w-[310px] min-[390px]:max-w-[335px] sm:max-w-[380px]",
-          "max-h-[370px] min-[390px]:max-h-[420px] sm:max-h-[500px]",
+          "w-[calc(100vw-1rem)] min-[360px]:w-[calc(100vw-1.75rem)] max-w-[320px] min-[390px]:max-w-[345px] sm:max-w-[390px]",
+          "h-[390px] min-[390px]:h-[430px] sm:h-[480px] max-h-[72svh]",
           "flex flex-col overflow-hidden rounded-2xl sm:rounded-3xl",
-          "bg-white/90 dark:bg-[#161618]/90",
+          "bg-white/95 dark:bg-[#161618]/95",
           "backdrop-blur-2xl",
           "saturate-150",
           "border border-white/20 dark:border-white/10",
@@ -200,8 +304,16 @@ export default function AIChat() {
                   <p className="truncate text-[13px] sm:text-[14px] font-semibold tracking-tight text-ink dark:text-ink-dark">
                     Varex AI
                   </p>
-                  <span className="rounded-full bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 px-1.5 py-0.2 text-[7.5px] sm:text-[8px] font-semibold uppercase tracking-wider">
-                    ASSISTANT
+                  <span
+                    className={`rounded-full px-1.5 py-0.5 text-[7.5px] sm:text-[8px] font-semibold uppercase tracking-wider ${
+                      userMessageCount >= MAX_USER_MESSAGES
+                        ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                        : "bg-cyan-500/15 text-cyan-600 dark:text-cyan-400"
+                    }`}
+                  >
+                    {userMessageCount >= MAX_USER_MESSAGES
+                      ? `5/5 · RESETS IN ${formatRemainingTime(resetAt).toUpperCase()}`
+                      : `${MAX_USER_MESSAGES - userMessageCount} LEFT`}
                   </span>
                 </div>
                 <p className="text-[9.5px] sm:text-[10px] text-ink-secondary dark:text-ink-dark-secondary font-medium truncate">
@@ -238,7 +350,10 @@ export default function AIChat() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto overscroll-contain px-3.5 sm:px-5 py-2 min-h-[160px] max-h-[220px] sm:min-h-[200px] sm:max-h-[260px]">
+        <div
+          data-lenis-prevent
+          className="chat-scrollbar flex-1 min-h-0 overflow-y-auto overscroll-contain px-3.5 sm:px-5 py-3"
+        >
           <div className="space-y-2.5 sm:space-y-3.5">
             {messages.map((message) => (
               <div
@@ -280,7 +395,7 @@ export default function AIChat() {
             )}
 
             {/* Suggestions */}
-            {messages.length === 1 && !loading && (
+            {messages.length === 1 && !loading && userMessageCount < MAX_USER_MESSAGES && (
               <div className="pt-2 sm:pt-3">
                 <p className="mb-1.5 text-[8.5px] sm:text-[9px] font-semibold uppercase tracking-widest text-black/40 dark:text-white/40">
                   Ask Varex AI
@@ -304,36 +419,58 @@ export default function AIChat() {
           </div>
         </div>
 
-        {/* Input */}
-        <form
-          onSubmit={handleSubmit}
-          className="shrink-0 px-3 pb-3 pt-2 sm:px-4 sm:pb-4 sm:pt-2 border-t border-black/5 dark:border-white/5"
-        >
-          <div className="flex items-center gap-1.5 sm:gap-2 rounded-full bg-black/5 dark:bg-white/8 px-3 py-1 sm:px-3.5 sm:py-1.5 transition-all duration-300 focus-within:bg-black/8 dark:focus-within:bg-white/12 ring-1 ring-transparent focus-within:ring-black/20 dark:focus-within:ring-white/20">
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              disabled={loading}
-              placeholder="Ask Varex AI anything..."
-              autoComplete="off"
-              enterKeyHint="send"
-              className="min-w-0 flex-1 border-0 bg-transparent px-0 py-1 text-[12px] sm:text-[13px] text-black dark:text-white outline-none ring-0 placeholder:text-black/35 dark:placeholder:text-white/35 focus:outline-none focus:ring-0"
-            />
-            <button
-              type="submit"
-              disabled={!input.trim() || loading}
-              aria-label="Send message"
-              className="flex h-6 w-6 sm:h-7 sm:w-7 shrink-0 items-center justify-center rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-sm"
+        {/* Input / Limit Reached Footer */}
+        {userMessageCount >= MAX_USER_MESSAGES ? (
+          <div className="shrink-0 px-3.5 py-3 sm:px-4 sm:py-3 border-t border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02] flex flex-col items-center text-center gap-1.5">
+            <p className="text-[11px] sm:text-[12px] text-ink-secondary dark:text-ink-dark-secondary">
+              Daily limit reached (5/5). Resets in{" "}
+              <span className="font-semibold text-ink dark:text-ink-dark">
+                {formatRemainingTime(resetAt)}
+              </span>
+              .
+            </p>
+            <a
+              href="/contact"
+              onClick={() => setOpen(false)}
+              className="inline-flex items-center gap-1.5 rounded-full bg-black text-white dark:bg-white dark:text-black px-3.5 py-1 text-[11px] font-medium transition-all hover:scale-105 active:scale-95 shadow-sm"
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                <path d="M5 12l14-7-4 14-3.5-6.5L5 12z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-                <path d="M11.5 12.5L19 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <span>Contact Dylan directly</span>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
-            </button>
+            </a>
           </div>
-        </form>
+        ) : (
+          <form
+            onSubmit={handleSubmit}
+            className="shrink-0 px-3 pb-3 pt-2 sm:px-4 sm:pb-4 sm:pt-2 border-t border-black/5 dark:border-white/5"
+          >
+            <div className="flex items-center gap-1.5 sm:gap-2 rounded-full bg-black/5 dark:bg-white/8 px-3 py-1 sm:px-3.5 sm:py-1.5 transition-all duration-300 focus-within:bg-black/8 dark:focus-within:bg-white/12 ring-1 ring-transparent focus-within:ring-black/20 dark:focus-within:ring-white/20">
+              <input
+                ref={inputRef}
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                disabled={loading}
+                placeholder="Ask Varex AI anything..."
+                autoComplete="off"
+                enterKeyHint="send"
+                className="min-w-0 flex-1 border-0 bg-transparent px-0 py-1 text-[12px] sm:text-[13px] text-black dark:text-white outline-none ring-0 placeholder:text-black/35 dark:placeholder:text-white/35 focus:outline-none focus:ring-0"
+              />
+              <button
+                type="submit"
+                disabled={!input.trim() || loading}
+                aria-label="Send message"
+                className="flex h-6 w-6 sm:h-7 sm:w-7 shrink-0 items-center justify-center rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-sm"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 12l14-7-4 14-3.5-6.5L5 12z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+                  <path d="M11.5 12.5L19 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </>
   );

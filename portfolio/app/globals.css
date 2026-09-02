@@ -107,13 +107,13 @@
     transform: translate3d(0, 0, 0);
   }
   100% {
-    transform: translate3d(-50%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
   }
 }
 
 @keyframes marquee-right {
   0% {
-    transform: translate3d(-50%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
   }
   100% {
     transform: translate3d(0, 0, 0);
@@ -174,14 +174,51 @@
 
 /* ─── View Transition: liquid sheet reveal from toggle button ─── */
 
-/* Freeze transitions only while theme snapshots are captured, so the
+/* Freeze transition properties only while theme snapshots are captured, so the
    "new" frame is the final theme state, not a mid-fade hybrid.
-   Toggle button is excluded so its smooth GPU transitions remain fluid. */
-html.theme-swap,
+   The toggle button is excluded so its smooth rotation animation spins live. */
 html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *),
 html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::before,
 html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
-  transition: none !important;
+  transition-property: none !important;
+}
+
+[data-theme-toggle] {
+  view-transition-name: theme-toggle;
+}
+
+::view-transition-group(theme-toggle) {
+  z-index: 10000;
+}
+
+::view-transition-old(theme-toggle) {
+  animation: toggle-spin-old 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+::view-transition-new(theme-toggle) {
+  animation: toggle-spin-new 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes toggle-spin-old {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(180deg) scale(0.85);
+    opacity: 0;
+  }
+}
+
+@keyframes toggle-spin-new {
+  0% {
+    transform: rotate(-180deg) scale(0.85);
+    opacity: 0;
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
 }
 
 ::view-transition-image-pair(root) {
@@ -195,21 +232,19 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
 }
 
 ::view-transition-new(root) {
-  animation: theme-reveal 1.25s cubic-bezier(0.4, 0.05, 0.2, 1) both;
+  animation: theme-reveal 1.45s cubic-bezier(0.22, 1, 0.36, 1) both;
   mix-blend-mode: normal !important;
   z-index: 9999;
-  will-change: clip-path;
-  transform: translateZ(0);
 }
 
 @keyframes theme-reveal {
   from {
-    -webkit-clip-path: circle(0% at var(--view-tx, 50%) var(--view-ty, 50%));
-    clip-path: circle(0% at var(--view-tx, 50%) var(--view-ty, 50%));
+    -webkit-clip-path: circle(0px at var(--view-tx, 50%) var(--view-ty, 50%));
+    clip-path: circle(0px at var(--view-tx, 50%) var(--view-ty, 50%));
   }
   to {
-    -webkit-clip-path: circle(150% at var(--view-tx, 50%) var(--view-ty, 50%));
-    clip-path: circle(150% at var(--view-tx, 50%) var(--view-ty, 50%));
+    -webkit-clip-path: circle(var(--view-tr, 150vmax) at var(--view-tx, 50%) var(--view-ty, 50%));
+    clip-path: circle(var(--view-tr, 150vmax) at var(--view-tx, 50%) var(--view-ty, 50%));
   }
 }
 
@@ -226,12 +261,13 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
   justify-content: center;
   gap: 20px;
   background: #fbfbfd;
-  transition: background-color 0.6s cubic-bezier(0.28, 0.11, 0.32, 1),
-    opacity 0.6s cubic-bezier(0.28, 0.11, 0.32, 1),
-    visibility 0s 0.75s;
+  transition: background-color 0.8s cubic-bezier(0.25, 1, 0.35, 1),
+    opacity 0.8s cubic-bezier(0.25, 1, 0.35, 1),
+    visibility 0s 0.9s;
 }
 
 #splash-logo-box {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -240,15 +276,16 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
 }
 
 #splash-logo {
+  position: relative;
   width: 60px;
   height: 60px;
   border-radius: 12px;
   object-fit: contain;
   user-select: none;
   pointer-events: none;
-  animation: splash-rise 0.6s cubic-bezier(0.28, 0.11, 0.32, 1) both;
+  animation: splash-rise 0.7s cubic-bezier(0.25, 1, 0.35, 1) both;
   will-change: transform, opacity;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.18);
 }
 
 @media (min-width: 768px) {
@@ -278,7 +315,7 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
 @keyframes splash-rise {
   from {
     opacity: 0;
-    transform: translateY(8px) scale(0.96);
+    transform: translateY(10px) scale(0.95);
   }
   to {
     opacity: 1;
@@ -434,6 +471,78 @@ html[data-admin] #splash {
 
 html[data-admin] #app-main {
   opacity: 1 !important;
+}
+
+html[data-admin],
+html[data-admin] body {
+  overflow-y: auto !important;
+  height: auto !important;
+  min-height: 100% !important;
+  touch-action: pan-y;
+}
+
+/* ─── Modern macOS Scrollbars for Chatbox, Modals & Admin Area ─── */
+
+.chat-scrollbar,
+.modal-scrollbar,
+.admin-scrollbar,
+[data-lenis-prevent].overflow-y-auto,
+dialog .overflow-y-auto,
+html[data-admin] .admin-scrollbar,
+html[data-admin] [data-lenis-prevent],
+html[data-admin] .overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(140, 140, 145, 0.4) transparent;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+
+.chat-scrollbar::-webkit-scrollbar,
+.modal-scrollbar::-webkit-scrollbar,
+.admin-scrollbar::-webkit-scrollbar,
+[data-lenis-prevent].overflow-y-auto::-webkit-scrollbar,
+dialog .overflow-y-auto::-webkit-scrollbar,
+html[data-admin] .admin-scrollbar::-webkit-scrollbar,
+html[data-admin] [data-lenis-prevent]::-webkit-scrollbar,
+html[data-admin] .overflow-y-auto::-webkit-scrollbar {
+  display: block !important;
+  width: 5px;
+  height: 5px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-track,
+.modal-scrollbar::-webkit-scrollbar-track,
+.admin-scrollbar::-webkit-scrollbar-track,
+[data-lenis-prevent].overflow-y-auto::-webkit-scrollbar-track,
+dialog .overflow-y-auto::-webkit-scrollbar-track,
+html[data-admin] .admin-scrollbar::-webkit-scrollbar-track,
+html[data-admin] [data-lenis-prevent]::-webkit-scrollbar-track,
+html[data-admin] .overflow-y-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb,
+.modal-scrollbar::-webkit-scrollbar-thumb,
+.admin-scrollbar::-webkit-scrollbar-thumb,
+[data-lenis-prevent].overflow-y-auto::-webkit-scrollbar-thumb,
+dialog .overflow-y-auto::-webkit-scrollbar-thumb,
+html[data-admin] .admin-scrollbar::-webkit-scrollbar-thumb,
+html[data-admin] [data-lenis-prevent]::-webkit-scrollbar-thumb,
+html[data-admin] .overflow-y-auto::-webkit-scrollbar-thumb {
+  background-color: rgba(140, 140, 145, 0.38);
+  border-radius: 9999px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb:hover,
+.modal-scrollbar::-webkit-scrollbar-thumb:hover,
+.admin-scrollbar::-webkit-scrollbar-thumb:hover,
+[data-lenis-prevent].overflow-y-auto::-webkit-scrollbar-thumb:hover,
+dialog .overflow-y-auto::-webkit-scrollbar-thumb:hover,
+html[data-admin] .admin-scrollbar::-webkit-scrollbar-thumb:hover,
+html[data-admin] [data-lenis-prevent]::-webkit-scrollbar-thumb:hover,
+html[data-admin] .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(140, 140, 145, 0.7);
 }
 
 /* ─── Authentic macOS Arrow Pointer (Native Hardware Level) ─── */
