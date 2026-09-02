@@ -911,6 +911,83 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
   }
 }
 
+/* ─── Cyber Terminal Dedicated Glitch Transition (No water wave) ─── */
+html[data-theme="cyber"]::view-transition-old(root) {
+  animation: cyber-glitch-old 0.42s cubic-bezier(0.25, 0.46, 0.45, 0.94) both !important;
+  mix-blend-mode: normal !important;
+  z-index: 1;
+}
+
+html[data-theme="cyber"]::view-transition-new(root) {
+  animation: cyber-glitch-new 0.42s cubic-bezier(0.25, 0.46, 0.45, 0.94) both !important;
+  mix-blend-mode: normal !important;
+  z-index: 9999;
+}
+
+@keyframes cyber-glitch-old {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+    filter: none;
+  }
+  25% {
+    opacity: 0.85;
+    transform: translate(-6px, 3px) skewX(-3deg);
+    filter: invert(0.15) drop-shadow(-6px 0 #00ff66) drop-shadow(6px 0 #ff0055);
+    clip-path: polygon(0 15%, 100% 15%, 100% 38%, 0 38%, 0 62%, 100% 62%, 100% 82%, 0 82%);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translate(6px, -3px) skewX(3deg);
+    clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%, 0 45%, 100% 45%, 100% 70%, 0 70%);
+    filter: brightness(2.2) contrast(1.8);
+  }
+  75% {
+    opacity: 0.2;
+    transform: translate(-3px, 2px);
+    clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%, 0 85%, 100% 85%, 100% 100%, 0 100%);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+    clip-path: none;
+    filter: none;
+  }
+}
+
+@keyframes cyber-glitch-new {
+  0% {
+    opacity: 0;
+    transform: translate(6px, -3px) skewX(3deg);
+    clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%, 0 45%, 100% 45%, 100% 70%, 0 70%);
+    filter: invert(0.2) drop-shadow(6px 0 #00ff66) drop-shadow(-6px 0 #00f0ff);
+  }
+  25% {
+    opacity: 0.75;
+    transform: translate(-6px, 3px) skewX(-2deg);
+    clip-path: polygon(0 15%, 100% 15%, 100% 38%, 0 38%, 0 62%, 100% 62%, 100% 82%, 0 82%);
+    filter: brightness(2) contrast(1.7);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translate(4px, -1px) skewX(1deg);
+    clip-path: polygon(0 35%, 100% 35%, 100% 60%, 0 60%, 0 85%, 100% 85%, 100% 100%, 0 100%);
+    filter: drop-shadow(3px 0 #00ff66);
+  }
+  75% {
+    opacity: 0.98;
+    transform: translate(-2px, 1px);
+    clip-path: none;
+    filter: brightness(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0);
+    clip-path: none;
+    filter: none;
+  }
+}
+
 
 /* ─── Splash screen ─── */
 
