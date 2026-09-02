@@ -894,97 +894,114 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
   z-index: 1;
 }
 
-::view-transition-new(root) {
-  animation: theme-reveal 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+/* 1. Default / Modern Theme: Crisp Apple Circular Water Wave */
+html[data-theme="modern"]::view-transition-new(root),
+html:not([data-theme])::view-transition-new(root) {
+  animation: theme-reveal-modern 0.72s cubic-bezier(0.22, 1, 0.36, 1) both !important;
   mix-blend-mode: normal !important;
   z-index: 9999;
 }
 
-@keyframes theme-reveal {
-  from {
+@keyframes theme-reveal-modern {
+  0% {
     -webkit-clip-path: circle(0px at var(--view-tx, 50%) var(--view-ty, 50%));
     clip-path: circle(0px at var(--view-tx, 50%) var(--view-ty, 50%));
   }
-  to {
+  100% {
     -webkit-clip-path: circle(var(--view-tr, 150vmax) at var(--view-tx, 50%) var(--view-ty, 50%));
     clip-path: circle(var(--view-tr, 150vmax) at var(--view-tx, 50%) var(--view-ty, 50%));
   }
 }
 
-/* ─── Cyber Terminal Dedicated Glitch Transition (No water wave) ─── */
+/* 2. Coffee Theme: Warm Golden Amber Liquid Brew Bloom */
+html[data-theme="cafe"]::view-transition-new(root) {
+  animation: theme-reveal-cafe 0.8s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+  mix-blend-mode: normal !important;
+  z-index: 9999;
+}
+
+@keyframes theme-reveal-cafe {
+  0% {
+    -webkit-clip-path: circle(0px at var(--view-tx, 50%) var(--view-ty, 50%));
+    clip-path: circle(0px at var(--view-tx, 50%) var(--view-ty, 50%));
+    filter: sepia(0.3) saturate(1.25);
+  }
+  60% {
+    filter: sepia(0.12) saturate(1.1);
+  }
+  100% {
+    -webkit-clip-path: circle(var(--view-tr, 150vmax) at var(--view-tx, 50%) var(--view-ty, 50%));
+    clip-path: circle(var(--view-tr, 150vmax) at var(--view-tx, 50%) var(--view-ty, 50%));
+    filter: none;
+  }
+}
+
+/* 3. Cyber Terminal: Expanding Digital Glitch Matrix Shockwave */
 html[data-theme="cyber"]::view-transition-old(root) {
-  animation: cyber-glitch-old 0.42s cubic-bezier(0.25, 0.46, 0.45, 0.94) both !important;
+  animation: cyber-glitch-wave-old 0.5s cubic-bezier(0.16, 1, 0.3, 1) both !important;
   mix-blend-mode: normal !important;
   z-index: 1;
 }
 
 html[data-theme="cyber"]::view-transition-new(root) {
-  animation: cyber-glitch-new 0.42s cubic-bezier(0.25, 0.46, 0.45, 0.94) both !important;
+  animation: cyber-glitch-wave-new 0.55s cubic-bezier(0.16, 1, 0.3, 1) both !important;
   mix-blend-mode: normal !important;
   z-index: 9999;
 }
 
-@keyframes cyber-glitch-old {
+@keyframes cyber-glitch-wave-old {
   0% {
     opacity: 1;
     transform: translate(0, 0);
     filter: none;
   }
-  25% {
-    opacity: 0.85;
-    transform: translate(-6px, 3px) skewX(-3deg);
-    filter: invert(0.15) drop-shadow(-6px 0 #00ff66) drop-shadow(6px 0 #ff0055);
-    clip-path: polygon(0 15%, 100% 15%, 100% 38%, 0 38%, 0 62%, 100% 62%, 100% 82%, 0 82%);
+  30% {
+    opacity: 0.8;
+    transform: translate(-4px, 2px) skewX(-2deg);
+    filter: invert(0.15) drop-shadow(-4px 0 #00ff66) drop-shadow(4px 0 #ff0055);
   }
-  50% {
-    opacity: 0.5;
-    transform: translate(6px, -3px) skewX(3deg);
-    clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%, 0 45%, 100% 45%, 100% 70%, 0 70%);
-    filter: brightness(2.2) contrast(1.8);
-  }
-  75% {
-    opacity: 0.2;
-    transform: translate(-3px, 2px);
-    clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%, 0 85%, 100% 85%, 100% 100%, 0 100%);
+  65% {
+    opacity: 0.35;
+    transform: translate(4px, -2px) skewX(2deg);
+    filter: contrast(1.8) brightness(1.5);
   }
   100% {
     opacity: 0;
     transform: translate(0, 0);
-    clip-path: none;
     filter: none;
   }
 }
 
-@keyframes cyber-glitch-new {
+@keyframes cyber-glitch-wave-new {
   0% {
-    opacity: 0;
-    transform: translate(6px, -3px) skewX(3deg);
-    clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%, 0 45%, 100% 45%, 100% 70%, 0 70%);
+    -webkit-clip-path: circle(0px at var(--view-tx, 50%) var(--view-ty, 50%));
+    clip-path: circle(0px at var(--view-tx, 50%) var(--view-ty, 50%));
     filter: invert(0.2) drop-shadow(6px 0 #00ff66) drop-shadow(-6px 0 #00f0ff);
+    transform: translate(3px, -2px) skewX(2deg);
   }
-  25% {
-    opacity: 0.75;
-    transform: translate(-6px, 3px) skewX(-2deg);
-    clip-path: polygon(0 15%, 100% 15%, 100% 38%, 0 38%, 0 62%, 100% 62%, 100% 82%, 0 82%);
-    filter: brightness(2) contrast(1.7);
+  20% {
+    -webkit-clip-path: circle(calc(var(--view-tr, 150vmax) * 0.22) at var(--view-tx, 50%) var(--view-ty, 50%));
+    clip-path: circle(calc(var(--view-tr, 150vmax) * 0.22) at var(--view-tx, 50%) var(--view-ty, 50%));
+    filter: brightness(2) contrast(1.6) drop-shadow(-4px 0 #00ff66);
+    transform: translate(-4px, 2px) skewX(-1.5deg);
   }
-  50% {
-    opacity: 0.9;
-    transform: translate(4px, -1px) skewX(1deg);
-    clip-path: polygon(0 35%, 100% 35%, 100% 60%, 0 60%, 0 85%, 100% 85%, 100% 100%, 0 100%);
-    filter: drop-shadow(3px 0 #00ff66);
+  45% {
+    -webkit-clip-path: circle(calc(var(--view-tr, 150vmax) * 0.52) at var(--view-tx, 50%) var(--view-ty, 50%));
+    clip-path: circle(calc(var(--view-tr, 150vmax) * 0.52) at var(--view-tx, 50%) var(--view-ty, 50%));
+    filter: drop-shadow(4px 0 #00ff66) drop-shadow(-4px 0 #ff0055);
+    transform: translate(3px, -1px);
   }
-  75% {
-    opacity: 0.98;
-    transform: translate(-2px, 1px);
-    clip-path: none;
-    filter: brightness(1.2);
+  70% {
+    -webkit-clip-path: circle(calc(var(--view-tr, 150vmax) * 0.82) at var(--view-tx, 50%) var(--view-ty, 50%));
+    clip-path: circle(calc(var(--view-tr, 150vmax) * 0.82) at var(--view-tx, 50%) var(--view-ty, 50%));
+    filter: brightness(1.2) drop-shadow(2px 0 #00ff66);
+    transform: translate(-1px, 1px);
   }
   100% {
-    opacity: 1;
-    transform: translate(0, 0);
-    clip-path: none;
+    -webkit-clip-path: circle(var(--view-tr, 150vmax) at var(--view-tx, 50%) var(--view-ty, 50%));
+    clip-path: circle(var(--view-tr, 150vmax) at var(--view-tx, 50%) var(--view-ty, 50%));
     filter: none;
+    transform: translate(0, 0);
   }
 }
 
