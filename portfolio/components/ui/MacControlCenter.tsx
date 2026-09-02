@@ -87,7 +87,22 @@ export const MacControlCenter = memo(function MacControlCenter({
     return () => window.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen, onClose]);
 
-  const toggleTheme = useCallback(() => {
+  const toggleTheme = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const endRadius = Math.ceil(
+      Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      )
+    );
+
+    const root = document.documentElement;
+    root.style.setProperty("--view-tx", `${x.toFixed(1)}px`);
+    root.style.setProperty("--view-ty", `${y.toFixed(1)}px`);
+    root.style.setProperty("--view-tr", `${endRadius}px`);
+
     const toggleBtn = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
     if (toggleBtn) {
       toggleBtn.click();

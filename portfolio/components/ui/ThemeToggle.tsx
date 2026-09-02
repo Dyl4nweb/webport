@@ -74,23 +74,26 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
     };
   }, []);
 
-  const toggleTheme = () => {
+  const toggleTheme = (e?: React.MouseEvent<HTMLButtonElement>) => {
     if (animatingRef.current) return;
     animatingRef.current = true;
 
     const nextDark = !isDark;
     const next: Theme = nextDark ? "dark" : "light";
 
-    const buttonEl = buttonRef.current;
-    if (!buttonEl) {
-      animatingRef.current = false;
-      return;
+    const targetEl = e?.currentTarget || buttonRef.current;
+    let x = window.innerWidth / 2;
+    let y = window.innerHeight / 2;
+
+    if (targetEl) {
+      const rect = targetEl.getBoundingClientRect();
+      x = rect.left + rect.width / 2;
+      y = rect.top + rect.height / 2;
+    } else if (e && typeof e.clientX === "number" && e.clientX > 0) {
+      x = e.clientX;
+      y = e.clientY;
     }
 
-    // Exact toggle button center coordinates and maximum corner hypotenuse radius
-    const rect = buttonEl.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
     const endRadius = Math.ceil(
       Math.hypot(
         Math.max(x, window.innerWidth - x),
@@ -135,9 +138,6 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
       if (unlockTimer) clearTimeout(unlockTimer);
       requestAnimationFrame(() => {
         root.classList.remove("theme-swap");
-        root.style.removeProperty("--view-tx");
-        root.style.removeProperty("--view-ty");
-        root.style.removeProperty("--view-tr");
         animatingRef.current = false;
       });
     };
