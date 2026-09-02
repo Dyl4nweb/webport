@@ -8,8 +8,9 @@ import { useEffect, useRef, useState } from "react";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { signOut } from "@/lib/auth";
 
-const NAV_ITEMS: { name: string; href: string }[] = [
+const NAV_ITEMS: { name: string; href: string; badge?: string }[] = [
   { name: "Dashboard", href: "/admin" },
+  { name: "Varex AI", href: "/admin/varex-ai", badge: "Gemini" },
   { name: "Theme Engine", href: "/admin/theme" },
   { name: "Inquiries", href: "/admin/inquiries" },
   { name: "Bookings", href: "/admin/bookings" },
@@ -126,13 +127,19 @@ export default function AdminSidebar({
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`flex h-9 items-center rounded-apple-sm px-3 text-[13px] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+              className={`flex h-9 items-center justify-between rounded-apple-sm px-3 text-[13px] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
                 active
                   ? "bg-accent/[0.08] text-accent dark:bg-accent-dark/[0.12] dark:text-accent-dark"
                   : "text-ink-secondary hover:bg-ink/[0.04] hover:text-ink dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.06] dark:hover:text-ink-dark"
               }`}
             >
-              {item.name}
+              <span>{item.name}</span>
+              {item.badge && (
+                <span className="admin-chat-badge inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] font-semibold border">
+                  <span className="h-1 w-1 rounded-full bg-accent dark:bg-accent-dark animate-pulse" />
+                  {item.badge}
+                </span>
+              )}
             </Link>
           );
         })}

@@ -3,6 +3,7 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
+import { useConfirm } from "@/lib/admin/confirm-context";
 import { getSupabase } from "@/lib/supabase";
 import type { InboxMessage } from "@/lib/admin/gmail";
 
@@ -27,6 +28,7 @@ function formatMessageDate(iso: string): string {
 }
 
 function GmailInner() {
+  const { confirm } = useConfirm();
   const searchParams = useSearchParams();
 
   const [connection, setConnection] = useState<ConnectionState>({
@@ -158,7 +160,13 @@ function GmailInner() {
   }
 
   async function disconnect() {
-    if (!window.confirm("Disconnect Gmail? Stored access is removed.")) return;
+    const ok = await confirm({
+      title: "Disconnect Gmail",
+      message: "Disconnect Gmail? Stored access will be removed.",
+      confirmLabel: "Disconnect Gmail",
+      tone: "danger",
+    });
+    if (!ok) return;
 
     setBusy(true);
 

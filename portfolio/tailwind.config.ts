@@ -61,9 +61,13 @@ const config: Config = {
         narrow: "780px",
       },
       borderRadius: {
-        apple: "20px",
+        "apple-xs": "10px",
         "apple-sm": "14px",
-        "apple-lg": "28px",
+        "apple-md": "18px",
+        apple: "20px",
+        "apple-lg": "24px",
+        "apple-xl": "28px",
+        "apple-2xl": "32px",
       },
       transitionTimingFunction: {
         apple: "cubic-bezier(0.28, 0.11, 0.32, 1)",

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { useConfirm } from "@/lib/admin/confirm-context";
 import { getSupabase } from "@/lib/supabase";
 
 interface CertificateRow {
@@ -66,6 +67,7 @@ const labelClass =
   "block text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-tertiary dark:text-ink-dark-secondary";
 
 export default function AdminCertificatesPage() {
+  const { confirm } = useConfirm();
   const [rows, setRows] = useState<CertificateRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -200,24 +202,25 @@ export default function AdminCertificatesPage() {
   }
 
   async function removeCertificate(row: CertificateRow) {
-    if (
-      !window.confirm(
-        `Delete "${row.title}"? The public site updates immediately.`
-      )
-    ) {
-      return;
-    }
+    const ok = await confirm({
+      title: "Delete Certificate",
+      message: `Delete "${row.title}"? The public site updates immediately.`,
+      confirmLabel: "Delete Certificate",
+      tone: "danger",
+    });
+    if (!ok) return;
     await callApi({ action: "delete", id: row.id });
   }
 
   async function importStatic() {
-    if (
-      !window.confirm(
-        "Import the existing static certificates into the CMS? This only runs while the database table is empty."
-      )
-    ) {
-      return;
-    }
+    const ok = await confirm({
+      title: "Import Static Certificates",
+      message:
+        "Import the existing static certificates into the CMS? This only runs while the database table is empty.",
+      confirmLabel: "Import Certificates",
+      tone: "default",
+    });
+    if (!ok) return;
     await callApi({ action: "seed" });
   }
 

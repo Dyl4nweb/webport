@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import { useConfirm } from "@/lib/admin/confirm-context";
 import { getSupabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
@@ -67,6 +68,7 @@ function relativeTime(iso: string): string {
 }
 
 export default function AdminInquiriesPage() {
+  const { confirm } = useConfirm();
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<InquiryStatus | "all">("all");
@@ -140,7 +142,13 @@ export default function AdminInquiriesPage() {
   }
 
   async function removeInquiry(inquiry: Inquiry) {
-    if (!window.confirm(`Delete the inquiry from ${inquiry.name}?`)) return;
+    const ok = await confirm({
+      title: "Delete Inquiry",
+      message: `Delete the inquiry from "${inquiry.name}"? This action cannot be undone.`,
+      confirmLabel: "Delete Inquiry",
+      tone: "danger",
+    });
+    if (!ok) return;
 
     setActionError(null);
     setBusyId(inquiry.id);

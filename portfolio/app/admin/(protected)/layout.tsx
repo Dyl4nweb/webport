@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import AdminAIChatHead from "@/components/admin/AdminAIChatHead";
+import { AdminConfirmProvider } from "@/lib/admin/confirm-context";
+import { VarexAIProvider } from "@/lib/admin/varex-ai-context";
 import { useAdminSession } from "@/lib/auth";
 
 export default function ProtectedAdminLayout({
@@ -26,42 +29,49 @@ export default function ProtectedAdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-surface dark:bg-surface-dark">
-      <AdminSidebar open={navOpen} onClose={() => setNavOpen(false)} />
+    <AdminConfirmProvider>
+      <VarexAIProvider>
+        <div className="min-h-screen bg-surface dark:bg-surface-dark">
+          <AdminSidebar open={navOpen} onClose={() => setNavOpen(false)} />
 
-      <main className="md:pl-60">
-        <div className="sticky top-0 z-30 flex h-12 items-center gap-3 border-b border-line/60 bg-surface px-4 dark:border-line-dark/60 dark:bg-surface-dark md:hidden">
-          <button
-            type="button"
-            onClick={() => setNavOpen(true)}
-            aria-label="Open admin menu"
-            aria-expanded={navOpen}
-            aria-controls="admin-sidebar"
-            className="-ml-2 inline-flex h-10 w-10 items-center justify-center rounded-apple-sm text-ink-secondary transition-colors duration-150 hover:bg-ink/[0.05] hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.08] dark:hover:text-ink-dark"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              aria-hidden
-            >
-              <path d="M3 5.5h14M3 10h14M3 14.5h14" />
-            </svg>
-          </button>
+          <main className="md:pl-60">
+            <div className="sticky top-0 z-30 flex h-12 items-center gap-3 border-b border-line/60 bg-surface px-4 dark:border-line-dark/60 dark:bg-surface-dark md:hidden">
+              <button
+                type="button"
+                onClick={() => setNavOpen(true)}
+                aria-label="Open admin menu"
+                aria-expanded={navOpen}
+                aria-controls="admin-sidebar"
+                className="-ml-2 inline-flex h-10 w-10 items-center justify-center rounded-apple-sm text-ink-secondary transition-colors duration-150 hover:bg-ink/[0.05] hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.08] dark:hover:text-ink-dark"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  aria-hidden
+                >
+                  <path d="M3 5.5h14M3 10h14M3 14.5h14" />
+                </svg>
+              </button>
 
-          <span className="text-[13px] font-semibold tracking-[-0.01em] text-ink dark:text-ink-dark">
-            Admin
-          </span>
+              <span className="text-[13px] font-semibold tracking-[-0.01em] text-ink dark:text-ink-dark">
+                Admin
+              </span>
+            </div>
+
+            <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-10">
+              {children}
+            </div>
+          </main>
+
+          {/* Floating Admin Varex AI Chat Head */}
+          <AdminAIChatHead />
         </div>
-
-        <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-10">
-          {children}
-        </div>
-      </main>
-    </div>
+      </VarexAIProvider>
+    </AdminConfirmProvider>
   );
 }

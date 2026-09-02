@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { useConfirm } from "@/lib/admin/confirm-context";
 import { getSupabase } from "@/lib/supabase";
 import type { Project } from "@/types";
 
@@ -90,6 +91,7 @@ const labelClass =
   "block text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-tertiary dark:text-ink-dark-secondary";
 
 export default function AdminProjectsPage() {
+  const { confirm } = useConfirm();
   const [rows, setRows] = useState<ProjectRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -234,22 +236,25 @@ export default function AdminProjectsPage() {
   }
 
   async function removeProject(row: ProjectRow) {
-    if (
-      !window.confirm(`Delete "${row.name}"? The public site updates immediately.`)
-    ) {
-      return;
-    }
+    const ok = await confirm({
+      title: "Delete Project",
+      message: `Delete "${row.name}"? The public site updates immediately.`,
+      confirmLabel: "Delete Project",
+      tone: "danger",
+    });
+    if (!ok) return;
     await callApi({ action: "delete", slug: row.slug });
   }
 
   async function importStatic() {
-    if (
-      !window.confirm(
-        "Import the 7 original static projects into the CMS? Existing entries with the same slug are left untouched."
-      )
-    ) {
-      return;
-    }
+    const ok = await confirm({
+      title: "Import Static Projects",
+      message:
+        "Import the 7 original static projects into the CMS? Existing entries with the same slug are left untouched.",
+      confirmLabel: "Import Projects",
+      tone: "default",
+    });
+    if (!ok) return;
     await callApi({ action: "seed" });
   }
 
