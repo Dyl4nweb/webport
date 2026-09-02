@@ -482,6 +482,60 @@ html[data-theme="cyber"] [data-dock] {
   box-shadow: 0 0 25px rgba(0, 255, 102, 0.15) !important;
 }
 
+/* Cyber Theme: Tactical Theme Toggle & Screen Glitch Burst */
+html[data-theme="cyber"] [data-theme-toggle] {
+  border: 1px solid rgba(0, 255, 102, 0.45) !important;
+  background-color: rgba(0, 255, 102, 0.08) !important;
+  color: #00ff66 !important;
+  box-shadow: 0 0 14px rgba(0, 255, 102, 0.25) !important;
+}
+
+html[data-theme="cyber"] [data-theme-toggle]:hover {
+  background-color: rgba(0, 255, 102, 0.18) !important;
+  box-shadow: 0 0 20px rgba(0, 255, 102, 0.5) !important;
+  transform: scale(1.06);
+}
+
+html[data-theme="cyber"] [data-theme-toggle] svg {
+  color: #00ff66 !important;
+  filter: drop-shadow(0 0 6px rgba(0, 255, 102, 0.8));
+}
+
+/* Cyber Screen Glitch Burst when toggling in Cyber Terminal */
+.cyber-glitching #app-main,
+.cyber-glitching header,
+.cyber-glitching footer,
+.cyber-glitching [data-dock] {
+  animation: cyber-terminal-jitter 0.42s cubic-bezier(0.25, 0.46, 0.45, 0.94) both !important;
+}
+
+@keyframes cyber-terminal-jitter {
+  0% {
+    transform: translate(0, 0);
+    filter: none;
+  }
+  15% {
+    transform: translate(-3px, 1px) skewX(-1.5deg);
+    filter: drop-shadow(-3px 0 rgba(0, 255, 102, 0.85)) drop-shadow(3px 0 rgba(255, 0, 80, 0.65));
+  }
+  35% {
+    transform: translate(3px, -2px) skewX(1deg);
+    filter: drop-shadow(3px 0 rgba(0, 255, 102, 0.85)) drop-shadow(-3px 0 rgba(0, 240, 255, 0.65));
+  }
+  55% {
+    transform: translate(-2px, 2px);
+    filter: drop-shadow(-2px 0 rgba(0, 255, 102, 0.7));
+  }
+  75% {
+    transform: translate(1.5px, -1px);
+    filter: drop-shadow(1.5px 0 rgba(0, 255, 102, 0.45));
+  }
+  100% {
+    transform: translate(0, 0);
+    filter: none;
+  }
+}
+
 /* Cyber Developer ID Badge: Tactical Holo HUD Badge */
 html[data-theme="cyber"] .profile-badge-card {
   border-radius: 4px !important;

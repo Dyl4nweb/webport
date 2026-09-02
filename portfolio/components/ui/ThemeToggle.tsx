@@ -32,6 +32,7 @@ function getInitialTheme(): Theme {
 
 export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
   const [isDark, setIsDark] = useState(false);
+  const [isCyber, setIsCyber] = useState(false);
   const [mounted, setMounted] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const animatingRef = useRef(false);
@@ -43,7 +44,12 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
     root.style.removeProperty("--view-ty");
     const theme = getInitialTheme();
     setIsDark(theme === "dark");
+    setIsCyber(root.getAttribute("data-theme") === "cyber");
     setMounted(true);
+
+    const updateThemeState = () => {
+      setIsCyber(document.documentElement.getAttribute("data-theme") === "cyber");
+    };
 
     const handleStorage = (e: StorageEvent) => {
       if (e.key === "theme" && (e.newValue === "dark" || e.newValue === "light")) {
@@ -54,9 +60,18 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
         document.documentElement.style.backgroundColor = getThemeBackgroundColor(nextDark);
         document.documentElement.style.colorScheme = nextDark ? "dark" : "light";
       }
+      updateThemeState();
     };
+
     window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
+    window.addEventListener("theme:change", updateThemeState);
+    window.addEventListener("site-theme:change", updateThemeState);
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("theme:change", updateThemeState);
+      window.removeEventListener("site-theme:change", updateThemeState);
+    };
   }, []);
 
   const toggleTheme = () => {
@@ -87,6 +102,12 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
     root.style.setProperty("--view-tx", `${x.toFixed(1)}px`);
     root.style.setProperty("--view-ty", `${y.toFixed(1)}px`);
     root.style.setProperty("--view-tr", `${endRadius}px`);
+
+    // Trigger cyber glitch effect in cyber terminal mode
+    if (isCyber || root.getAttribute("data-theme") === "cyber") {
+      root.classList.add("cyber-glitching");
+      setTimeout(() => root.classList.remove("cyber-glitching"), 450);
+    }
 
     // State sync helper with synchronous commit for glitch-free snapshot capture
     const applyTheme = () => {
@@ -185,6 +206,7 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
         "hover:bg-black/[0.05] dark:hover:bg-white/[0.08]",
         "active:scale-95 transition-[background-color,color,transform,box-shadow] duration-200 ease-out",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:focus-visible:ring-accent-dark",
+        isCyber && "cyber-toggle-fx text-[#00ff66] dark:text-[#00ff66] hover:shadow-[0_0_15px_rgba(0,255,102,0.5)]",
         className
       )}
     >
