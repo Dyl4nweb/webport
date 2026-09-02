@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { requireAdmin } from "@/lib/admin/api-auth";
 
+export const dynamic = "force-dynamic";
+export const maxDuration = 60;
+
 interface ChatMessage {
   role: "user" | "assistant" | "system";
   content: string;
@@ -49,42 +52,6 @@ TONE & STYLE:
 - Use clean Markdown formatting: headings, bullet points, and code blocks with language identifiers when providing code snippets.
 - When drafting email responses or project descriptions, provide ready-to-copy text with placeholders clearly marked if needed.
 `.trim();
-
-const modelsCache = new Map<string, { models: string[]; expiresAt: number }>();
-
-// Helper to query available generation models for the user's API key with in-memory caching
-async function fetchSupportedModels(apiKey: string): Promise<string[]> {
-  const cached = modelsCache.get(apiKey);
-  if (cached && Date.now() < cached.expiresAt) {
-    return cached.models;
-  }
-
-  try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`,
-      {
-        headers: {
-          "x-goog-api-key": apiKey,
-        },
-      }
-    );
-    if (!res.ok) return [];
-    const data = await res.json();
-    const models = (data.models || [])
-      .filter(
-        (m: any) =>
-          Array.isArray(m.supportedGenerationMethods) &&
-          m.supportedGenerationMethods.includes("generateContent")
-      )
-      .map((m: any) => String(m.name || "").replace(/^models\//, ""))
-      .filter((name: string) => Boolean(name) && !name.includes("embedding"));
-
-    modelsCache.set(apiKey, { models, expiresAt: Date.now() + 60 * 60 * 1000 });
-    return models;
-  } catch {
-    return [];
-  }
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -200,21 +167,32 @@ export async function POST(request: NextRequest) {
             "x-goog-api-key": effectiveApiKey,
           };
 
-          const geminiResponse = await fetch(geminiUrl, {
-            method: "POST",
-            headers: reqHeaders,
-            body: JSON.stringify({
-              system_instruction: {
-                parts: [{ text: fullSystemInstruction }],
-              },
-              contents,
-              generationConfig: {
-                temperature: 0.7,
-                maxOutputTokens: 2048,
-                topP: 0.95,
-              },
-            }),
-          });
+          let geminiResponse: Response;
+          try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 9000);
+
+            geminiResponse = await fetch(geminiUrl, {
+              method: "POST",
+              headers: reqHeaders,
+              signal: controller.signal,
+              body: JSON.stringify({
+                system_instruction: {
+                  parts: [{ text: fullSystemInstruction }],
+                },
+                contents,
+                generationConfig: {
+                  temperature: 0.7,
+                  maxOutputTokens: 2048,
+                  topP: 0.95,
+                },
+              }),
+            });
+            clearTimeout(timeoutId);
+          } catch (fetchErr: any) {
+            console.error(`[admin-varex-ai] Gemini fetch error for ${currentModel}:`, fetchErr?.message);
+            break;
+          }
 
           if (geminiResponse.ok) {
             successfulData = await geminiResponse.json();
@@ -250,18 +228,14 @@ export async function POST(request: NextRequest) {
             break;
           }
 
-          // If high demand / temporary spike (503/429), fall through immediately to next candidate model
+          // If rate limited, quota exhausted, high demand, or deprecated, immediately try next model
           if (
+            geminiResponse.status === 429 ||
+            geminiResponse.status === 503 ||
+            geminiResponse.status === 404 ||
+            parsedError.includes("quota") ||
             parsedError.includes("high demand") ||
             parsedError.includes("Resource has been exhausted") ||
-            geminiResponse.status === 503
-          ) {
-            break;
-          }
-
-          // If model not found or deprecated, break out of inner retry and try next candidate model
-          if (
-            geminiResponse.status === 404 ||
             parsedError.includes("no longer available") ||
             parsedError.includes("not found")
           ) {
@@ -287,6 +261,9 @@ export async function POST(request: NextRequest) {
             })),
           ];
 
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 12000);
+
           const openRouterRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -295,6 +272,7 @@ export async function POST(request: NextRequest) {
               "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://www.dylanramos.site",
               "X-Title": "Dylan Ramos Portfolio Admin Copilot",
             },
+            signal: controller.signal,
             body: JSON.stringify({
               model: "openrouter/free",
               messages: openRouterMessages,
@@ -302,6 +280,7 @@ export async function POST(request: NextRequest) {
               max_tokens: 2048,
             }),
           });
+          clearTimeout(timeoutId);
 
           if (openRouterRes.ok) {
             const orData = await openRouterRes.json();
