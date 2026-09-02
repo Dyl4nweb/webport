@@ -36,16 +36,20 @@ export default function Contact() {
         <div className="flex flex-col items-center text-center">
           {/* Availability Status (Minimalist, no card container) */}
           <Reveal>
-            <div className="inline-flex items-center gap-2 text-[12.5px] sm:text-[13px] text-ink-secondary dark:text-ink-dark-secondary select-none">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+            <div className="flex flex-col min-[420px]:flex-row items-center justify-center gap-1.5 sm:gap-2 select-none text-center">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                </span>
+                <span className="font-semibold uppercase tracking-[0.11em] sm:tracking-[0.14em] text-[10px] min-[360px]:text-[11px] sm:text-[11.5px] text-ink dark:text-ink-dark">
+                  AVAILABLE FOR NEW OPPORTUNITIES
+                </span>
+              </div>
+              <span className="hidden min-[420px]:inline text-ink-tertiary dark:text-ink-dark-secondary text-[10px]">·</span>
+              <span className="text-[11px] sm:text-[12px] text-ink-secondary dark:text-ink-dark-secondary font-medium">
+                Manila (UTC+8)
               </span>
-              <span className="font-semibold uppercase tracking-[0.14em] text-[11px] sm:text-[11.5px] text-ink dark:text-ink-dark">
-                AVAILABLE FOR NEW OPPORTUNITIES
-              </span>
-              <span className="text-ink-tertiary dark:text-ink-dark-secondary">·</span>
-              <span>Manila (UTC+8)</span>
             </div>
           </Reveal>
 
