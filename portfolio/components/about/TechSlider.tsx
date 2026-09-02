@@ -37,10 +37,7 @@ const SLIDER_ICONS = [
 ];
 
 export default function TechSlider() {
-  const trackItems = useMemo(
-    () => [...SLIDER_ICONS, ...SLIDER_ICONS, ...SLIDER_ICONS],
-    []
-  );
+  const trackItems = SLIDER_ICONS;
 
   return (
     <div className="w-full py-6 sm:py-8 overflow-hidden">
