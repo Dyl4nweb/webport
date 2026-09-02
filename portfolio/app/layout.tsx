@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { cookies } from "next/headers";
+import { promises as fs } from "fs";
+import path from "path";
+import { Inter, Newsreader, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import NavbarGate from "@/components/layout/NavbarGate";
 import Footer from "@/components/layout/Footer";
@@ -8,6 +11,10 @@ import AIChatLazy from "@/components/ui/AIChatLazy";
 import BackToTop from "@/components/ui/BackToTop";
 import PublicChromeGate from "@/components/admin/PublicChromeGate";
 import PageViewTracker from "@/components/analytics/PageViewTracker";
+import ThemeProvider from "@/components/theme/ThemeProvider";
+import CyberBinaryFX from "@/components/theme/CyberBinaryFX";
+import ThemeAtmosphere from "@/components/theme/ThemeAtmosphere";
+import { isValidTheme, type SiteTheme } from "@/lib/theme";
 import { SITE } from "@/lib/constants";
 
 const inter = Inter({
@@ -16,9 +23,23 @@ const inter = Inter({
   display: "swap",
 });
 
+const serifFont = Newsreader({
+  subsets: ["latin"],
+  variable: "--font-serif",
+  display: "swap",
+  style: ["normal", "italic"],
+});
+
+const monoFont = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+});
+
 export const viewport = {
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
   viewportFit: "cover" as const,
   themeColor: [
     { media: "(prefers-color-scheme: dark)", color: "#000000" },
@@ -59,24 +80,47 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+async function getAuthoritativeTheme(): Promise<SiteTheme> {
+  try {
+    const filePath = path.join(process.cwd(), "data", "site_settings.json");
+    const raw = await fs.readFile(filePath, "utf-8");
+    const parsed = JSON.parse(raw);
+    if (isValidTheme(parsed.active_theme)) return parsed.active_theme;
+  } catch {}
+  return "modern";
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const activeTheme = await getAuthoritativeTheme();
+
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${inter.variable} ${serifFont.variable} ${monoFont.variable}`}
+      data-theme={activeTheme}
+      suppressHydrationWarning
+    >
       <head>
         <style
           dangerouslySetInnerHTML={{
             __html: `
               :root { color-scheme: light dark; }
-              @media (prefers-color-scheme: dark) {
-                html:not(.light) { background-color: #000000 !important; color: #f5f5f7 !important; }
-                html:not(.light) #splash { background-color: #000000 !important; --splash-bg: #000000 !important; }
-              }
-              html.dark { background-color: #000000 !important; color: #f5f5f7 !important; }
-              html.dark #splash { background-color: #000000 !important; --splash-bg: #000000 !important; }
+              html[data-theme="modern"].dark, html:not([data-theme]).dark { background-color: #000000 !important; color: #f5f5f7 !important; }
+              html[data-theme="modern"].dark #splash, html:not([data-theme]).dark #splash { background-color: #000000 !important; --splash-bg: #000000 !important; }
+              
+              html[data-theme="cafe"].dark { background-color: #14100c !important; color: #f8f4ec !important; }
+              html[data-theme="cafe"].dark #splash { background-color: #14100c !important; --splash-bg: #14100c !important; }
+              html[data-theme="cafe"]:not(.dark) { background-color: #f8f4ed !important; color: #2c211a !important; }
+              html[data-theme="cafe"]:not(.dark) #splash { background-color: #f8f4ed !important; --splash-bg: #f8f4ed !important; }
+
+              html[data-theme="cyber"].dark { background-color: #030705 !important; color: #00ff66 !important; }
+              html[data-theme="cyber"].dark #splash { background-color: #030705 !important; --splash-bg: #030705 !important; }
+              html[data-theme="cyber"]:not(.dark) { background-color: #e8f4ed !important; color: #042b1b !important; }
+              html[data-theme="cyber"]:not(.dark) #splash { background-color: #e8f4ed !important; --splash-bg: #e8f4ed !important; }
               .navbar-logo-target:not(.is-revealed), #navbar-logo:not(.is-revealed), #navbar-logo-dock:not(.is-revealed) { opacity: 0 !important; visibility: hidden !important; }
               .navbar-logo-target.is-revealed, #navbar-logo.is-revealed, #navbar-logo-dock.is-revealed { opacity: 1 !important; visibility: visible !important; transition: opacity 0.3s ease !important; }
               @media (hover: hover) and (pointer: fine) {
@@ -94,7 +138,7 @@ export default function RootLayout({
         />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("theme");var d=t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme:dark)").matches);var r=document.documentElement;r.classList.remove("theme-swap");if(d){r.classList.add("dark");r.classList.remove("light");r.style.backgroundColor="#000000";r.style.colorScheme="dark";}else{r.classList.remove("dark");r.classList.add("light");r.style.backgroundColor="#fbfbfd";r.style.colorScheme="light";}}catch(e){}})();`,
+            __html: `(function(){try{var doc=document.documentElement;var localSt=localStorage.getItem("site_active_theme");var domSt=doc.getAttribute("data-theme");var st=localSt||domSt||"cafe";doc.setAttribute("data-theme",st);localStorage.setItem("site_active_theme",st);var t=localStorage.getItem("theme");var d=t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme:dark)").matches);doc.classList.remove("theme-swap");var bg="#fbfbfd";if(d){bg=st==="cafe"?"#14100c":(st==="cyber"?"#030705":"#000000");doc.classList.add("dark");doc.classList.remove("light");doc.style.colorScheme="dark";}else{bg=st==="cafe"?"#f8f4ed":(st==="cyber"?"#e8f4ed":"#fbfbfd");doc.classList.remove("dark");doc.classList.add("light");doc.style.colorScheme="light";}doc.style.backgroundColor=bg;}catch(e){}})();`,
           }}
         />
       </head>
@@ -235,11 +279,14 @@ export default function RootLayout({
           }}
         />
         <NavbarGate />
+        <ThemeAtmosphere />
         <main id="app-main" suppressHydrationWarning>{children}</main>
         <SmoothScroll />
         <Footer />
         <AIChatLazy />
         <BackToTop />
+        <ThemeProvider />
+        <CyberBinaryFX />
       </body>
     </html>
   );

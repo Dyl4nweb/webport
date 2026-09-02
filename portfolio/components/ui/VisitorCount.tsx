@@ -78,10 +78,10 @@ export default function VisitorCount() {
 
   return (
     <span className="inline-flex items-center gap-2 text-[13px] font-medium select-none">
-      {/* Pulsing live emerald dot */}
+      {/* Pulsing live dot (Theme adaptive) */}
       <span className="relative flex h-2.5 w-2.5 items-center justify-center">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-        <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+        <span className="footer-visitor-pulse absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+        <span className="footer-visitor-dot relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
       </span>
 
       {/* Black & White Character Avatars Facepile (Static, non-clickable) */}

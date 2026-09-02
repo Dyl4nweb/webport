@@ -5,6 +5,7 @@ import Container from "@/components/ui/Container";
 import Reveal from "@/components/ui/Reveal";
 import TechIcon from "@/components/ui/TechIcon";
 import GlitchText from "@/components/ui/GlitchText";
+import Contact from "@/components/sections/Contact";
 
 import { skills } from "@/data/skills";
 import { SITE } from "@/lib/constants";
@@ -25,6 +26,10 @@ function TechPill({ name }: { name: string }) {
         px-5 py-2.5
         dark:border-line-dark/70
         dark:bg-surface-dark-card
+        transition-all duration-200
+        hover:border-line-dark/40 dark:hover:border-line/40
+        hover:-translate-y-0.5
+        hover:shadow-sm
       "
     >
       <TechIcon name={name} />
@@ -82,7 +87,7 @@ export default function TechStackPage() {
           <div className="max-w-3xl">
             <Reveal delay={80}>
               <span className="font-mono text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.18em] text-accent dark:text-accent-dark">
-                Technologies
+                <GlitchText text="Technologies" />
               </span>
             </Reveal>
 
@@ -103,7 +108,7 @@ export default function TechStackPage() {
       </header>
 
       {/* Stack groups */}
-      <section className="relative overflow-hidden pb-24 md:pb-32">
+      <section className="relative overflow-hidden pb-20 md:pb-28">
         <Container>
           <div className="mx-auto flex max-w-5xl flex-col gap-14 md:gap-16">
             {skills.map((group, groupIndex) => (
@@ -111,7 +116,7 @@ export default function TechStackPage() {
                 <Reveal delay={groupIndex * 60}>
                   <div className="flex items-baseline justify-between gap-4 border-b border-line/50 pb-4 dark:border-line-dark/50">
                     <h2 className="text-[20px] font-semibold tracking-[-0.02em] text-ink dark:text-ink-dark md:text-[24px]">
-                      {group.category}
+                      <GlitchText text={group.category} />
                     </h2>
                     <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-ink-tertiary dark:text-ink-dark-secondary">
                       {group.items.length}{" "}
@@ -132,6 +137,9 @@ export default function TechStackPage() {
           </div>
         </Container>
       </section>
+
+      {/* Contact */}
+      <Contact />
     </>
   );
 }

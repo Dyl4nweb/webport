@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import LiveAIFace from "@/components/ui/LiveAIFace";
+import GlitchText from "@/components/ui/GlitchText";
 
 type MessageRole = "user" | "assistant";
 
@@ -16,36 +17,32 @@ const createWelcomeMessage = (): Message => ({
   id: "welcome",
   role: "assistant",
   content:
-    "Hello! I am Varex AI, Dylan Ramos's intelligent assistant. Ask me anything about Dylan's projects, tech stack, experience, or how to work together.",
+    "Hello! I am Dylan AI, Dylan Ramos's official intelligent assistant. Ask me anything about Dylan's projects, tech stack, experience, or how to collaborate.",
 });
 
 const MAX_USER_MESSAGES = 5;
 const RATE_LIMIT_WINDOW_MS = 24 * 60 * 60 * 1000; // 24-hour rolling window
 
-interface VarexUsage {
+interface DylanAIUsage {
   count: number;
   resetAt: number;
 }
 
-function getStoredUsage(): VarexUsage {
+function getStoredUsage(): DylanAIUsage {
   if (typeof window === "undefined") return { count: 0, resetAt: 0 };
   try {
-    const raw = localStorage.getItem("varex_ai_usage_v2");
+    const raw = localStorage.getItem("dylan_ai_usage_v2") || localStorage.getItem("varex_ai_usage_v2");
     if (raw) {
       const parsed = JSON.parse(raw);
       if (typeof parsed?.count === "number" && typeof parsed?.resetAt === "number") {
         if (Date.now() >= parsed.resetAt) {
           // 24 hours have elapsed! Reset usage
+          localStorage.removeItem("dylan_ai_usage_v2");
           localStorage.removeItem("varex_ai_usage_v2");
-          localStorage.removeItem("varex_user_msg_count");
           return { count: 0, resetAt: 0 };
         }
         return parsed;
       }
-    }
-    // Migration: If user was locked under old key, reset it so they can chat
-    if (localStorage.getItem("varex_user_msg_count")) {
-      localStorage.removeItem("varex_user_msg_count");
     }
   } catch {}
   return { count: 0, resetAt: 0 };
@@ -54,7 +51,7 @@ function getStoredUsage(): VarexUsage {
 function saveStoredUsage(count: number, resetAt: number) {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem("varex_ai_usage_v2", JSON.stringify({ count, resetAt }));
+    localStorage.setItem("dylan_ai_usage_v2", JSON.stringify({ count, resetAt }));
   } catch {}
 }
 
@@ -71,7 +68,7 @@ function formatRemainingTime(targetResetAt: number): string {
 const suggestions = [
   "What projects did Dylan build?",
   "What is Dylan's tech stack?",
-  "How can I work with Dylan?",
+  "How can I contact Dylan?",
 ];
 
 export default function AIChat() {
@@ -271,19 +268,18 @@ export default function AIChat() {
 
   return (
     <>
-      {/* Chat panel — Apple-style glass card positioned comfortably above bottom dock */}
+      {/* Chat panel — Theme-adaptive floating card positioned comfortably above bottom dock */}
       <div
         ref={panelRef}
         data-lenis-prevent
         className={[
-          "fixed bottom-[112px] min-[360px]:bottom-[116px] min-[400px]:bottom-[120px] sm:bottom-[88px] md:bottom-[96px] right-2.5 min-[360px]:right-3.5 sm:right-6 z-[150]",
-          "w-[calc(100vw-1rem)] min-[360px]:w-[calc(100vw-1.75rem)] max-w-[320px] min-[390px]:max-w-[345px] sm:max-w-[390px]",
-          "h-[390px] min-[390px]:h-[430px] sm:h-[480px] max-h-[72svh]",
+          "public-chat fixed bottom-[calc(78px+max(0.6rem,env(safe-area-inset-bottom,0.6rem)))] min-[360px]:bottom-[calc(84px+max(0.6rem,env(safe-area-inset-bottom,0.6rem)))] sm:bottom-[82px] md:bottom-[90px] right-2.5 min-[360px]:right-3.5 sm:right-6 z-[150]",
+          "w-[calc(100vw-1.25rem)] min-[360px]:w-[calc(100vw-1.75rem)] max-w-[330px] min-[390px]:max-w-[350px] sm:max-w-[390px]",
+          "h-[400px] min-[390px]:h-[440px] sm:h-[480px] max-h-[64svh] min-[390px]:max-h-[68svh] sm:max-h-[72svh]",
           "flex flex-col overflow-hidden rounded-2xl sm:rounded-3xl",
-          "bg-white/95 dark:bg-[#161618]/95",
+          "bg-surface-card/95 dark:bg-surface-dark-card/95",
           "backdrop-blur-2xl",
-          "saturate-150",
-          "border border-white/20 dark:border-white/10",
+          "border border-line/60 dark:border-line-dark/60",
           "shadow-[0_20px_60px_-15px_rgba(0,0,0,0.35)] dark:shadow-[0_24px_80px_-20px_rgba(0,0,0,0.7)]",
           "transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
           open
@@ -293,7 +289,7 @@ export default function AIChat() {
         style={{ visibility: open ? "visible" : "hidden" }}
       >
         {/* Header */}
-        <div className="shrink-0 px-3.5 pt-3.5 pb-2 sm:px-5 sm:pt-5 sm:pb-3 border-b border-black/5 dark:border-white/5">
+        <div className="shrink-0 px-3.5 pt-3.5 pb-2 sm:px-5 sm:pt-4 sm:pb-3 border-b border-line/40 dark:border-line-dark/40">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="relative shrink-0">
@@ -302,13 +298,20 @@ export default function AIChat() {
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
                   <p className="truncate text-[13px] sm:text-[14px] font-semibold tracking-tight text-ink dark:text-ink-dark">
-                    Varex AI
+                    <GlitchText
+                      text="Dylan AI"
+                      triggerOnMount={open}
+                      triggerOnHover={true}
+                      delay={120}
+                      duration={600}
+                      key={open ? "dylan-title-open" : "dylan-title-closed"}
+                    />
                   </p>
                   <span
                     className={`rounded-full px-1.5 py-0.5 text-[7.5px] sm:text-[8px] font-semibold uppercase tracking-wider ${
                       userMessageCount >= MAX_USER_MESSAGES
                         ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
-                        : "bg-cyan-500/15 text-cyan-600 dark:text-cyan-400"
+                        : "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
                     }`}
                   >
                     {userMessageCount >= MAX_USER_MESSAGES
@@ -328,7 +331,7 @@ export default function AIChat() {
                 onClick={resetChat}
                 disabled={loading}
                 aria-label="Reset chat"
-                className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full text-black/35 dark:text-white/35 transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/8 hover:text-black dark:hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
+                className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full text-ink-secondary dark:text-ink-dark-secondary transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/8 hover:text-ink dark:hover:text-ink-dark disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
                   <path d="M20 11a8.1 8.1 0 0 0-15.5-2M4 5v4h4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -339,7 +342,7 @@ export default function AIChat() {
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close chat"
-                className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full text-black/35 dark:text-white/35 transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/8 hover:text-black dark:hover:text-white"
+                className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full text-ink-secondary dark:text-ink-dark-secondary transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/8 hover:text-ink dark:hover:text-ink-dark"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
                   <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -370,8 +373,8 @@ export default function AIChat() {
                     max-w-[85%] rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 text-[12px] sm:text-[13px] leading-relaxed tracking-tight
                     ${
                       message.role === "user"
-                        ? "rounded-br-sm bg-black text-white shadow-sm dark:bg-white dark:text-black"
-                        : "rounded-bl-sm bg-white/60 dark:bg-white/10 text-black dark:text-white border border-black/5 dark:border-white/5 shadow-sm"
+                        ? "rounded-br-sm bg-ink text-white shadow-sm dark:bg-ink-dark dark:text-black"
+                        : "rounded-bl-sm bg-surface-alt dark:bg-surface-dark-alt text-ink dark:text-ink-dark border border-line/40 dark:border-line-dark/40 shadow-sm"
                     }
                   `}
                 >
@@ -386,10 +389,10 @@ export default function AIChat() {
                 <div className="mr-1.5 sm:mr-2 mt-0.5 shrink-0">
                   <LiveAIFace size={19} isHovered={true} />
                 </div>
-                <div className="flex items-center gap-1.5 rounded-2xl rounded-bl-sm bg-white/60 dark:bg-white/10 px-3.5 py-2.5 border border-black/5 dark:border-white/5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-[typingBounce_1.4s_infinite] [animation-delay:0ms]" />
-                  <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-[typingBounce_1.4s_infinite] [animation-delay:150ms]" />
-                  <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-[typingBounce_1.4s_infinite] [animation-delay:300ms]" />
+                <div className="flex items-center gap-1.5 rounded-2xl rounded-bl-sm bg-surface-alt dark:bg-surface-dark-alt px-3.5 py-2.5 border border-line/40 dark:border-line-dark/40">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-[typingBounce_1.4s_infinite] [animation-delay:0ms]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-[typingBounce_1.4s_infinite] [animation-delay:150ms]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-[typingBounce_1.4s_infinite] [animation-delay:300ms]" />
                 </div>
               </div>
             )}
@@ -397,8 +400,15 @@ export default function AIChat() {
             {/* Suggestions */}
             {messages.length === 1 && !loading && userMessageCount < MAX_USER_MESSAGES && (
               <div className="pt-2 sm:pt-3">
-                <p className="mb-1.5 text-[8.5px] sm:text-[9px] font-semibold uppercase tracking-widest text-black/40 dark:text-white/40">
-                  Ask Varex AI
+                <p className="mb-1.5 text-[8.5px] sm:text-[9px] font-semibold uppercase tracking-widest text-ink-secondary dark:text-ink-dark-secondary">
+                  <GlitchText
+                    text="Ask Dylan AI"
+                    triggerOnMount={open}
+                    triggerOnHover={true}
+                    delay={200}
+                    duration={500}
+                    key={open ? "dylan-sugg-open" : "dylan-sugg-closed"}
+                  />
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {suggestions.map((suggestion) => (
@@ -406,7 +416,7 @@ export default function AIChat() {
                       key={suggestion}
                       type="button"
                       onClick={() => handleSuggestion(suggestion)}
-                      className="rounded-full border border-black/8 dark:border-white/8 bg-white/60 dark:bg-white/5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 text-[9.5px] sm:text-[10px] font-medium text-black/70 dark:text-white/70 transition-all duration-200 hover:-translate-y-0.5 hover:bg-white dark:hover:bg-white/15 hover:text-black dark:hover:text-white hover:border-black/20 dark:hover:border-white/20"
+                      className="rounded-full border border-line/60 dark:border-line-dark/60 bg-surface-alt dark:bg-surface-dark-alt px-2.5 sm:px-3.5 py-1 sm:py-1.5 text-[9.5px] sm:text-[10px] font-medium text-ink dark:text-ink-dark transition-all duration-200 hover:-translate-y-0.5 hover:border-ink/30 dark:hover:border-ink-dark/30"
                     >
                       {suggestion}
                     </button>
@@ -421,7 +431,7 @@ export default function AIChat() {
 
         {/* Input / Limit Reached Footer */}
         {userMessageCount >= MAX_USER_MESSAGES ? (
-          <div className="shrink-0 px-3.5 py-3 sm:px-4 sm:py-3 border-t border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02] flex flex-col items-center text-center gap-1.5">
+          <div className="shrink-0 px-3.5 py-3 sm:px-4 sm:py-3 border-t border-line/40 dark:border-line-dark/40 bg-surface-alt dark:bg-surface-dark-alt flex flex-col items-center text-center gap-1.5">
             <p className="text-[11px] sm:text-[12px] text-ink-secondary dark:text-ink-dark-secondary">
               Daily limit reached (5/5). Resets in{" "}
               <span className="font-semibold text-ink dark:text-ink-dark">
@@ -432,7 +442,7 @@ export default function AIChat() {
             <a
               href="/contact"
               onClick={() => setOpen(false)}
-              className="inline-flex items-center gap-1.5 rounded-full bg-black text-white dark:bg-white dark:text-black px-3.5 py-1 text-[11px] font-medium transition-all hover:scale-105 active:scale-95 shadow-sm"
+              className="inline-flex items-center gap-1.5 rounded-full bg-ink text-white dark:bg-ink-dark dark:text-black px-3.5 py-1 text-[11px] font-medium transition-all hover:scale-105 active:scale-95 shadow-sm"
             >
               <span>Contact Dylan directly</span>
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -443,25 +453,25 @@ export default function AIChat() {
         ) : (
           <form
             onSubmit={handleSubmit}
-            className="shrink-0 px-3 pb-3 pt-2 sm:px-4 sm:pb-4 sm:pt-2 border-t border-black/5 dark:border-white/5"
+            className="shrink-0 px-3 pb-3 pt-2 sm:px-4 sm:pb-4 sm:pt-2 border-t border-line/40 dark:border-line-dark/40"
           >
-            <div className="flex items-center gap-1.5 sm:gap-2 rounded-full bg-black/5 dark:bg-white/8 px-3 py-1 sm:px-3.5 sm:py-1.5 transition-all duration-300 focus-within:bg-black/8 dark:focus-within:bg-white/12 ring-1 ring-transparent focus-within:ring-black/20 dark:focus-within:ring-white/20">
+            <div className="flex items-center gap-1.5 sm:gap-2 rounded-full bg-surface-alt dark:bg-surface-dark-alt border border-line/60 dark:border-line-dark/60 px-3 py-1 sm:px-3.5 sm:py-1.5 transition-all duration-300 focus-within:border-ink/40 dark:focus-within:border-ink-dark/40">
               <input
                 ref={inputRef}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 disabled={loading}
-                placeholder="Ask Varex AI anything..."
+                placeholder="Ask Dylan AI anything..."
                 autoComplete="off"
                 enterKeyHint="send"
-                className="min-w-0 flex-1 border-0 bg-transparent px-0 py-1 text-[12px] sm:text-[13px] text-black dark:text-white outline-none ring-0 placeholder:text-black/35 dark:placeholder:text-white/35 focus:outline-none focus:ring-0"
+                className="min-w-0 flex-1 border-0 bg-transparent px-0 py-1 text-[16px] sm:text-[13px] text-ink dark:text-ink-dark outline-none ring-0 placeholder:text-ink-tertiary dark:placeholder:text-ink-dark-secondary focus:outline-none focus:ring-0 leading-normal"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || loading}
                 aria-label="Send message"
-                className="flex h-6 w-6 sm:h-7 sm:w-7 shrink-0 items-center justify-center rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-sm"
+                className="flex h-6 w-6 sm:h-7 sm:w-7 shrink-0 items-center justify-center rounded-full bg-ink text-white dark:bg-ink-dark dark:text-black font-bold transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-sm"
               >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                   <path d="M5 12l14-7-4 14-3.5-6.5L5 12z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />

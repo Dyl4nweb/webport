@@ -10,6 +10,7 @@ import { signOut } from "@/lib/auth";
 
 const NAV_ITEMS: { name: string; href: string }[] = [
   { name: "Dashboard", href: "/admin" },
+  { name: "Theme Engine", href: "/admin/theme" },
   { name: "Inquiries", href: "/admin/inquiries" },
   { name: "Bookings", href: "/admin/bookings" },
   { name: "Analytics", href: "/admin/analytics" },

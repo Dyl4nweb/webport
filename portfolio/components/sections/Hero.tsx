@@ -8,6 +8,7 @@ import GlitchText from "@/components/ui/GlitchText";
 import { SITE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { socialLinks } from "@/data/social";
+import { useActiveTheme } from "@/lib/useActiveTheme";
 
 const socialIcons: Record<string, React.ReactNode> = {
   github: (
@@ -33,7 +34,7 @@ const socialIcons: Record<string, React.ReactNode> = {
   ),
 };
 
-const roles = [
+const DEFAULT_ROLES = [
   "Software Engineer",
   "Tech Enthusiast",
   "Full Stack Developer",
@@ -43,10 +44,10 @@ const roles = [
 
 const TYPE_SPEED = 80;
 const DELETE_SPEED = 40;
-const PAUSE_DURATION = 3500; // Mananatiling nakatigil (stuck) nang 3.5 seconds bago burahin!
-const PAUSE_BEFORE_NEXT = 500; // 0.5s pause bago mag-type ng susunod na role
+const PAUSE_DURATION = 3500;
+const PAUSE_BEFORE_NEXT = 500;
 
-const HeroTypewriter = memo(function HeroTypewriter() {
+const HeroTypewriter = memo(function HeroTypewriter({ roles = DEFAULT_ROLES }: { roles?: string[] }) {
   const [text, setText] = useState("");
   const phaseRef = useRef<"typing" | "deleting">("typing");
   const roleIndexRef = useRef(0);
@@ -316,6 +317,7 @@ function HeroName({ onOpenCard }: { onOpenCard: () => void }) {
 }
 
 export default function Hero() {
+  const { copy } = useActiveTheme();
   const [profileOpen, setProfileOpen] = useState(false);
   const [showHint, setShowHint] = useState(false);
 
@@ -388,7 +390,7 @@ export default function Hero() {
             </span>
           </h1>
 
-          <HeroTypewriter />
+          <HeroTypewriter roles={copy.typewriterRoles} />
 
           <div
             className="mt-6 sm:mt-10 flex w-auto animate-fadeUp flex-row items-center justify-center gap-2.5 sm:gap-3.5 mx-auto"
@@ -399,7 +401,7 @@ export default function Hero() {
               variant="primary"
               className="w-auto px-5 py-2.5 sm:px-7 sm:py-3 text-[13.5px] sm:text-[14px]"
             >
-              View Resume
+              {copy.resumeBtnText}
             </Button>
 
             <Button
@@ -407,7 +409,7 @@ export default function Hero() {
               variant="secondary"
               className="w-auto px-5 py-2.5 sm:px-7 sm:py-3 text-[13.5px] sm:text-[14px]"
             >
-              Get in touch
+              {copy.contactBtnText}
             </Button>
           </div>
         </div>

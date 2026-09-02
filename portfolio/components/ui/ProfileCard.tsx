@@ -202,7 +202,7 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
         style={{ perspective: "1600px", visibility: entered ? "visible" : "hidden" }}
       >
         {/* Lanyard punch hole, sits on top of the card edge */}
-        <div className="relative z-10 mx-auto -mb-[9px] h-[18px] w-[18px] rounded-full border border-black/10 bg-[#e9e9ec] shadow-[inset_0_2px_4px_rgba(0,0,0,0.18)] dark:border-white/10 dark:bg-[#0e0e10]" />
+        <div className="profile-lanyard-hole relative z-10 mx-auto -mb-[9px] h-[18px] w-[18px] rounded-full border border-black/10 bg-[#e9e9ec] shadow-[inset_0_2px_4px_rgba(0,0,0,0.18)] dark:border-white/10 dark:bg-[#0e0e10]" />
 
         {/* Tilt layer */}
         <div
@@ -221,7 +221,7 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
           {/* Card — laminated badge, portrait-photo ID layout */}
           <div
             className={cn(
-              "relative overflow-hidden rounded-[18px]",
+              "profile-badge-card relative overflow-hidden rounded-[18px]",
               "bg-[#fafafa] dark:bg-[#161618]",
               "border border-black/[0.06] dark:border-white/[0.08]",
               "shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_30px_60px_-25px_rgba(0,0,0,0.35)]",
@@ -249,8 +249,8 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="relative flex h-[6px] w-[6px]">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500/60" />
-                  <span className="relative inline-flex h-[6px] w-[6px] rounded-full bg-emerald-500" />
+                  <span className="profile-badge-pulse absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500/60" />
+                  <span className="profile-badge-dot relative inline-flex h-[6px] w-[6px] rounded-full bg-emerald-500" />
                 </span>
                 <span className="font-mono text-[10px] font-medium tracking-wide text-black/40 dark:text-white/35">
                   <GlitchText triggerOnMount triggerOnHover={false} delay={160} duration={500} text="ACTIVE" />

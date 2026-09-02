@@ -2,6 +2,504 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Multi-Theme Custom Properties Engine (RGB space-separated for opacity support) ─── */
+:root,
+html[data-theme="modern"],
+[data-theme="modern"] {
+  --color-surface: 251 251 253;
+  --color-surface-alt: 245 245 247;
+  --color-surface-card: 255 255 255;
+  --color-surface-dark: 0 0 0;
+  --color-surface-dark-alt: 17 17 19;
+  --color-surface-dark-card: 29 29 31;
+
+  --color-ink: 29 29 31;
+  --color-ink-secondary: 134 134 139;
+  --color-ink-tertiary: 110 110 115;
+  --color-ink-dark: 245 245 247;
+  --color-ink-dark-secondary: 152 152 157;
+
+  --color-line: 210 210 215;
+  --color-line-dark: 66 66 69;
+
+  --color-accent: 29 29 31;
+  --color-accent-hover: 0 0 0;
+  --color-accent-dark: 245 245 247;
+  --color-accent-dark-hover: 255 255 255;
+}
+
+/* ─── Theme: Coffee Shop Aesthetic (Light Surface: #f8f4ed, Dark Surface: #14100c, Accent: #b4652a) ─── */
+html[data-theme="cafe"],
+[data-theme="cafe"] {
+  --color-surface: 248 244 237;
+  --color-surface-alt: 238 231 221;
+  --color-surface-card: 252 250 246;
+  --color-surface-dark: 20 16 12;
+  --color-surface-dark-alt: 28 22 18;
+  --color-surface-dark-card: 37 29 23;
+
+  --color-ink: 44 33 26;
+  --color-ink-secondary: 121 97 83;
+  --color-ink-tertiary: 154 130 115;
+  --color-ink-dark: 248 244 237;
+  --color-ink-dark-secondary: 184 163 148;
+
+  --color-line: 222 211 196;
+  --color-line-dark: 63 49 39;
+
+  --color-accent: 180 101 42;
+  --color-accent-hover: 154 84 32;
+  --color-accent-dark: 180 101 42;
+  --color-accent-dark-hover: 212 129 68;
+}
+
+/* ─── Theme: Cyber Terminal (Emerald Matrix HUD & Binary CRT) ─── */
+html[data-theme="cyber"],
+[data-theme="cyber"] {
+  --color-surface: 232 244 237;
+  --color-surface-alt: 216 236 225;
+  --color-surface-card: 244 251 249;
+  --color-surface-dark: 3 7 5;
+  --color-surface-dark-alt: 8 21 15;
+  --color-surface-dark-card: 12 30 20;
+
+  --color-ink: 4 43 27;
+  --color-ink-secondary: 31 104 72;
+  --color-ink-tertiary: 52 140 100;
+  --color-ink-dark: 0 255 102;
+  --color-ink-dark-secondary: 52 211 153;
+
+  --color-line: 164 216 189;
+  --color-line-dark: 16 68 45;
+
+  --color-accent: 5 150 105;
+  --color-accent-hover: 4 120 87;
+  --color-accent-dark: 0 255 102;
+  --color-accent-dark-hover: 52 211 153;
+}
+
+/* ─── Theme: Coffee Shop Typography & Styling ─── */
+html[data-theme="cafe"] h1,
+html[data-theme="cafe"] h2,
+html[data-theme="cafe"] h3,
+html[data-theme="cafe"] .font-display {
+  font-family: var(--font-serif), Georgia, Cambria, serif !important;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+}
+
+html[data-theme="cafe"] body {
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+/* ─── Theme: Cyber Terminal Typography & Styling ─── */
+html[data-theme="cyber"] h1,
+html[data-theme="cyber"] h2,
+html[data-theme="cyber"] h3,
+html[data-theme="cyber"] p,
+html[data-theme="cyber"] span,
+html[data-theme="cyber"] button,
+html[data-theme="cyber"] .font-display,
+html[data-theme="cyber"] .font-text {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+}
+
+html[data-theme="cyber"] h1,
+html[data-theme="cyber"] h2,
+html[data-theme="cyber"] h3 {
+  letter-spacing: 0.03em !important;
+  text-transform: uppercase !important;
+}
+
+/* ─── Explicit Theme Canvas & Body Color Overrides ─── */
+html[data-theme="cafe"].dark,
+html[data-theme="cafe"].dark body {
+  background-color: #14100c !important;
+  color: #f8f4ed !important;
+}
+
+html[data-theme="cafe"]:not(.dark),
+html[data-theme="cafe"]:not(.dark) body {
+  background-color: #f8f4ed !important;
+  color: #2c211a !important;
+}
+
+html[data-theme="cyber"].dark,
+html[data-theme="cyber"].dark body {
+  background-color: #030705 !important;
+  color: #00ff66 !important;
+}
+
+html[data-theme="cyber"]:not(.dark),
+html[data-theme="cyber"]:not(.dark) body {
+  background-color: #e8f4ed !important;
+  color: #042b1b !important;
+}
+
+/* ─── ☕ Theme: Coffee Shop Comprehensive Structural & Shape Design Language ─── */
+
+/* 1. All Buttons, Links, Inputs & Form Controls */
+html[data-theme="cafe"] button,
+html[data-theme="cafe"] a[role="button"],
+html[data-theme="cafe"] select,
+html[data-theme="cafe"] [class*="rounded-"]:not(#navbar-logo-dock):not(.navbar-logo-target):not(svg *):not(.h-2):not(.h-1\.5):not(.h-3):not(.w-2):not(.w-1\.5):not(.w-3),
+html[data-theme="cafe"] img:not(#navbar-logo-dock):not(.navbar-logo-target) {
+  border-radius: 8px !important;
+}
+
+/* Primary and Secondary CTA Buttons */
+html[data-theme="cafe"] .bg-ink,
+html[data-theme="cafe"].dark .bg-ink-dark {
+  background-color: #b4652a !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 14px rgba(180, 101, 42, 0.25) !important;
+}
+
+html[data-theme="cafe"] .bg-ink:hover,
+html[data-theme="cafe"].dark .bg-ink-dark:hover {
+  background-color: #9c5420 !important;
+  box-shadow: 0 6px 20px rgba(180, 101, 42, 0.35) !important;
+}
+
+/* 2. Classic Editorial Cards, Panels, Modals, Portraits & Memory Stack */
+html[data-theme="cafe"] .bg-surface-card,
+html[data-theme="cafe"] .bg-surface-dark-card,
+html[data-theme="cafe"] article,
+html[data-theme="cafe"] dialog,
+html[data-theme="cafe"] [role="dialog"],
+html[data-theme="cafe"] [class*="aspect-"] {
+  border-radius: 8px !important;
+}
+
+html[data-theme="cafe"] .bg-surface-card {
+  border-color: #ded3c4 !important;
+  box-shadow: 0 4px 20px -2px rgba(44, 33, 26, 0.06), 0 1px 3px rgba(44, 33, 26, 0.04) !important;
+}
+
+html[data-theme="cafe"].dark .bg-surface-dark-card,
+html[data-theme="cafe"].dark .bg-surface-card {
+  border-color: #3f3127 !important;
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+/* 3. Footer Badges & Pills (Manila Time, Visitor Count, Socials, Status) */
+html[data-theme="cafe"] footer .rounded-full,
+html[data-theme="cafe"] .public-footer .rounded-full,
+html[data-theme="cafe"] footer a,
+html[data-theme="cafe"] footer button {
+  border-radius: 8px !important;
+}
+
+html[data-theme="cafe"] .footer-time-pulse,
+html[data-theme="cafe"] .footer-time-dot,
+html[data-theme="cafe"] .footer-visitor-pulse,
+html[data-theme="cafe"] .footer-visitor-dot,
+html[data-theme="cafe"] .contact-status-pulse,
+html[data-theme="cafe"] .contact-status-dot,
+html[data-theme="cafe"] .profile-badge-pulse,
+html[data-theme="cafe"] .profile-badge-dot {
+  background-color: #b4652a !important;
+}
+
+html[data-theme="cafe"] .footer-time-text {
+  color: #b4652a !important;
+}
+
+html[data-theme="cafe"] .footer-time-badge {
+  background-color: rgba(180, 101, 42, 0.15) !important;
+  color: #b4652a !important;
+}
+
+/* 4. Contact Form Inputs & Textarea */
+html[data-theme="cafe"] input:not(.public-chat input),
+html[data-theme="cafe"] textarea:not(.public-chat textarea) {
+  border-radius: 8px !important;
+  border-color: rgba(180, 101, 42, 0.25) !important;
+  background-color: rgba(252, 250, 246, 0.8) !important;
+}
+
+html[data-theme="cafe"].dark input:not(.public-chat input),
+html[data-theme="cafe"].dark textarea:not(.public-chat textarea) {
+  background-color: rgba(37, 29, 23, 0.8) !important;
+  border-color: rgba(99, 73, 57, 0.6) !important;
+}
+
+/* 5. Mac Dock: Soft Editorial Floating Tray */
+html[data-theme="cafe"] .fixed.bottom-4 > div,
+html[data-theme="cafe"] .fixed.bottom-5 > div,
+html[data-theme="cafe"] .fixed.bottom-6 > div,
+html[data-theme="cafe"] [data-dock] {
+  border-radius: 12px !important;
+  border-color: rgba(180, 101, 42, 0.3) !important;
+}
+
+/* 6. Profile Developer ID Badge: Authentic Laser-Engraved Wooden Plaque / Badge */
+html[data-theme="cafe"] .profile-badge-card {
+  background-color: #c99c6b !important;
+  background-image: 
+    radial-gradient(ellipse at 50% 0%, rgba(255, 235, 205, 0.35) 0%, transparent 75%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(80, 45, 15, 0.04) 0px,
+      rgba(80, 45, 15, 0.04) 2px,
+      transparent 2px,
+      transparent 6px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      #c49764 0px,
+      #bc8e59 40px,
+      #cf9f6c 80px,
+      #b58450 130px,
+      #c69967 180px,
+      #b98a56 230px,
+      #ca9c6b 280px
+    ),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02 0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.4 0 0 0 0.4 0 0.3 0 0 0.3 0 0 0.2 0 0.2 0 0 0 0.15 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.4'/%3E%3C/svg%3E") !important;
+  border: 2px solid #8d6238 !important;
+  box-shadow: 
+    0 25px 60px -15px rgba(45, 25, 10, 0.45),
+    0 1px 0 rgba(255, 255, 255, 0.4) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.25) inset,
+    0 0 35px rgba(60, 30, 10, 0.18) inset !important;
+}
+
+html[data-theme="cafe"] .profile-badge-card h2,
+html[data-theme="cafe"] .profile-badge-card p,
+html[data-theme="cafe"] .profile-badge-card span:not(.profile-badge-dot),
+html[data-theme="cafe"] .profile-badge-card div {
+  color: #381e0e !important;
+  text-shadow: 0 1px 0 rgba(255, 240, 220, 0.4) !important;
+}
+
+html[data-theme="cafe"] .profile-badge-card .border-b,
+html[data-theme="cafe"] .profile-badge-card .border-t {
+  border-color: rgba(90, 48, 18, 0.25) !important;
+}
+
+html[data-theme="cafe"] .profile-badge-card a,
+html[data-theme="cafe"] .profile-badge-card button {
+  color: #381e0e !important;
+}
+
+html[data-theme="cafe"] .profile-badge-card [class*="bg-black/"],
+html[data-theme="cafe"] .profile-badge-card [class*="bg-white/"] {
+  background-color: rgba(60, 30, 10, 0.12) !important;
+  border: 1px solid rgba(80, 40, 10, 0.2) !important;
+  color: #381e0e !important;
+}
+
+html[data-theme="cafe"] .profile-badge-card .h-\[84px\] {
+  border: 2px solid #8d6238 !important;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+html[data-theme="cafe"].dark .profile-badge-card {
+  background-color: #2b1a11 !important;
+  background-image: 
+    radial-gradient(ellipse at 50% 0%, rgba(160, 100, 60, 0.2) 0%, transparent 75%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.08) 0px,
+      rgba(0, 0, 0, 0.08) 2px,
+      transparent 2px,
+      transparent 6px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      #2b1a11 0px,
+      #22140d 40px,
+      #321e14 80px,
+      #1f120a 130px,
+      #2e1c12 180px,
+      #24150d 230px,
+      #352015 280px
+    ),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilterDark'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02 0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.3 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilterDark)' opacity='0.5'/%3E%3C/svg%3E") !important;
+  border: 2px solid #4a2d1d !important;
+  box-shadow: 
+    0 30px 70px -15px rgba(0, 0, 0, 0.85),
+    0 1px 0 rgba(255, 200, 150, 0.1) inset,
+    0 0 40px rgba(0, 0, 0, 0.6) inset !important;
+}
+
+html[data-theme="cafe"].dark .profile-badge-card h2,
+html[data-theme="cafe"].dark .profile-badge-card p,
+html[data-theme="cafe"].dark .profile-badge-card span:not(.profile-badge-dot),
+html[data-theme="cafe"].dark .profile-badge-card div {
+  color: #e8d0b5 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+}
+
+html[data-theme="cafe"].dark .profile-badge-card .border-b,
+html[data-theme="cafe"].dark .profile-badge-card .border-t {
+  border-color: rgba(140, 90, 50, 0.25) !important;
+}
+
+html[data-theme="cafe"].dark .profile-badge-card a,
+html[data-theme="cafe"].dark .profile-badge-card button {
+  color: #e8d0b5 !important;
+}
+
+html[data-theme="cafe"].dark .profile-badge-card [class*="bg-black/"],
+html[data-theme="cafe"].dark .profile-badge-card [class*="bg-white/"] {
+  background-color: rgba(0, 0, 0, 0.35) !important;
+  border: 1px solid rgba(160, 100, 60, 0.3) !important;
+  color: #e8d0b5 !important;
+}
+
+html[data-theme="cafe"].dark .profile-badge-card .h-\[84px\] {
+  border: 2px solid #4a2d1d !important;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Brass Rivet / Grommet for Wood Badge */
+html[data-theme="cafe"] .profile-lanyard-hole {
+  background: radial-gradient(circle, #ecd09e 30%, #b88a44 70%, #7d5820 100%) !important;
+  border: 2px solid #5a3c12 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.6) !important;
+}
+
+html[data-theme="cafe"].dark .profile-lanyard-hole {
+  background: radial-gradient(circle, #b88a44 30%, #7d5820 70%, #3e2808 100%) !important;
+  border: 2px solid #241604 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(255, 200, 120, 0.3) !important;
+}
+
+/* ─── 🟢 Theme: Cyber Terminal Comprehensive Structural & Shape Design Language ─── */
+
+/* 1. All Buttons, Links, Inputs, Images & Form Controls (Sharp 0px HUD) */
+html[data-theme="cyber"] button,
+html[data-theme="cyber"] a[role="button"],
+html[data-theme="cyber"] select,
+html[data-theme="cyber"] [class*="rounded-"]:not(#navbar-logo-dock):not(.navbar-logo-target):not(svg *):not(.h-2):not(.h-1\.5):not(.h-3):not(.w-2):not(.w-1\.5):not(.w-3),
+html[data-theme="cyber"] img:not(#navbar-logo-dock):not(.navbar-logo-target) {
+  border-radius: 0px !important;
+}
+
+/* Cyber Buttons */
+html[data-theme="cyber"] .bg-ink,
+html[data-theme="cyber"].dark .bg-ink-dark {
+  background-color: #00ff66 !important;
+  color: #030705 !important;
+  border-radius: 0px !important;
+  box-shadow: 0 0 15px rgba(0, 255, 102, 0.4) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+}
+
+html[data-theme="cyber"] .bg-ink:hover,
+html[data-theme="cyber"].dark .bg-ink-dark:hover {
+  background-color: #33ff85 !important;
+  box-shadow: 0 0 24px rgba(0, 255, 102, 0.6) !important;
+}
+
+/* Cyber Cards, Panels, Portraits & Memory Stack */
+html[data-theme="cyber"] .bg-surface-card,
+html[data-theme="cyber"] .bg-surface-dark-card,
+html[data-theme="cyber"] article,
+html[data-theme="cyber"] dialog,
+html[data-theme="cyber"] [role="dialog"],
+html[data-theme="cyber"] [class*="aspect-"] {
+  border-radius: 0px !important;
+  border: 1px solid rgba(0, 255, 102, 0.22) !important;
+}
+
+html[data-theme="cyber"] .bg-surface-card:hover,
+html[data-theme="cyber"] .bg-surface-dark-card:hover {
+  border-color: rgba(0, 255, 102, 0.6) !important;
+  box-shadow: 0 0 20px rgba(0, 255, 102, 0.12) !important;
+}
+
+/* Cyber Footer Badges, Inputs & Form */
+html[data-theme="cyber"] input:not(.public-chat input),
+html[data-theme="cyber"] textarea:not(.public-chat textarea) {
+  border-radius: 0px !important;
+}
+
+html[data-theme="cyber"].dark input:not(.public-chat input),
+html[data-theme="cyber"].dark textarea:not(.public-chat textarea) {
+  border: 1px solid rgba(0, 255, 102, 0.35) !important;
+  background-color: rgba(3, 7, 5, 0.95) !important;
+  color: #00ff66 !important;
+}
+
+html[data-theme="cyber"]:not(.dark) input:not(.public-chat input),
+html[data-theme="cyber"]:not(.dark) textarea:not(.public-chat textarea) {
+  border: 1px solid rgba(0, 168, 67, 0.35) !important;
+  background-color: #ffffff !important;
+  color: #042b1b !important;
+}
+
+/* Chatbox Inner Input: Seamlessly transparent with natural text color */
+.public-chat input,
+.public-chat textarea {
+  background-color: transparent !important;
+  border: none !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="cyber"] footer .rounded-full,
+html[data-theme="cyber"] .public-footer .rounded-full,
+html[data-theme="cyber"] footer a,
+html[data-theme="cyber"] footer button {
+  border-radius: 0px !important;
+  border: 1px solid rgba(0, 255, 102, 0.25) !important;
+}
+
+html[data-theme="cyber"] .footer-time-pulse,
+html[data-theme="cyber"] .footer-time-dot,
+html[data-theme="cyber"] .footer-visitor-pulse,
+html[data-theme="cyber"] .footer-visitor-dot,
+html[data-theme="cyber"] .contact-status-pulse,
+html[data-theme="cyber"] .contact-status-dot,
+html[data-theme="cyber"] .profile-badge-pulse,
+html[data-theme="cyber"] .profile-badge-dot {
+  background-color: #00ff66 !important;
+}
+
+html[data-theme="cyber"] .footer-time-text {
+  color: #00ff66 !important;
+  text-shadow: 0 0 8px rgba(0, 255, 102, 0.4) !important;
+}
+
+html[data-theme="cyber"] .footer-time-badge {
+  background-color: rgba(0, 255, 102, 0.15) !important;
+  color: #00ff66 !important;
+  border: 1px solid rgba(0, 255, 102, 0.3) !important;
+}
+
+/* Cyber Dock: Tactical Modular Console */
+html[data-theme="cyber"] .fixed.bottom-4 > div,
+html[data-theme="cyber"] .fixed.bottom-5 > div,
+html[data-theme="cyber"] .fixed.bottom-6 > div,
+html[data-theme="cyber"] [data-dock] {
+  border-radius: 0px !important;
+  border: 1px solid rgba(0, 255, 102, 0.4) !important;
+  background-color: rgba(3, 7, 5, 0.98) !important;
+  box-shadow: 0 0 25px rgba(0, 255, 102, 0.15) !important;
+}
+
+/* Cyber Developer ID Badge: Tactical Holo HUD Badge */
+html[data-theme="cyber"] .profile-badge-card {
+  background: rgba(3, 7, 5, 0.98) !important;
+  border: 1px solid #00ff66 !important;
+  box-shadow: 0 0 35px rgba(0, 255, 102, 0.25), inset 0 0 25px rgba(0, 255, 102, 0.05) !important;
+}
+
+html[data-theme="cyber"] .profile-lanyard-hole {
+  background: #000000 !important;
+  border: 1.5px solid #00ff66 !important;
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.6) !important;
+}
+
+/* Cyber Theme: Replace Mac Menu Bar with Tactical Cyber HUD Bar */
+html[data-theme="cyber"] header[aria-label="macOS Menu Bar"] {
+  display: none !important;
+}
+
 /* ─── Base layer ─── */
 @layer base {
   #app-main {
@@ -29,17 +527,17 @@
     --view-ty: 4%;
     /* Theme canvas — matches the surface tokens so the pre-CSS boot frame
        can never flash unstyled white in dark mode (or black in light). */
-    background-color: #fbfbfd;
+    background-color: rgb(var(--color-surface, 251 251 253));
   }
 
   @media (prefers-color-scheme: dark) {
     html:not(.light) {
-      background-color: #000000;
+      background-color: rgb(var(--color-surface-dark, 0 0 0));
     }
   }
 
   html.dark {
-    background-color: #000000;
+    background-color: rgb(var(--color-surface-dark, 0 0 0));
   }
 
   body {
@@ -557,5 +1055,20 @@ html[data-admin] .overflow-y-auto::-webkit-scrollbar-thumb:hover {
   html:not([data-admin]) input,
   html:not([data-admin]) textarea {
     cursor: url("data:image/svg+xml,%3Csvg width='24' height='32' viewBox='0 0 24 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5 1.5L1.5 25.5L7.2 20.2L12.4 30.5L16.2 28.6L11 18.3L18.8 18.3L1.5 1.5Z' fill='%23000000' stroke='%23FFFFFF' stroke-width='1.8' stroke-linejoin='miter' stroke-miterlimit='4'/%3E%3C/svg%3E") 0 0, auto;
+  }
+}
+
+/* ─── Prevent iOS/Mobile Auto-Zoom on Input Focus ─── */
+@media screen and (max-width: 640px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="search"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  textarea,
+  select {
+    font-size: 16px !important;
   }
 }

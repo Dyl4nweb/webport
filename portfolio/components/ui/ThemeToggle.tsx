@@ -10,6 +10,17 @@ interface ThemeToggleProps {
   className?: string;
 }
 
+function getThemeBackgroundColor(isDark: boolean): string {
+  if (typeof document === "undefined") return isDark ? "#000000" : "#fbfbfd";
+  const st =
+    document.documentElement.getAttribute("data-theme") ||
+    (typeof localStorage !== "undefined" ? localStorage.getItem("site_active_theme") : null) ||
+    "cafe";
+  if (st === "cafe") return isDark ? "#14100c" : "#f8f4ed";
+  if (st === "cyber") return isDark ? "#030705" : "#e8f4ed";
+  return isDark ? "#000000" : "#fbfbfd";
+}
+
 function getInitialTheme(): Theme {
   if (typeof window === "undefined") return "light";
   const stored = localStorage.getItem("theme");
@@ -40,7 +51,7 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
         setIsDark(nextDark);
         document.documentElement.classList.toggle("dark", nextDark);
         document.documentElement.classList.toggle("light", !nextDark);
-        document.documentElement.style.backgroundColor = nextDark ? "#000000" : "#fbfbfd";
+        document.documentElement.style.backgroundColor = getThemeBackgroundColor(nextDark);
         document.documentElement.style.colorScheme = nextDark ? "dark" : "light";
       }
     };
@@ -83,7 +94,7 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
         setIsDark(nextDark);
         root.classList.toggle("dark", nextDark);
         root.classList.toggle("light", !nextDark);
-        root.style.backgroundColor = nextDark ? "#000000" : "#fbfbfd";
+        root.style.backgroundColor = getThemeBackgroundColor(nextDark);
         root.style.colorScheme = nextDark ? "dark" : "light";
         localStorage.setItem("theme", next);
         window.dispatchEvent(new CustomEvent("theme:change", { detail: { isDark: nextDark } }));
@@ -118,20 +129,70 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
           transition.ready.then(() => {
             root.classList.remove("theme-swap");
             try {
-              document.documentElement.animate(
-                {
-                  clipPath: [
-                    `circle(0px at ${x.toFixed(1)}px ${y.toFixed(1)}px)`,
-                    `circle(${endRadius}px at ${x.toFixed(1)}px ${y.toFixed(1)}px)`,
+              const activeTheme =
+                root.getAttribute("data-theme") ||
+                (typeof localStorage !== "undefined" ? localStorage.getItem("site_active_theme") : null) ||
+                "modern";
+
+              if (activeTheme === "cyber") {
+                // 🟢 Cyber Terminal: Tactical Glitch Matrix Wave Wipe
+                document.documentElement.animate(
+                  [
+                    {
+                      clipPath: "polygon(0 0, 100% 0, 100% 0%, 0 0%)",
+                      filter: "brightness(2.2) contrast(1.8) hue-rotate(90deg) invert(0.15)",
+                      transform: "translateX(-10px) skewX(3deg)",
+                      opacity: 0.8,
+                    },
+                    {
+                      clipPath: "polygon(0 0, 100% 0, 100% 25%, 0 20%)",
+                      filter: "brightness(1.8) contrast(1.4) drop-shadow(0 0 14px #00ff66)",
+                      transform: "translateX(8px) skewX(-2deg)",
+                      opacity: 0.92,
+                    },
+                    {
+                      clipPath: "polygon(0 0, 100% 0, 100% 55%, 0 60%)",
+                      filter: "brightness(2.0) contrast(1.6) hue-rotate(-60deg)",
+                      transform: "translateX(-8px) skewX(2deg)",
+                      opacity: 0.98,
+                    },
+                    {
+                      clipPath: "polygon(0 0, 100% 0, 100% 85%, 0 80%)",
+                      filter: "brightness(1.4) contrast(1.2)",
+                      transform: "translateX(4px)",
+                      opacity: 1,
+                    },
+                    {
+                      clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+                      filter: "none",
+                      transform: "none",
+                      opacity: 1,
+                    },
                   ],
-                },
-                {
-                  duration: 1450,
-                  easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-                  pseudoElement: "::view-transition-new(root)",
-                  fill: "forwards",
-                }
-              );
+                  {
+                    duration: 650,
+                    easing: "steps(12, jump-none)",
+                    pseudoElement: "::view-transition-new(root)",
+                    fill: "forwards",
+                  }
+                );
+              } else {
+                // ⚪ & ☕ Modern & Coffee Shop: Original Fluid Circular Wave Reveal (Untouched)
+                document.documentElement.animate(
+                  {
+                    clipPath: [
+                      `circle(0px at ${x.toFixed(1)}px ${y.toFixed(1)}px)`,
+                      `circle(${endRadius}px at ${x.toFixed(1)}px ${y.toFixed(1)}px)`,
+                    ],
+                  },
+                  {
+                    duration: 1450,
+                    easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+                    pseudoElement: "::view-transition-new(root)",
+                    fill: "forwards",
+                  }
+                );
+              }
             } catch {}
           });
         }

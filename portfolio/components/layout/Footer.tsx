@@ -54,27 +54,27 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="public-footer w-full border-t border-black/[0.08] dark:border-white/[0.08] bg-surface dark:bg-surface-dark pt-12 sm:pt-16 pb-28 sm:pb-32 md:pb-36">
+    <footer className="public-footer w-full border-t border-line/50 dark:border-line-dark/50 bg-surface dark:bg-surface-dark pt-12 sm:pt-16 pb-28 sm:pb-32 md:pb-36">
       <Container className="flex flex-col gap-8 sm:gap-10 md:gap-12">
         {/* Top Row: Name & Role on Left, Quick Nav & Socials on Right */}
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           {/* Left: Brand Name & Subtitle */}
-          <div className="flex flex-col gap-2 items-center md:items-start text-center md:text-left">
+          <div className="flex flex-col gap-1.5 items-center md:items-start text-center md:text-left">
             <Link
               href="/"
-              className="text-3xl min-[360px]:text-4xl sm:text-5xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark transition-opacity hover:opacity-85 inline-block"
+              className="text-2xl min-[360px]:text-3xl sm:text-4xl font-bold tracking-[-0.04em] text-ink dark:text-ink-dark transition-opacity hover:opacity-85 inline-block"
             >
               <GlitchText text={`${SITE.name}.`} />
             </Link>
-            <p className="font-mono text-xs sm:text-sm font-medium uppercase tracking-[0.22em] text-ink-secondary dark:text-ink-dark-secondary">
+            <p className="font-mono text-[11px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-ink-secondary dark:text-ink-dark-secondary">
               SOFTWARE ENGINEER
             </p>
           </div>
 
           {/* Right: Quick Links + Social Icons */}
-          <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-8 justify-center md:justify-end">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 md:gap-8 justify-center md:justify-end">
             {/* Quick Navigation */}
-            <nav className="flex items-center gap-4 sm:gap-6 font-mono text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.16em] text-ink-secondary dark:text-ink-dark-secondary">
+            <nav className="flex items-center gap-4 sm:gap-5 font-mono text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.14em] text-ink-secondary dark:text-ink-dark-secondary">
               <Link href="/" className="hover:text-ink dark:hover:text-ink-dark transition-colors">
                 HOME
               </Link>
@@ -89,10 +89,10 @@ export default function Footer() {
               </Link>
             </nav>
 
-            <span className="hidden sm:inline h-4 w-px bg-black/10 dark:bg-white/10" aria-hidden="true" />
+            <span className="hidden sm:inline h-4 w-px bg-line/60 dark:bg-line-dark/60" aria-hidden="true" />
 
             {/* Social Icons */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5 sm:gap-3">
               {socialLinks.map((link) => (
                 <a
                   key={link.label}
@@ -101,7 +101,7 @@ export default function Footer() {
                   rel="noreferrer"
                   title={link.label}
                   aria-label={link.label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] text-ink-secondary transition-all duration-200 hover:scale-105 hover:bg-black/[0.08] hover:text-ink dark:text-ink-dark-secondary dark:hover:bg-white/[0.1] dark:hover:text-ink-dark"
+                  className="flex h-8.5 w-8.5 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-surface-alt dark:bg-surface-dark-alt border border-line/60 dark:border-line-dark/60 text-ink-secondary transition-all duration-200 hover:scale-105 hover:border-line-dark/40 hover:text-ink dark:text-ink-dark-secondary dark:hover:border-line/40 dark:hover:text-ink-dark"
                 >
                   {socialIcons[link.icon]}
                 </a>
@@ -111,32 +111,32 @@ export default function Footer() {
         </div>
 
         {/* Bottom Row: Copyright on Left, Unbreakable Manila Time & Visitor Badges on Right */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-6 border-t border-black/[0.06] dark:border-white/[0.06] text-[12.5px] text-ink-tertiary dark:text-ink-dark-secondary">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-6 border-t border-line/40 dark:border-line-dark/40 text-[12px] sm:text-[12.5px] text-ink-tertiary dark:text-ink-dark-secondary">
           <span className="text-center md:text-left order-2 md:order-1 font-sans">
             © {year} <span className="font-medium text-ink dark:text-ink-dark">{SITE.name}</span>. All rights reserved.
           </span>
 
-          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 order-1 md:order-2">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 order-1 md:order-2">
             {/* Live Manila Time Status Pill (Always 1 single clean line, never broken) */}
-            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-full bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] backdrop-blur-sm shrink-0 select-none whitespace-nowrap">
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-full bg-surface-alt dark:bg-surface-dark-alt border border-line/60 dark:border-line-dark/60 backdrop-blur-sm shrink-0 select-none whitespace-nowrap">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                <span className="footer-time-pulse animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="footer-time-dot relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
-              <span className="font-mono text-[11px] sm:text-[12px] font-medium text-ink dark:text-ink-dark">
+              <span className="font-mono text-[10.5px] sm:text-[11.5px] font-medium text-ink dark:text-ink-dark">
                 Manila, PH
               </span>
               <span className="text-ink-tertiary dark:text-ink-dark-secondary text-[10px]">·</span>
-              <span className="tabular-nums font-mono font-semibold text-[11px] sm:text-[12px] text-emerald-600 dark:text-emerald-400">
+              <span className="footer-time-text tabular-nums font-mono font-semibold text-[10.5px] sm:text-[11.5px] text-emerald-600 dark:text-emerald-400">
                 {manilaTime || "--:--:-- --"}
               </span>
-              <span className="text-[9.5px] font-mono font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 dark:bg-emerald-400/15 text-emerald-600 dark:text-emerald-400">
+              <span className="footer-time-badge text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 dark:bg-emerald-400/15 text-emerald-600 dark:text-emerald-400">
                 UTC+8
               </span>
             </div>
 
             {/* Visitor Counter Pill */}
-            <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] backdrop-blur-sm shrink-0">
+            <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-surface-alt dark:bg-surface-dark-alt border border-line/60 dark:border-line-dark/60 backdrop-blur-sm shrink-0">
               <VisitorCount />
             </div>
           </div>

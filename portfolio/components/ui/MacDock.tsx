@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { SITE } from "@/lib/constants";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import LiveAIFace from "@/components/ui/LiveAIFace";
+import { useActiveTheme } from "@/lib/useActiveTheme";
 
 const DOCK_ICONS: Record<string, React.ReactNode> = {
   "/about": (
@@ -201,6 +202,8 @@ export const MacDock = memo(function MacDock() {
     themeRef.current
   );
 
+  const { copy } = useActiveTheme();
+
   return (
     <div
       ref={dockRef}
@@ -212,8 +215,8 @@ export const MacDock = memo(function MacDock() {
         "gap-1 min-[380px]:gap-1.5 sm:gap-2 md:gap-2",
         "px-2 min-[380px]:px-2.5 sm:px-3 md:px-3.5",
         "py-1.5 sm:py-1.5 md:py-2",
-        "bg-white/95 dark:bg-[#161618]/95",
-        "border border-black/[0.09] dark:border-white/[0.14]",
+        "bg-surface-card/90 dark:bg-surface-dark-card/90",
+        "border border-line/60 dark:border-line-dark/60",
         "backdrop-blur-2xl [-webkit-backdrop-filter:blur(24px)]",
         "shadow-[0_6px_24px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.04)]",
         "dark:shadow-[0_8px_28px_rgba(0,0,0,0.5),0_1px_3px_rgba(0,0,0,0.3)]",
@@ -226,7 +229,7 @@ export const MacDock = memo(function MacDock() {
       {/* 1. Home Brand Logo */}
       <DockItemButton
         id="logo"
-        label="Home"
+        label={copy.dockHomeLabel}
         onClick={handleLogoClick}
         mouseX={mouseX}
         isHovered={hoveredId === "logo"}
@@ -250,11 +253,15 @@ export const MacDock = memo(function MacDock() {
       {/* Divider */}
       <span
         aria-hidden="true"
-        className="h-3 min-[380px]:h-3.5 sm:h-4 md:h-4.5 w-[1px] bg-black/[0.12] dark:bg-white/[0.16] shrink-0 self-center opacity-80"
+        className="h-3 min-[380px]:h-3.5 sm:h-4 md:h-4.5 w-[1px] bg-line/60 dark:bg-line-dark/60 shrink-0 self-center opacity-80"
       />
 
       {/* 2. Main Navigation Links (About, Projects, Contact) */}
-      {NAV_PAGES.map((page) => {
+      {[
+        { id: "about", label: copy.dockAboutLabel, href: "/about" },
+        { id: "projects", label: copy.dockProjectsLabel, href: "/projects" },
+        { id: "contact", label: copy.dockContactLabel, href: "/contact" },
+      ].map((page) => {
         const active = pathname === page.href;
 
         return (

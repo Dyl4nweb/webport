@@ -96,8 +96,8 @@ export const MacMenuBar = memo(function MacMenuBar() {
         className={cn(
           "fixed top-0 left-0 right-0 z-40 h-7 select-none items-center justify-between px-3 text-[13px] font-medium leading-none",
           "hidden md:flex",
-          "bg-[#f6f6f6]/75 dark:bg-[#161618]/75",
-          "border-b border-black/[0.08] dark:border-white/[0.08]",
+          "bg-surface/85 dark:bg-surface-dark/85",
+          "border-b border-line/50 dark:border-line-dark/50",
           "backdrop-blur-xl [-webkit-backdrop-filter:blur(20px)]",
           "text-ink/90 dark:text-ink-dark/90",
           "transition-[background-color,border-color] duration-300"
