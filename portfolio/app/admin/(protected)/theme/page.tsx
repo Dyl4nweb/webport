@@ -93,7 +93,7 @@ on conflict (id) do nothing;`;
       } = await supabase.auth.getSession();
 
       if (!session?.access_token) {
-        throw new Error("No active admin session found");
+        throw new Error("No active admin session found. Please log in to your admin account again.");
       }
 
       const res = await fetch("/api/admin/theme", {
@@ -107,24 +107,35 @@ on conflict (id) do nothing;`;
 
       const data = await res.json();
       if (!res.ok || !data.ok) {
-        if (data.message?.includes("site_settings") || data.message?.includes("schema cache")) {
+        if (res.status === 401 || res.status === 403) {
+          throw new Error(data.message || "Your admin session has expired or lacks permissions. Please log in again.");
+        }
+        if (data.message?.includes("site_settings") || data.db_error?.includes("site_settings")) {
           setMissingTable(true);
         }
-        throw new Error(data.message || "Failed to update global theme");
+        throw new Error(data.message || data.db_error || "Failed to update global theme");
+      }
+
+      if (data.db_synced === false) {
+        setMissingTable(true);
       }
 
       setActiveGlobalTheme(selectedTheme);
       applySiteThemeToDOM(selectedTheme);
       setMessage({
         type: "success",
-        text: `Successfully published ${SITE_THEMES[selectedTheme].name} as the live global theme!`,
+        text: `Successfully published ${SITE_THEMES[selectedTheme].name} as the live global theme!${data.db_synced === false ? " (Note: Run the SQL script below in Supabase to sync to the database)" : ""}`,
       });
     } catch (err: any) {
       console.error("Publish error:", err);
+      const isDbMissing = err?.message?.includes("site_settings") || err?.message?.includes("schema cache");
+      if (isDbMissing) {
+        setMissingTable(true);
+      }
       setMessage({
         type: "error",
-        text: err?.message?.includes("site_settings")
-          ? "The 'site_settings' table does not exist in your Supabase database yet. Please run the SQL script below in your Supabase SQL Editor."
+        text: isDbMissing
+          ? "The 'site_settings' table is not in your Supabase database yet. Please click 'Copy SQL Script' below and run it in Supabase SQL Editor."
           : err?.message || "Failed to publish theme",
       });
     } finally {

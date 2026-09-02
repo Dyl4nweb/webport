@@ -38,7 +38,7 @@ async function requireAdmin(request: NextRequest) {
   if (!token) {
     return {
       error: NextResponse.json(
-        { ok: false, reason: "unauthorized" },
+        { ok: false, reason: "unauthorized", message: "Missing Authorization token. Please log in again." },
         { status: 401 }
       ),
     };
@@ -46,21 +46,21 @@ async function requireAdmin(request: NextRequest) {
 
   const supabase = getSupabaseWithToken(token);
 
-  const { data: userData } = await supabase.auth.getUser();
+  const { data: userData, error: userErr } = await supabase.auth.getUser();
   if (!userData?.user) {
     return {
       error: NextResponse.json(
-        { ok: false, reason: "unauthorized" },
+        { ok: false, reason: "unauthorized", message: userErr?.message || "Invalid or expired session. Please log in again." },
         { status: 401 }
       ),
     };
   }
 
-  const { data: isAdmin } = await supabase.rpc("is_admin");
+  const { data: isAdmin, error: rpcErr } = await supabase.rpc("is_admin");
   if (isAdmin !== true) {
     return {
       error: NextResponse.json(
-        { ok: false, reason: "forbidden" },
+        { ok: false, reason: "forbidden", message: rpcErr?.message || "User account does not have admin permissions." },
         { status: 403 }
       ),
     };
@@ -119,12 +119,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 1. Write to local settings file (instant persistent store)
+    // 1. Write to local settings file (instant persistent store for dev/local)
     await writeLocalSettings(nextTheme);
 
     // 2. Upsert to Supabase if table exists
+    let dbSynced = true;
+    let dbErrorMsg = "";
     try {
-      await supabase
+      const { error: upsertErr } = await supabase
         .from("site_settings")
         .upsert(
           {
@@ -135,18 +137,34 @@ export async function POST(request: NextRequest) {
           { onConflict: "id" }
         );
 
-      await supabase.from("activity_log").insert({
-        type: "theme",
-        title: `Changed global theme to ${nextTheme.toUpperCase()}`,
-        meta: { theme: nextTheme },
-      });
-    } catch (dbErr) {
-      console.warn("Supabase site_settings sync skipped (pending migration):", dbErr);
+      if (upsertErr) {
+        dbSynced = false;
+        dbErrorMsg = upsertErr.message;
+        console.warn("Supabase site_settings upsert error:", upsertErr);
+      } else {
+        try {
+          await supabase.from("activity_log").insert({
+            type: "theme",
+            title: `Changed global theme to ${nextTheme.toUpperCase()}`,
+            meta: { theme: nextTheme },
+          });
+        } catch {}
+      }
+    } catch (dbErr: any) {
+      dbSynced = false;
+      dbErrorMsg = dbErr?.message || "Database sync error";
     }
 
-    revalidatePath("/", "layout");
+    try {
+      revalidatePath("/", "layout");
+    } catch {}
 
-    const response = NextResponse.json({ ok: true, theme: nextTheme });
+    const response = NextResponse.json({
+      ok: true,
+      theme: nextTheme,
+      db_synced: dbSynced,
+      db_error: dbErrorMsg || undefined,
+    });
 
     // Set cookie so RootLayout and all pages get the theme immediately
     response.cookies.set("site_active_theme", nextTheme, {
@@ -158,7 +176,7 @@ export async function POST(request: NextRequest) {
     return response;
   } catch (err: any) {
     return NextResponse.json(
-      { ok: false, reason: "internal_error", message: err?.message },
+      { ok: false, reason: "internal_error", message: err?.message || "Internal server error" },
       { status: 500 }
     );
   }
