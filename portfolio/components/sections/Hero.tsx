@@ -288,7 +288,7 @@ function HeroName({ onOpenCard }: { onOpenCard: () => void }) {
       onTouchStart={handleScramble}
       aria-label={`${SITE.name} — Click to view profile card`}
       className={cn(
-        "group relative inline-block cursor-pointer rounded-lg px-1 sm:px-2 transition-opacity duration-200 hover:opacity-85 select-none",
+        "group relative inline-flex items-center justify-center cursor-pointer rounded-lg px-0.5 sm:px-1.5 transition-opacity duration-200 hover:opacity-85 select-none",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
         "dark:focus-visible:ring-accent-dark dark:focus-visible:ring-offset-surface-dark"
       )}
@@ -337,17 +337,17 @@ export default function Hero() {
 
   return (
     <section
-      className="relative flex min-h-[100svh] items-center overflow-hidden pb-16 pt-24 sm:pb-24 sm:pt-28 md:min-h-screen md:pb-28 md:pt-32"
+      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden py-14 sm:py-20 md:min-h-screen md:py-28"
       style={{ contain: "layout style" }}
     >
       <DotGrid />
       <AmbientGlow />
 
-      <Container className="relative flex w-full flex-col items-center text-center">
-        <div className="flex w-full max-w-5xl flex-col items-center">
+      <Container className="relative flex w-full flex-col items-center justify-center text-center mx-auto px-4 sm:px-6">
+        <div className="flex w-full max-w-5xl flex-col items-center justify-center text-center mx-auto">
           {/* Social Links Bar positioned with generous spacing above tap this / Hero */}
           <div
-            className="mb-8 sm:mb-10 md:mb-12 flex items-center justify-center gap-2.5 sm:gap-3.5 animate-fadeUp z-20"
+            className="mb-7 sm:mb-10 md:mb-12 flex items-center justify-center gap-2.5 sm:gap-3.5 animate-fadeUp z-20 mx-auto"
             style={{ animationDelay: "60ms" }}
           >
             {socialLinks.map((link) => (
@@ -367,7 +367,7 @@ export default function Hero() {
             ))}
           </div>
 
-          <h1 className="relative w-full text-balance animate-fadeUp text-[40px] min-[360px]:text-[48px] min-[400px]:text-[56px] sm:text-[68px] md:text-[88px] lg:text-[108px] font-bold leading-[0.96] tracking-[-0.05em] text-ink dark:text-ink-dark">
+          <h1 className="relative w-full flex flex-col items-center justify-center text-center animate-fadeUp text-[38px] min-[360px]:text-[46px] min-[400px]:text-[54px] sm:text-[68px] md:text-[88px] lg:text-[108px] font-bold leading-[0.96] tracking-[-0.05em] text-ink dark:text-ink-dark">
             <span className="inline-flex items-baseline justify-center whitespace-nowrap">
               <HeroName onOpenCard={openCard} />
               <span className="text-ink-tertiary transition-colors duration-300 dark:text-ink-dark-secondary select-none" aria-hidden="true">
@@ -391,7 +391,7 @@ export default function Hero() {
           <HeroTypewriter />
 
           <div
-            className="mt-7 sm:mt-10 flex w-auto animate-fadeUp flex-row items-center justify-center gap-2.5 sm:gap-3.5"
+            className="mt-6 sm:mt-10 flex w-auto animate-fadeUp flex-row items-center justify-center gap-2.5 sm:gap-3.5 mx-auto"
             style={{ animationDelay: "180ms" }}
           >
             <Button
