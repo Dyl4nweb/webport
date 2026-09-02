@@ -188,7 +188,7 @@ export default async function RootLayout({
         <PublicChromeGate />
         <PageViewTracker />
         <div id="splash" suppressHydrationWarning>
-          <div id="splash-logo-box">
+          <div id="splash-logo-box" suppressHydrationWarning>
             <img
               id="splash-logo"
               src="/icon.png"
@@ -199,8 +199,8 @@ export default async function RootLayout({
               suppressHydrationWarning
             />
           </div>
-          <div id="splash-line" />
-          <div id="splash-text">Loading</div>
+          <div id="splash-line" suppressHydrationWarning />
+          <div id="splash-text" suppressHydrationWarning>Loading</div>
         </div>
         {/* Splash controller: Handles loading countdown and buttery-smooth FLIP animation */}
         <script
