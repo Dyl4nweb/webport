@@ -109,18 +109,18 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               :root { color-scheme: light dark; }
-              html[data-theme="modern"].dark, html:not([data-theme]).dark { background-color: #000000 !important; color: #f5f5f7 !important; }
-              html[data-theme="modern"].dark #splash, html:not([data-theme]).dark #splash { background-color: #000000 !important; --splash-bg: #000000 !important; }
+              /* Modern Minimalist Splash */
+              html[data-theme="modern"]:not(.dark) #splash, html:not([data-theme]):not(.dark) #splash, html.light[data-theme="modern"] #splash, html.light:not([data-theme]) #splash { background-color: #fbfbfd !important; color: #1d1d1f !important; }
+              html[data-theme="modern"].dark #splash, html:not([data-theme]).dark #splash { background-color: #000000 !important; color: #f5f5f7 !important; }
               
-              html[data-theme="cafe"].dark { background-color: #14100c !important; color: #f8f4ec !important; }
-              html[data-theme="cafe"].dark #splash { background-color: #14100c !important; --splash-bg: #14100c !important; }
-              html[data-theme="cafe"]:not(.dark) { background-color: #f8f4ed !important; color: #2c211a !important; }
-              html[data-theme="cafe"]:not(.dark) #splash { background-color: #f8f4ed !important; --splash-bg: #f8f4ed !important; }
+              /* Coffee Shop Splash */
+              html[data-theme="cafe"]:not(.dark) #splash, html.light[data-theme="cafe"] #splash { background-color: #f8f4ed !important; color: #2c211a !important; }
+              html[data-theme="cafe"].dark #splash { background-color: #14100c !important; color: #f8f4ec !important; }
 
-              html[data-theme="cyber"].dark { background-color: #030705 !important; color: #00ff66 !important; }
-              html[data-theme="cyber"].dark #splash { background-color: #030705 !important; --splash-bg: #030705 !important; }
-              html[data-theme="cyber"]:not(.dark) { background-color: #e8f4ed !important; color: #042b1b !important; }
-              html[data-theme="cyber"]:not(.dark) #splash { background-color: #e8f4ed !important; --splash-bg: #e8f4ed !important; }
+              /* Cyber Terminal Splash */
+              html[data-theme="cyber"]:not(.dark) #splash, html.light[data-theme="cyber"] #splash { background-color: #e8f4ed !important; color: #042b1b !important; }
+              html[data-theme="cyber"].dark #splash { background-color: #030705 !important; color: #00ff66 !important; }
+
               .navbar-logo-target:not(.is-revealed), #navbar-logo:not(.is-revealed), #navbar-logo-dock:not(.is-revealed) { opacity: 0 !important; visibility: hidden !important; }
               .navbar-logo-target.is-revealed, #navbar-logo.is-revealed, #navbar-logo-dock.is-revealed { opacity: 1 !important; visibility: visible !important; transition: opacity 0.3s ease !important; }
               @media (hover: hover) and (pointer: fine) {
@@ -138,7 +138,7 @@ export default async function RootLayout({
         />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var doc=document.documentElement;var localSt=localStorage.getItem("site_active_theme");var domSt=doc.getAttribute("data-theme");var st=localSt||domSt||"cafe";doc.setAttribute("data-theme",st);localStorage.setItem("site_active_theme",st);var t=localStorage.getItem("theme");var d=t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme:dark)").matches);doc.classList.remove("theme-swap");var bg="#fbfbfd";if(d){bg=st==="cafe"?"#14100c":(st==="cyber"?"#030705":"#000000");doc.classList.add("dark");doc.classList.remove("light");doc.style.colorScheme="dark";}else{bg=st==="cafe"?"#f8f4ed":(st==="cyber"?"#e8f4ed":"#fbfbfd");doc.classList.remove("dark");doc.classList.add("light");doc.style.colorScheme="light";}doc.style.backgroundColor=bg;}catch(e){}})();`,
+            __html: `(function(){try{var doc=document.documentElement;var localSt=localStorage.getItem("site_active_theme");var domSt=doc.getAttribute("data-theme");var st=localSt||domSt||"modern";doc.setAttribute("data-theme",st);localStorage.setItem("site_active_theme",st);var t=localStorage.getItem("theme");var isDark=t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme:dark)").matches);doc.classList.remove("theme-swap");var bg="#fbfbfd";if(isDark){doc.classList.add("dark");doc.classList.remove("light");doc.style.colorScheme="dark";bg=st==="cafe"?"#14100c":(st==="cyber"?"#030705":"#000000");}else{doc.classList.remove("dark");doc.classList.add("light");doc.style.colorScheme="light";bg=st==="cafe"?"#f8f4ed":(st==="cyber"?"#e8f4ed":"#fbfbfd");}doc.style.backgroundColor=bg;}catch(e){}})();`,
           }}
         />
       </head>

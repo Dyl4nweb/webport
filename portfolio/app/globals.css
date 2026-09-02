@@ -798,14 +798,124 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  html:not(.light) #splash {
-    background: #000000;
-  }
+/* ─── Splash Screen Adaptive Theme System (Light & Dark for Modern, Cafe, Cyber) ─── */
+
+/* Modern Minimalist — Light */
+html[data-theme="modern"]:not(.dark) #splash,
+html:not([data-theme]):not(.dark) #splash,
+html.light[data-theme="modern"] #splash,
+html.light:not([data-theme]) #splash {
+  background: #fbfbfd !important;
 }
 
-.dark #splash {
-  background: #000000;
+html[data-theme="modern"]:not(.dark) #splash-line,
+html:not([data-theme]):not(.dark) #splash-line {
+  background: rgba(29, 29, 31, 0.08) !important;
+}
+
+html[data-theme="modern"]:not(.dark) #splash-line::after,
+html:not([data-theme]):not(.dark) #splash-line::after {
+  background: #1d1d1f !important;
+}
+
+html[data-theme="modern"]:not(.dark) #splash-text,
+html:not([data-theme]):not(.dark) #splash-text {
+  color: #86868b !important;
+}
+
+/* Modern Minimalist — Dark */
+html[data-theme="modern"].dark #splash,
+html:not([data-theme]).dark #splash {
+  background: #000000 !important;
+}
+
+html[data-theme="modern"].dark #splash-line,
+html:not([data-theme]).dark #splash-line {
+  background: rgba(245, 245, 247, 0.12) !important;
+}
+
+html[data-theme="modern"].dark #splash-line::after,
+html:not([data-theme]).dark #splash-line::after {
+  background: #f5f5f7 !important;
+}
+
+html[data-theme="modern"].dark #splash-text,
+html:not([data-theme]).dark #splash-text {
+  color: #98989d !important;
+}
+
+/* Coffee Shop — Light */
+html[data-theme="cafe"]:not(.dark) #splash,
+html.light[data-theme="cafe"] #splash {
+  background: #f8f4ed !important;
+}
+
+html[data-theme="cafe"]:not(.dark) #splash-line {
+  background: rgba(180, 101, 42, 0.18) !important;
+}
+
+html[data-theme="cafe"]:not(.dark) #splash-line::after {
+  background: #b4652a !important;
+}
+
+html[data-theme="cafe"]:not(.dark) #splash-text {
+  color: #796153 !important;
+}
+
+/* Coffee Shop — Dark */
+html[data-theme="cafe"].dark #splash {
+  background: #14100c !important;
+}
+
+html[data-theme="cafe"].dark #splash-line {
+  background: rgba(248, 244, 237, 0.12) !important;
+}
+
+html[data-theme="cafe"].dark #splash-line::after {
+  background: #b4652a !important;
+}
+
+html[data-theme="cafe"].dark #splash-text {
+  color: #b8a394 !important;
+}
+
+/* Cyber Terminal — Light */
+html[data-theme="cyber"]:not(.dark) #splash,
+html.light[data-theme="cyber"] #splash {
+  background: #e8f4ed !important;
+}
+
+html[data-theme="cyber"]:not(.dark) #splash-line {
+  background: rgba(5, 150, 105, 0.22) !important;
+}
+
+html[data-theme="cyber"]:not(.dark) #splash-line::after {
+  background: #059669 !important;
+}
+
+html[data-theme="cyber"]:not(.dark) #splash-text {
+  color: #1f6848 !important;
+  letter-spacing: 0.2em !important;
+}
+
+/* Cyber Terminal — Dark */
+html[data-theme="cyber"].dark #splash {
+  background: #030705 !important;
+}
+
+html[data-theme="cyber"].dark #splash-line {
+  background: rgba(0, 255, 102, 0.18) !important;
+}
+
+html[data-theme="cyber"].dark #splash-line::after {
+  background: #00ff66 !important;
+  box-shadow: 0 0 12px #00ff66 !important;
+}
+
+html[data-theme="cyber"].dark #splash-text {
+  color: #00ff66 !important;
+  text-shadow: 0 0 8px rgba(0, 255, 102, 0.6) !important;
+  letter-spacing: 0.2em !important;
 }
 
 /* Entrance — one-shot, lightweight */
@@ -848,14 +958,6 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
   animation: splash-progress-fill 1.35s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
 }
 
-.dark #splash-line {
-  background: var(--splash-track, rgba(245, 245, 247, 0.1));
-}
-
-.dark #splash-line::after {
-  background: var(--splash-active, #f5f5f7);
-}
-
 @keyframes splash-progress-fill {
   0% {
     transform: scaleX(0);
@@ -886,10 +988,6 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
   color: var(--splash-text, #86868b);
   user-select: none;
   animation: splash-rise 0.6s cubic-bezier(0.28, 0.11, 0.32, 1) 0.1s both;
-}
-
-.dark #splash-text {
-  --splash-text: #98989d;
 }
 
 @media (min-width: 768px) {
