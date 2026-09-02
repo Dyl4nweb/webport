@@ -20,6 +20,7 @@ export function applySiteThemeToDOM(theme: SiteTheme) {
   }
 
   root.style.backgroundColor = bg;
+  root.style.setProperty("--splash-bg", bg);
   window.dispatchEvent(new CustomEvent("theme:change", { detail: { theme, isDark } }));
 }
 
@@ -30,7 +31,7 @@ export default function ThemeProvider() {
     // 1. Check local storage first, then DOM data-theme attribute rendered by server
     const local = localStorage.getItem(THEME_STORAGE_KEY) as SiteTheme;
     const domTheme = document.documentElement.getAttribute("data-theme") as SiteTheme;
-    const initialTheme: SiteTheme = isValidTheme(local) ? local : (isValidTheme(domTheme) ? domTheme : "cafe");
+    const initialTheme: SiteTheme = isValidTheme(local) ? local : (isValidTheme(domTheme) ? domTheme : "modern");
     setActiveTheme(initialTheme);
     applySiteThemeToDOM(initialTheme);
 
@@ -41,8 +42,11 @@ export default function ThemeProvider() {
         if (res.ok) {
           const data = await res.json();
           if (data.ok && isValidTheme(data.theme)) {
-            setActiveTheme(data.theme);
-            applySiteThemeToDOM(data.theme);
+            const userChoice = localStorage.getItem(THEME_STORAGE_KEY);
+            if (!userChoice) {
+              setActiveTheme(data.theme);
+              applySiteThemeToDOM(data.theme);
+            }
           }
         }
       } catch {}
@@ -60,12 +64,13 @@ export default function ThemeProvider() {
     };
 
     const handleDarkLightChange = () => {
-      const current = (document.documentElement.getAttribute("data-theme") as SiteTheme) || "cafe";
+      const current = (document.documentElement.getAttribute("data-theme") as SiteTheme) || "modern";
       const isDark = document.documentElement.classList.contains("dark");
       let bg = isDark ? "#000000" : "#fbfbfd";
       if (current === "cafe") bg = isDark ? "#14100c" : "#f8f4ed";
       else if (current === "cyber") bg = isDark ? "#030705" : "#e8f4ed";
       document.documentElement.style.backgroundColor = bg;
+      document.documentElement.style.setProperty("--splash-bg", bg);
     };
 
     window.addEventListener("site-theme:change", handleSiteThemeEvent);
