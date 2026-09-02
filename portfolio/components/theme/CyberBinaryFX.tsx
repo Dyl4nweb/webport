@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function CyberBinaryFX() {
+  const pathname = usePathname();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isCyber, setIsCyber] = useState(false);
 
@@ -22,19 +24,21 @@ export default function CyberBinaryFX() {
       }
     });
 
-    observer.observe(document.documentElement, { attributes: true });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
     window.addEventListener("theme:change", checkTheme);
+    window.addEventListener("site-theme:change", checkTheme);
     window.addEventListener("storage", checkTheme);
 
     return () => {
       observer.disconnect();
       window.removeEventListener("theme:change", checkTheme);
+      window.removeEventListener("site-theme:change", checkTheme);
       window.removeEventListener("storage", checkTheme);
     };
   }, []);
 
   useEffect(() => {
-    if (!isCyber) return;
+    if (!isCyber || pathname?.startsWith("/admin")) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -71,7 +75,7 @@ export default function CyberBinaryFX() {
     initColumns();
 
     let lastTime = 0;
-    const FRAME_RATE = 38; // Smooth, calm falling speed (~26 FPS)
+    const FRAME_RATE = 38; // Smooth falling speed (~26 FPS)
 
     function draw(time: number) {
       if (!ctx || !canvas) return;
@@ -81,17 +85,15 @@ export default function CyberBinaryFX() {
 
         const isDark = document.documentElement.classList.contains("dark");
 
-        // Gentle, calm fade trail without flash
         ctx.fillStyle = isDark
-          ? "rgba(3, 7, 5, 0.1)"
-          : "rgba(232, 244, 237, 0.12)";
+          ? "rgba(3, 7, 5, 0.12)"
+          : "rgba(232, 244, 237, 0.14)";
         ctx.fillRect(0, 0, width, height);
 
         ctx.font = `${fontSize}px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`;
         ctx.shadowBlur = 0;
 
-        // Steady calm colors: no random blinking or strobing
-        ctx.fillStyle = isDark ? "rgba(0, 255, 102, 0.45)" : "rgba(5, 150, 105, 0.45)";
+        ctx.fillStyle = isDark ? "rgba(0, 255, 102, 0.55)" : "rgba(5, 150, 105, 0.55)";
 
         for (let i = 0; i < drops.length; i++) {
           const char = characters.charAt(
@@ -121,22 +123,22 @@ export default function CyberBinaryFX() {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", handleResize);
     };
-  }, [isCyber]);
+  }, [isCyber, pathname]);
 
-  if (!isCyber) return null;
+  if (!isCyber || pathname?.startsWith("/admin")) return null;
 
   return (
     <div
       aria-hidden="true"
-      className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-30 dark:opacity-40 transition-opacity duration-700"
+      className="fixed inset-0 pointer-events-none z-10 overflow-hidden opacity-40 dark:opacity-50 transition-opacity duration-500"
     >
       <canvas ref={canvasRef} className="w-full h-full block" />
       {/* Soft CRT scanline texture */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-15 dark:opacity-20"
+        className="absolute inset-0 pointer-events-none opacity-20 dark:opacity-25"
         style={{
           backgroundImage:
-            "repeating-linear-gradient(0deg, rgba(0, 255, 102, 0.03) 0px, rgba(0, 255, 102, 0.03) 1px, transparent 1px, transparent 3px)",
+            "repeating-linear-gradient(0deg, rgba(0, 255, 102, 0.04) 0px, rgba(0, 255, 102, 0.04) 1px, transparent 1px, transparent 3px)",
         }}
       />
     </div>

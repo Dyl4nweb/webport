@@ -33,9 +33,7 @@ export default function ThemeAtmosphere() {
   }, []);
 
   // Hide in Admin dashboard side so admin UI is completely clean and unobstructed
-  const isAdmin =
-    pathname?.startsWith("/admin") ||
-    (typeof document !== "undefined" && document.documentElement.hasAttribute("data-admin"));
+  const isAdmin = Boolean(pathname?.startsWith("/admin"));
 
   if (!mounted || isAdmin || theme === "modern") return null;
 
