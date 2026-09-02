@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { type SiteTheme } from "@/lib/theme";
 
 export default function ThemeAtmosphere() {
+  const pathname = usePathname();
   const [theme, setTheme] = useState<SiteTheme>("modern");
   const [mounted, setMounted] = useState(false);
 
@@ -19,16 +21,23 @@ export default function ThemeAtmosphere() {
     const observer = new MutationObserver(() => update());
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
     window.addEventListener("theme:change", update);
+    window.addEventListener("site-theme:change", update);
     window.addEventListener("storage", update);
 
     return () => {
       observer.disconnect();
       window.removeEventListener("theme:change", update);
+      window.removeEventListener("site-theme:change", update);
       window.removeEventListener("storage", update);
     };
   }, []);
 
-  if (!mounted || theme === "modern") return null;
+  // Hide in Admin dashboard side so admin UI is completely clean and unobstructed
+  const isAdmin =
+    pathname?.startsWith("/admin") ||
+    (typeof document !== "undefined" && document.documentElement.hasAttribute("data-admin"));
+
+  if (!mounted || isAdmin || theme === "modern") return null;
 
   if (theme === "cyber") {
     return (
