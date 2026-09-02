@@ -4,6 +4,8 @@ import { memo, useState, useEffect, useCallback, useRef } from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { SITE } from "@/lib/constants";
+import { applySiteThemeToDOM } from "@/components/theme/ThemeProvider";
+import { type SiteTheme, isValidTheme } from "@/lib/theme";
 
 interface MacControlCenterProps {
   isOpen: boolean;
@@ -19,6 +21,7 @@ export const MacControlCenter = memo(function MacControlCenter({
   isCharging,
 }: MacControlCenterProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [currentTheme, setCurrentTheme] = useState<SiteTheme>("modern");
 
   // 1. Display Brightness State
   const [brightness, setBrightness] = useState<number>(() => {
@@ -42,12 +45,16 @@ export const MacControlCenter = memo(function MacControlCenter({
   useEffect(() => {
     const updateTheme = () => {
       setIsDark(document.documentElement.classList.contains("dark"));
+      const active = (document.documentElement.getAttribute("data-theme") as SiteTheme) || "modern";
+      if (isValidTheme(active)) setCurrentTheme(active);
     };
     updateTheme();
     window.addEventListener("theme:change", updateTheme);
+    window.addEventListener("site-theme:change", updateTheme);
     window.addEventListener("storage", updateTheme);
     return () => {
       window.removeEventListener("theme:change", updateTheme);
+      window.removeEventListener("site-theme:change", updateTheme);
       window.removeEventListener("storage", updateTheme);
     };
   }, []);
@@ -243,6 +250,42 @@ export const MacControlCenter = memo(function MacControlCenter({
                 </span>
               </div>
             </button>
+          </div>
+        </div>
+
+        {/* Aesthetic Vibe Theme Selector (Modern, Coffee, Cyber) */}
+        <div className="flex flex-col gap-1.5 rounded-xl bg-white/70 dark:bg-white/[0.08] p-2.5 shadow-sm">
+          <div className="flex items-center justify-between text-[11px] font-medium text-ink/80 dark:text-ink-dark/80">
+            <span className="font-semibold">Vibe Theme</span>
+            <span className="font-mono text-[10px] text-ink-secondary/70 dark:text-ink-dark-secondary/70 uppercase">
+              {currentTheme}
+            </span>
+          </div>
+          <div className="grid grid-cols-3 gap-1.5 pt-0.5">
+            {[
+              { id: "modern", label: "Modern", icon: "⚪" },
+              { id: "cafe", label: "Coffee", icon: "☕" },
+              { id: "cyber", label: "Cyber", icon: "🟢" },
+            ].map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => {
+                  setCurrentTheme(t.id as SiteTheme);
+                  applySiteThemeToDOM(t.id as SiteTheme);
+                  window.dispatchEvent(new CustomEvent("site-theme:change", { detail: { theme: t.id } }));
+                }}
+                className={cn(
+                  "flex items-center justify-center gap-1.5 rounded-lg py-1.5 px-2 text-[11.5px] font-medium transition-all cursor-pointer",
+                  currentTheme === t.id
+                    ? "bg-[#007AFF] text-white shadow-sm font-semibold"
+                    : "bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 text-ink/80 dark:text-ink-dark/80"
+                )}
+              >
+                <span>{t.icon}</span>
+                <span>{t.label}</span>
+              </button>
+            ))}
           </div>
         </div>
 
