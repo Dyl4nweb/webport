@@ -125,15 +125,8 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Detect Safari / WebKit where View Transition JS Element.animate with pseudoElement causes lockups
-    const isSafari =
-      typeof navigator !== "undefined" &&
-      (/^((?!chrome|android).)*safari/i.test(navigator.userAgent) ||
-        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-        (navigator.userAgent.includes("Mac") && "ontouchend" in document));
-
     // View Transitions API: native CSS wave reveal
-    if (!isSafari && "startViewTransition" in document && !reduceMotion) {
+    if ("startViewTransition" in document && !reduceMotion) {
       try {
         root.classList.add("theme-swap");
         const transition = (document as any).startViewTransition(() => {
@@ -150,13 +143,12 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
             transition.skipTransition();
           } catch {}
           unlock();
-        }, 1600);
+        }, 1200);
       } catch {
         applyTheme();
         unlock();
       }
     } else {
-      // Safari, iOS, and reduced-motion fallback: Instant, bulletproof theme switch
       applyTheme();
       unlock();
     }

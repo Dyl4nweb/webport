@@ -841,7 +841,7 @@ html.theme-swap *:not([data-theme-toggle], [data-theme-toggle] *)::after {
 }
 
 ::view-transition-new(root) {
-  animation: theme-reveal 1.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: theme-reveal 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
   mix-blend-mode: normal !important;
   z-index: 9999;
 }

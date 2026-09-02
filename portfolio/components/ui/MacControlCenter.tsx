@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useState, useEffect, useCallback, useRef } from "react";
+import { flushSync } from "react-dom";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { SITE } from "@/lib/constants";
@@ -90,6 +91,48 @@ export const MacControlCenter = memo(function MacControlCenter({
     const toggleBtn = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
     if (toggleBtn) {
       toggleBtn.click();
+    }
+  }, []);
+
+  const changeVibeTheme = useCallback((themeId: SiteTheme, e: React.MouseEvent<HTMLButtonElement>) => {
+    const btn = e.currentTarget;
+    const rect = btn.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const endRadius = Math.ceil(
+      Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      )
+    );
+
+    const root = document.documentElement;
+    root.style.setProperty("--view-tx", `${x.toFixed(1)}px`);
+    root.style.setProperty("--view-ty", `${y.toFixed(1)}px`);
+    root.style.setProperty("--view-tr", `${endRadius}px`);
+
+    const apply = () => {
+      setCurrentTheme(themeId);
+      applySiteThemeToDOM(themeId);
+      window.dispatchEvent(new CustomEvent("site-theme:change", { detail: { theme: themeId } }));
+    };
+
+    if ("startViewTransition" in document) {
+      try {
+        root.classList.add("theme-swap");
+        const transition = (document as any).startViewTransition(() => {
+          flushSync(() => {
+            apply();
+          });
+        });
+        transition.finished.finally(() => {
+          root.classList.remove("theme-swap");
+        });
+      } catch {
+        apply();
+      }
+    } else {
+      apply();
     }
   }, []);
 
@@ -270,11 +313,7 @@ export const MacControlCenter = memo(function MacControlCenter({
               <button
                 key={t.id}
                 type="button"
-                onClick={() => {
-                  setCurrentTheme(t.id as SiteTheme);
-                  applySiteThemeToDOM(t.id as SiteTheme);
-                  window.dispatchEvent(new CustomEvent("site-theme:change", { detail: { theme: t.id } }));
-                }}
+                onClick={(e) => changeVibeTheme(t.id as SiteTheme, e)}
                 className={cn(
                   "flex items-center justify-center gap-1.5 rounded-lg py-1.5 px-2 text-[11.5px] font-medium transition-all cursor-pointer",
                   currentTheme === t.id
