@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import MemoryCardStack from "./MemoryCardStack";
 
 export default function HobbiesInterests() {
-  const [isUnlocked, setIsUnlocked] = useState(true);
+  const [isUnlocked, setIsUnlocked] = useState(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
 
   // Trigger smooth unlock transition

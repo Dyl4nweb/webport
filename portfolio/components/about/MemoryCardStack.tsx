@@ -119,7 +119,7 @@ export default function MemoryCardStack({
             disableDrag={false}
           >
             <motion.div
-              className="w-full h-full rounded-2xl sm:rounded-[22px] overflow-hidden shadow-2xl border-2 border-black/15 dark:border-white/20 bg-surface-card dark:bg-[#121214] will-change-transform"
+              className="relative w-full h-full rounded-2xl sm:rounded-[22px] overflow-hidden shadow-2xl border-2 border-black/15 dark:border-white/20 bg-surface-card dark:bg-[#121214] will-change-transform"
               onClick={() => {
                 if (sendToBackOnClick && isTop) {
                   sendToBack(card.id);
