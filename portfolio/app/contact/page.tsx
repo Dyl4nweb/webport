@@ -65,8 +65,8 @@ export default function ContactPage() {
             <div className="flex flex-col min-[420px]:flex-row items-center justify-center gap-1.5 sm:gap-2 select-none text-center">
               <div className="inline-flex items-center gap-1.5 sm:gap-2">
                 <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                  <span className="contact-status-pulse absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="contact-status-dot relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                 </span>
                 <span className="font-semibold uppercase tracking-[0.11em] sm:tracking-[0.14em] text-[10px] min-[360px]:text-[11px] sm:text-[11.5px] text-ink dark:text-ink-dark">
                   AVAILABLE FOR NEW OPPORTUNITIES

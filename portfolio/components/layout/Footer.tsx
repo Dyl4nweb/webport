@@ -62,9 +62,12 @@ export default function Footer() {
           <div className="flex flex-col gap-1.5 items-center md:items-start text-center md:text-left">
             <Link
               href="/"
-              className="text-2xl min-[360px]:text-3xl sm:text-4xl font-bold tracking-[-0.04em] text-ink dark:text-ink-dark transition-opacity hover:opacity-85 inline-block"
+              className="group text-2xl min-[360px]:text-3xl sm:text-4xl font-bold tracking-[-0.04em] text-ink dark:text-ink-dark transition-opacity hover:opacity-85 inline-flex items-baseline"
             >
-              <GlitchText text={`${SITE.name}.`} />
+              <GlitchText text={SITE.name} className="inline-block" />
+              <span className="text-ink-tertiary dark:text-ink-dark-secondary select-none" aria-hidden="true">
+                .
+              </span>
             </Link>
             <p className="font-mono text-[11px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-ink-secondary dark:text-ink-dark-secondary">
               SOFTWARE ENGINEER

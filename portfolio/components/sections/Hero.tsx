@@ -320,22 +320,26 @@ function HeroName({ onOpenCard }: { onOpenCard: () => void }) {
       )}
     >
       <span className="relative inline-block transition-all duration-200 whitespace-nowrap text-ink dark:text-ink-dark">
-        {displayName.split("").map((origChar, idx) => {
-          if (origChar === " ") {
-            return <span key={idx}> </span>;
-          }
-          const currentChar = isScrambling ? displayName[idx] ?? origChar : origChar;
-          return (
-            <span key={idx} className="relative inline-block align-baseline">
-              <span className="invisible select-none" aria-hidden="true">
-                {origChar}
+        {!isScrambling ? (
+          originalName
+        ) : (
+          originalName.split("").map((origChar, idx) => {
+            if (origChar === " ") {
+              return <span key={idx}> </span>;
+            }
+            const currentChar = displayName[idx] ?? origChar;
+            return (
+              <span key={idx} className="relative inline-block align-baseline">
+                <span className="invisible select-none" aria-hidden="true">
+                  {origChar}
+                </span>
+                <span className="absolute inset-0 flex items-center justify-center pointer-events-none text-ink dark:text-ink-dark">
+                  {currentChar}
+                </span>
               </span>
-              <span className="absolute inset-0 flex items-center justify-center pointer-events-none text-ink dark:text-ink-dark">
-                {currentChar}
-              </span>
-            </span>
-          );
-        })}
+            );
+          })
+        )}
       </span>
     </button>
   );
