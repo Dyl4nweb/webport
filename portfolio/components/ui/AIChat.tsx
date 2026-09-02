@@ -17,7 +17,7 @@ const createWelcomeMessage = (): Message => ({
   id: "welcome",
   role: "assistant",
   content:
-    "Hello! I am Dylan AI, Dylan Ramos's official intelligent assistant. Ask me anything about Dylan's projects, tech stack, experience, or how to collaborate.",
+    "Hello! I am Varex AI, Dylan Ramos's official intelligent assistant. Ask me anything about Dylan's projects, tech stack, experience, or how to collaborate.",
 });
 
 const MAX_USER_MESSAGES = 5;
@@ -299,12 +299,12 @@ export default function AIChat() {
                 <div className="flex items-center gap-1.5">
                   <p className="truncate text-[13px] sm:text-[14px] font-semibold tracking-tight text-ink dark:text-ink-dark">
                     <GlitchText
-                      text="Dylan AI"
+                      text="Varex AI"
                       triggerOnMount={open}
                       triggerOnHover={true}
                       delay={120}
                       duration={600}
-                      key={open ? "dylan-title-open" : "dylan-title-closed"}
+                      key={open ? "varex-title-open" : "varex-title-closed"}
                     />
                   </p>
                   <span
@@ -402,12 +402,12 @@ export default function AIChat() {
               <div className="pt-2 sm:pt-3">
                 <p className="mb-1.5 text-[8.5px] sm:text-[9px] font-semibold uppercase tracking-widest text-ink-secondary dark:text-ink-dark-secondary">
                   <GlitchText
-                    text="Ask Dylan AI"
+                    text="Ask Varex AI"
                     triggerOnMount={open}
                     triggerOnHover={true}
                     delay={200}
                     duration={500}
-                    key={open ? "dylan-sugg-open" : "dylan-sugg-closed"}
+                    key={open ? "varex-sugg-open" : "varex-sugg-closed"}
                   />
                 </p>
                 <div className="flex flex-wrap gap-1.5">
@@ -462,7 +462,7 @@ export default function AIChat() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 disabled={loading}
-                placeholder="Ask Dylan AI anything..."
+                placeholder="Ask Varex AI anything..."
                 autoComplete="off"
                 enterKeyHint="send"
                 className="min-w-0 flex-1 border-0 bg-transparent px-0 py-1 text-[16px] sm:text-[13px] text-ink dark:text-ink-dark outline-none ring-0 placeholder:text-ink-tertiary dark:placeholder:text-ink-dark-secondary focus:outline-none focus:ring-0 leading-normal"
