@@ -74,18 +74,18 @@ export default function Footer() {
           {/* Right: Quick Links + Social Icons */}
           <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-8 justify-center md:justify-end">
             {/* Quick Navigation */}
-            <nav className="flex items-center gap-4 sm:gap-6 font-mono text-[12px] sm:text-[13px] font-medium text-ink-secondary dark:text-ink-dark-secondary">
+            <nav className="flex items-center gap-4 sm:gap-6 font-mono text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.16em] text-ink-secondary dark:text-ink-dark-secondary">
               <Link href="/" className="hover:text-ink dark:hover:text-ink-dark transition-colors">
-                Home
+                HOME
               </Link>
               <Link href="/about" className="hover:text-ink dark:hover:text-ink-dark transition-colors">
-                About
+                ABOUT
               </Link>
               <Link href="/projects" className="hover:text-ink dark:hover:text-ink-dark transition-colors">
-                Projects
+                PROJECTS
               </Link>
               <Link href="/contact" className="hover:text-ink dark:hover:text-ink-dark transition-colors">
-                Contact
+                CONTACT
               </Link>
             </nav>
 
