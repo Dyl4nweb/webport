@@ -90,15 +90,22 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
 
     // State sync helper with synchronous commit for glitch-free snapshot capture
     const applyTheme = () => {
-      flushSync(() => {
+      try {
         setIsDark(nextDark);
         root.classList.toggle("dark", nextDark);
         root.classList.toggle("light", !nextDark);
         root.style.backgroundColor = getThemeBackgroundColor(nextDark);
         root.style.colorScheme = nextDark ? "dark" : "light";
-        localStorage.setItem("theme", next);
+        try {
+          localStorage.setItem("theme", next);
+        } catch {}
+        try {
+          document.cookie = `theme=${next};path=/;max-age=31536000;SameSite=Lax`;
+        } catch {}
         window.dispatchEvent(new CustomEvent("theme:change", { detail: { isDark: nextDark } }));
-      });
+      } catch (err) {
+        console.error("Theme toggle apply error:", err);
+      }
     };
 
     // Unlock helper
@@ -109,6 +116,7 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
         root.classList.remove("theme-swap");
         root.style.removeProperty("--view-tx");
         root.style.removeProperty("--view-ty");
+        root.style.removeProperty("--view-tr");
         animatingRef.current = false;
       });
     };
@@ -117,103 +125,40 @@ export default function ThemeToggle({ className }: ThemeToggleProps = {}) {
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // View Transitions API: native CSS wave reveal matching original fluid behavior
-    if ("startViewTransition" in document && !reduceMotion) {
+    // Detect Safari / WebKit where View Transition JS Element.animate with pseudoElement causes lockups
+    const isSafari =
+      typeof navigator !== "undefined" &&
+      (/^((?!chrome|android).)*safari/i.test(navigator.userAgent) ||
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.userAgent.includes("Mac") && "ontouchend" in document));
+
+    // View Transitions API: native CSS wave reveal
+    if (!isSafari && "startViewTransition" in document && !reduceMotion) {
       try {
         root.classList.add("theme-swap");
         const transition = (document as any).startViewTransition(() => {
-          applyTheme();
+          flushSync(() => {
+            applyTheme();
+          });
         });
 
-        if (transition.ready) {
-          transition.ready.then(() => {
-            root.classList.remove("theme-swap");
-            try {
-              const activeTheme =
-                root.getAttribute("data-theme") ||
-                (typeof localStorage !== "undefined" ? localStorage.getItem("site_active_theme") : null) ||
-                "modern";
+        transition.finished.finally(unlock);
 
-              if (activeTheme === "cyber") {
-                // 🟢 Cyber Terminal: Tactical Glitch Matrix Wave Wipe
-                document.documentElement.animate(
-                  [
-                    {
-                      clipPath: "polygon(0 0, 100% 0, 100% 0%, 0 0%)",
-                      filter: "brightness(2.2) contrast(1.8) hue-rotate(90deg) invert(0.15)",
-                      transform: "translateX(-10px) skewX(3deg)",
-                      opacity: 0.8,
-                    },
-                    {
-                      clipPath: "polygon(0 0, 100% 0, 100% 25%, 0 20%)",
-                      filter: "brightness(1.8) contrast(1.4) drop-shadow(0 0 14px #00ff66)",
-                      transform: "translateX(8px) skewX(-2deg)",
-                      opacity: 0.92,
-                    },
-                    {
-                      clipPath: "polygon(0 0, 100% 0, 100% 55%, 0 60%)",
-                      filter: "brightness(2.0) contrast(1.6) hue-rotate(-60deg)",
-                      transform: "translateX(-8px) skewX(2deg)",
-                      opacity: 0.98,
-                    },
-                    {
-                      clipPath: "polygon(0 0, 100% 0, 100% 85%, 0 80%)",
-                      filter: "brightness(1.4) contrast(1.2)",
-                      transform: "translateX(4px)",
-                      opacity: 1,
-                    },
-                    {
-                      clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-                      filter: "none",
-                      transform: "none",
-                      opacity: 1,
-                    },
-                  ],
-                  {
-                    duration: 650,
-                    easing: "steps(12, jump-none)",
-                    pseudoElement: "::view-transition-new(root)",
-                    fill: "forwards",
-                  }
-                );
-              } else {
-                // ⚪ & ☕ Modern & Coffee Shop: Original Fluid Circular Wave Reveal (Untouched)
-                document.documentElement.animate(
-                  {
-                    clipPath: [
-                      `circle(0px at ${x.toFixed(1)}px ${y.toFixed(1)}px)`,
-                      `circle(${endRadius}px at ${x.toFixed(1)}px ${y.toFixed(1)}px)`,
-                    ],
-                  },
-                  {
-                    duration: 1450,
-                    easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-                    pseudoElement: "::view-transition-new(root)",
-                    fill: "forwards",
-                  }
-                );
-              }
-            } catch {}
-          });
-        }
-
-        transition.finished.then(unlock, unlock);
-
-        // Safety net
+        // Safety net to guarantee unlock
         unlockTimer = setTimeout(() => {
           try {
             transition.skipTransition();
           } catch {}
           unlock();
-        }, 2600);
+        }, 1600);
       } catch {
         applyTheme();
         unlock();
       }
     } else {
-      // Fallback
+      // Safari, iOS, and reduced-motion fallback: Instant, bulletproof theme switch
       applyTheme();
-      setTimeout(unlock, 50);
+      unlock();
     }
   };
 
