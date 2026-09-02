@@ -67,7 +67,9 @@ export default function ContactPage() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
               </span>
-              <span className="font-medium text-ink dark:text-ink-dark">Available for new opportunities</span>
+              <span className="font-semibold uppercase tracking-[0.14em] text-[11px] sm:text-[11.5px] text-ink dark:text-ink-dark">
+                AVAILABLE FOR NEW OPPORTUNITIES
+              </span>
               <span className="text-ink-tertiary dark:text-ink-dark-secondary">·</span>
               <span>Manila (UTC+8)</span>
             </div>
