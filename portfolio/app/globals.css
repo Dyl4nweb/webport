@@ -290,7 +290,7 @@ html[data-theme="cafe"] .profile-badge-card [class*="bg-white/"] {
   color: #381e0e !important;
 }
 
-html[data-theme="cafe"] .profile-badge-card .h-\[84px\] {
+html[data-theme="cafe"] .profile-badge-card .profile-badge-photo {
   border: 2px solid #8d6238 !important;
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.15) !important;
 }
@@ -349,7 +349,7 @@ html[data-theme="cafe"].dark .profile-badge-card [class*="bg-white/"] {
   color: #e8d0b5 !important;
 }
 
-html[data-theme="cafe"].dark .profile-badge-card .h-\[84px\] {
+html[data-theme="cafe"].dark .profile-badge-card .profile-badge-photo {
   border: 2px solid #4a2d1d !important;
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4) !important;
 }
@@ -484,15 +484,126 @@ html[data-theme="cyber"] [data-dock] {
 
 /* Cyber Developer ID Badge: Tactical Holo HUD Badge */
 html[data-theme="cyber"] .profile-badge-card {
-  background: rgba(3, 7, 5, 0.98) !important;
-  border: 1px solid #00ff66 !important;
-  box-shadow: 0 0 35px rgba(0, 255, 102, 0.25), inset 0 0 25px rgba(0, 255, 102, 0.05) !important;
+  border-radius: 4px !important;
+  border: 1.5px solid #059669 !important;
+  background: #e8f4ed !important;
+  box-shadow: 0 0 35px rgba(5, 150, 105, 0.25), inset 0 0 20px rgba(5, 150, 105, 0.06) !important;
+}
+
+html[data-theme="cyber"] .profile-badge-card h2,
+html[data-theme="cyber"] .profile-badge-card p,
+html[data-theme="cyber"] .profile-badge-card span:not(.profile-badge-dot),
+html[data-theme="cyber"] .profile-badge-card div {
+  font-family: var(--font-mono), monospace !important;
+}
+
+html[data-theme="cyber"] .profile-badge-card h2 {
+  color: #042b1b !important;
+}
+
+html[data-theme="cyber"] .profile-badge-card p,
+html[data-theme="cyber"] .profile-badge-card span:not(.profile-badge-dot) {
+  color: #1f6848 !important;
+}
+
+html[data-theme="cyber"] .profile-badge-card .border-b,
+html[data-theme="cyber"] .profile-badge-card .border-t {
+  border-color: rgba(5, 150, 105, 0.3) !important;
+}
+
+html[data-theme="cyber"] .profile-badge-card a,
+html[data-theme="cyber"] .profile-badge-card button {
+  color: #042b1b !important;
+}
+
+html[data-theme="cyber"] .profile-badge-card [class*="bg-black/"],
+html[data-theme="cyber"] .profile-badge-card [class*="bg-white/"] {
+  background: rgba(5, 150, 105, 0.12) !important;
+  border: 1px solid rgba(5, 150, 105, 0.35) !important;
+  color: #042b1b !important;
+  border-radius: 2px !important;
+}
+
+html[data-theme="cyber"] .profile-badge-card .profile-badge-photo {
+  border-radius: 2px !important;
+  border: 1.5px solid #059669 !important;
+  box-shadow: 0 0 14px rgba(5, 150, 105, 0.35) !important;
+}
+
+html[data-theme="cyber"] .profile-badge-card a[href*="cal.com"] {
+  background: #059669 !important;
+  color: #ffffff !important;
+  border-radius: 2px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 16px rgba(5, 150, 105, 0.4) !important;
+}
+
+/* Cyber Dark Mode Developer ID: Full Matrix Hologram Plaque */
+html[data-theme="cyber"].dark .profile-badge-card {
+  border-radius: 4px !important;
+  border: 1.5px solid #00ff66 !important;
+  background-color: #030705 !important;
+  background-image: 
+    linear-gradient(rgba(0, 255, 102, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 102, 0.05) 1px, transparent 1px),
+    radial-gradient(ellipse at 50% 0%, rgba(0, 255, 102, 0.18), transparent 75%) !important;
+  background-size: 16px 16px, 16px 16px, 100% 100% !important;
+  box-shadow: 0 0 50px rgba(0, 255, 102, 0.35), inset 0 0 30px rgba(0, 255, 102, 0.12) !important;
+}
+
+html[data-theme="cyber"].dark .profile-badge-card h2 {
+  color: #00ff66 !important;
+  text-shadow: 0 0 12px rgba(0, 255, 102, 0.8), 0 0 24px rgba(0, 255, 102, 0.4) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.01em !important;
+}
+
+html[data-theme="cyber"].dark .profile-badge-card p,
+html[data-theme="cyber"].dark .profile-badge-card span:not(.profile-badge-dot) {
+  color: #00ff66 !important;
+  opacity: 0.9 !important;
+  text-shadow: 0 0 6px rgba(0, 255, 102, 0.5) !important;
+}
+
+html[data-theme="cyber"].dark .profile-badge-card .border-b,
+html[data-theme="cyber"].dark .profile-badge-card .border-t {
+  border-color: rgba(0, 255, 102, 0.35) !important;
+}
+
+html[data-theme="cyber"].dark .profile-badge-card svg {
+  color: #00ff66 !important;
+}
+
+html[data-theme="cyber"].dark .profile-badge-card [class*="bg-black/"],
+html[data-theme="cyber"].dark .profile-badge-card [class*="bg-white/"] {
+  background: rgba(0, 255, 102, 0.1) !important;
+  border: 1px solid rgba(0, 255, 102, 0.45) !important;
+  color: #00ff66 !important;
+  border-radius: 2px !important;
+  text-shadow: 0 0 5px rgba(0, 255, 102, 0.6) !important;
+}
+
+html[data-theme="cyber"].dark .profile-badge-card .profile-badge-photo {
+  border-radius: 2px !important;
+  border: 1.5px solid #00ff66 !important;
+  box-shadow: 0 0 22px rgba(0, 255, 102, 0.55), inset 0 0 10px rgba(0, 255, 102, 0.3) !important;
+  filter: contrast(1.1) brightness(1.05);
+}
+
+html[data-theme="cyber"].dark .profile-badge-card a[href*="cal.com"] {
+  background: #00ff66 !important;
+  color: #030705 !important;
+  border-radius: 2px !important;
+  font-weight: 800 !important;
+  box-shadow: 0 0 22px rgba(0, 255, 102, 0.75) !important;
+  letter-spacing: 0.05em !important;
 }
 
 html[data-theme="cyber"] .profile-lanyard-hole {
-  background: #000000 !important;
+  border-radius: 2px !important;
+  background: #030705 !important;
   border: 1.5px solid #00ff66 !important;
-  box-shadow: 0 0 10px rgba(0, 255, 102, 0.6) !important;
+  box-shadow: 0 0 14px rgba(0, 255, 102, 0.8) !important;
 }
 
 /* Cyber Theme: Replace Mac Menu Bar with Tactical Cyber HUD Bar */

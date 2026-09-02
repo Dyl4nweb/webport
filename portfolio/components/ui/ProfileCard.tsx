@@ -262,7 +262,7 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
             <div className="relative flex gap-5 px-6 py-5">
               {/* Portrait photo — square ID badge photo */}
               <div
-                className="relative h-[84px] w-[84px] shrink-0 overflow-hidden rounded-[12px] ring-1 ring-black/[0.08] dark:ring-white/[0.1]"
+                className="profile-badge-photo relative h-[84px] w-[84px] shrink-0 overflow-hidden rounded-[12px] ring-1 ring-black/[0.08] dark:ring-white/[0.1]"
                 style={{ transform: "translateZ(0)", backfaceVisibility: "hidden" }}
               >
                 <Image
