@@ -64,7 +64,7 @@ export default function GlitchText({
   highlightClassName,
   triggerOnScroll = true,
   triggerOnHover = true,
-  triggerOnMount = false,
+  triggerOnMount = true,
   delay = 0,
   duration = 650,
   as: Component = "span",

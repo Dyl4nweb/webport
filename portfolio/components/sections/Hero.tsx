@@ -111,34 +111,11 @@ const HeroTypewriter = memo(function HeroTypewriter({ roles = DEFAULT_ROLES }: {
     function startTyping() {
       if (isCancelled || hasStarted) return;
       hasStarted = true;
-      timeoutId = setTimeout(tick, 100);
+      timeoutId = setTimeout(tick, 50);
     }
 
-    const appMain = document.getElementById("app-main");
-    if (!appMain || appMain.classList.contains("is-ready")) {
-      startTyping();
-    } else {
-      const observer = new MutationObserver(() => {
-        if (appMain.classList.contains("is-ready")) {
-          observer.disconnect();
-          if (fallbackId) clearTimeout(fallbackId);
-          startTyping();
-        }
-      });
-
-      observer.observe(appMain, { attributes: true, attributeFilter: ["class"] });
-      fallbackId = setTimeout(() => {
-        observer.disconnect();
-        startTyping();
-      }, 1500);
-
-      return () => {
-        isCancelled = true;
-        observer.disconnect();
-        if (fallbackId) clearTimeout(fallbackId);
-        if (timeoutId) clearTimeout(timeoutId);
-      };
-    }
+    // Start typing immediately upon open
+    startTyping();
 
     return () => {
       isCancelled = true;
@@ -231,47 +208,10 @@ function HeroName({ onOpenCard }: { onOpenCard: () => void }) {
     animRef.current = requestAnimationFrame(step);
   }, [originalName]);
 
-  // Synchronize effect to play visibly when the hero page is revealed (after splash screen)
+  // Synchronize glitch effect to start immediately on page open
   useEffect(() => {
-    let timerId: ReturnType<typeof setTimeout> | null = null;
-    let isCancelled = false;
-
-    function startEffect() {
-      if (isCancelled) return;
-      timerId = setTimeout(() => {
-        handleScramble();
-      }, 150);
-    }
-
-    const appMain = document.getElementById("app-main");
-    if (!appMain || appMain.classList.contains("is-ready")) {
-      startEffect();
-    } else {
-      const observer = new MutationObserver(() => {
-        if (appMain.classList.contains("is-ready")) {
-          observer.disconnect();
-          startEffect();
-        }
-      });
-
-      observer.observe(appMain, { attributes: true, attributeFilter: ["class"] });
-      const fallback = setTimeout(() => {
-        observer.disconnect();
-        startEffect();
-      }, 1500);
-
-      return () => {
-        isCancelled = true;
-        observer.disconnect();
-        clearTimeout(fallback);
-        if (timerId) clearTimeout(timerId);
-        if (animRef.current) cancelAnimationFrame(animRef.current);
-      };
-    }
-
+    handleScramble();
     return () => {
-      isCancelled = true;
-      if (timerId) clearTimeout(timerId);
       if (animRef.current) cancelAnimationFrame(animRef.current);
     };
   }, [handleScramble]);

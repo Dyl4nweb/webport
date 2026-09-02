@@ -199,6 +199,27 @@ export default async function RootLayout({
 
               var hasFlown = false;
 
+              try {
+                var st = document.documentElement.getAttribute("data-theme");
+                var splashText = document.getElementById("splash-text");
+                if (st === "cyber" && splashText) {
+                  var ciphers = "01001011_#*[]><~=";
+                  var splashInterval = setInterval(function() {
+                    var s = document.getElementById("splash");
+                    if (!s || s.classList.contains("is-done")) {
+                      clearInterval(splashInterval);
+                      return;
+                    }
+                    var t = "INITIALIZING_SYSTEM";
+                    var scrambled = "";
+                    for (var i = 0; i < t.length; i++) {
+                      scrambled += Math.random() > 0.55 ? ciphers[Math.floor(Math.random() * ciphers.length)] : t[i];
+                    }
+                    splashText.textContent = scrambled;
+                  }, 50);
+                }
+              } catch(e) {}
+
               function getVisibleNavLogo(){
                 var candidates = document.querySelectorAll(".navbar-logo-target, #navbar-logo, #navbar-logo-dock");
                 for (var i = 0; i < candidates.length; i++) {
