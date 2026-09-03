@@ -345,21 +345,21 @@ export default function AdminVarexAiPage() {
             </div>
           )}
 
-          {/* Suggestions inside chat feed (wrapped, not horizontal scroll) */}
+          {/* Suggestions inside chat feed (matches public AIChat.tsx) */}
           {messages.length <= 1 && !loading && (
-            <div className="pt-2">
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-ink-secondary/70 dark:text-ink-dark-secondary/70">
-                Suggested Actions:
+            <div className="pt-2 sm:pt-3">
+              <p className="mb-1.5 text-[9px] sm:text-[10px] font-semibold uppercase tracking-widest text-ink-secondary dark:text-ink-dark-secondary">
+                Ask Varex AI
               </p>
-              <div className="flex flex-wrap gap-2">
-                {QUICK_SUGGESTIONS.map((sug, i) => (
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                {QUICK_SUGGESTIONS.map((suggestion) => (
                   <button
-                    key={i}
+                    key={suggestion}
                     type="button"
-                    onClick={() => handleSend(sug)}
-                    className="admin-chat-chip rounded-apple-sm border border-line/60 dark:border-line-dark/60 bg-surface-card dark:bg-surface-dark-card px-3 py-1.5 text-[12px] font-medium text-ink-secondary hover:border-accent hover:text-accent dark:hover:border-accent-dark dark:hover:text-accent-dark transition-all shadow-sm text-left"
+                    onClick={() => handleSend(suggestion)}
+                    className="rounded-full border border-line/60 dark:border-line-dark/60 bg-surface-alt dark:bg-surface-dark-alt px-3 sm:px-3.5 py-1.5 text-[11px] sm:text-[12px] font-medium text-ink dark:text-ink-dark transition-all duration-200 hover:-translate-y-0.5 hover:border-ink/30 dark:hover:border-ink-dark/30 text-left shadow-sm"
                   >
-                    {sug}
+                    {suggestion}
                   </button>
                 ))}
               </div>

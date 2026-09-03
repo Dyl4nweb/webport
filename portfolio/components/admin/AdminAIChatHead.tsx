@@ -221,21 +221,21 @@ export default function AdminAIChatHead() {
                 </div>
               )}
 
-              {/* Suggestions inside chat feed (wrapped, not horizontal scroll) */}
-              {messages.length <= 1 && !loading && (
-                <div className="pt-2">
-                  <p className="mb-2 text-[10.5px] font-semibold uppercase tracking-wider text-ink-secondary/70 dark:text-ink-dark-secondary/70">
-                    Suggested prompts
+              {/* Suggestions inside chat feed (matches public AIChat.tsx) */}
+              {messages.length === 1 && !loading && (
+                <div className="pt-2 sm:pt-3">
+                  <p className="mb-1.5 text-[8.5px] sm:text-[9px] font-semibold uppercase tracking-widest text-ink-secondary dark:text-ink-dark-secondary">
+                    Ask Varex AI
                   </p>
                   <div className="flex flex-wrap gap-1.5">
-                    {QUICK_SUGGESTIONS.map((sug, i) => (
+                    {QUICK_SUGGESTIONS.map((suggestion) => (
                       <button
-                        key={i}
+                        key={suggestion}
                         type="button"
-                        onClick={() => handleSend(sug)}
-                        className="admin-chat-chip rounded-apple-sm border border-line/60 bg-surface-card px-2.5 py-1.5 text-[11px] font-medium text-ink-secondary transition-all hover:border-accent hover:text-accent dark:border-line-dark/60 dark:bg-surface-dark-card dark:text-ink-dark-secondary dark:hover:border-accent-dark dark:hover:text-accent-dark text-left shadow-sm"
+                        onClick={() => handleSend(suggestion)}
+                        className="rounded-full border border-line/60 dark:border-line-dark/60 bg-surface-alt dark:bg-surface-dark-alt px-2.5 sm:px-3 py-1 sm:py-1.5 text-[9.5px] sm:text-[10.5px] font-medium text-ink dark:text-ink-dark transition-all duration-200 hover:-translate-y-0.5 hover:border-ink/30 dark:hover:border-ink-dark/30 text-left shadow-sm"
                       >
-                        {sug}
+                        {suggestion}
                       </button>
                     ))}
                   </div>
