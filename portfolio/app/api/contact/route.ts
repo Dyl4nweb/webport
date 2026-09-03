@@ -17,9 +17,10 @@ export async function POST(request: Request) {
     }
 
     const contactEmail = process.env.CONTACT_EMAIL || "kurtdylanviray@gmail.com";
+    const fromEmail = process.env.RESEND_FROM_EMAIL || "Dylan Ramos Portfolio <hello@dylanramos.site>";
 
     await resend.emails.send({
-      from: `Portfolio Contact <onboarding@resend.dev>`,
+      from: fromEmail,
       to: contactEmail,
       replyTo: email,
       subject: `New message from ${name}`,

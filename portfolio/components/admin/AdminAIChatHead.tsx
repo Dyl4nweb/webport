@@ -6,6 +6,9 @@ import { usePathname } from "next/navigation";
 
 import AdminToast from "@/components/admin/AdminToast";
 import LiveAIFace from "@/components/ui/LiveAIFace";
+import GlitchText from "@/components/ui/GlitchText";
+import VarexSettingsModal from "@/components/admin/VarexSettingsModal";
+import VarexBriefingPopup from "@/components/admin/VarexBriefingPopup";
 import { useVarexAI } from "@/lib/admin/varex-ai-context";
 
 const QUICK_SUGGESTIONS = [
@@ -28,11 +31,13 @@ export default function AdminAIChatHead() {
     setToast,
     markAsRead,
     selectedModel,
+    tokenUsage,
   } = useVarexAI();
 
   const [isHovered, setIsHovered] = useState(false);
   const [input, setInput] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -111,17 +116,30 @@ export default function AdminAIChatHead() {
                     <span className="text-[13px] font-semibold tracking-tight text-ink dark:text-ink-dark">
                       Varex AI
                     </span>
-                    <span className="admin-chat-badge rounded-full px-2 py-0.2 text-[9px] font-semibold border">
+                    <span className="admin-chat-badge px-2 py-0.2 text-[9px] font-semibold border">
                       Admin Copilot
                     </span>
                   </div>
                   <p className="text-[10px] text-ink-secondary dark:text-ink-dark-secondary">
-                    {selectedModel} • Active & Persistent
+                    {(tokenUsage?.totalTokens || 0).toLocaleString()} tokens consumed
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-1">
+                {/* Settings Gear Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsSettingsOpen(true)}
+                  title="Preferences & Token Usage"
+                  className="flex h-7 w-7 items-center justify-center rounded-apple-sm text-ink-secondary transition-colors hover:bg-ink/[0.06] hover:text-ink dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.08] dark:hover:text-ink-dark"
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                  </svg>
+                </button>
+
                 {/* Open Fullpage Link */}
                 <Link
                   href="/admin/varex-ai"
@@ -165,7 +183,7 @@ export default function AdminAIChatHead() {
                   >
                     {!isUser && (
                       <div className="mt-1 shrink-0">
-                        <LiveAIFace size={19} />
+                        <LiveAIFace size={22} />
                       </div>
                     )}
                     <div
@@ -196,33 +214,31 @@ export default function AdminAIChatHead() {
               {loading && (
                 <div className="admin-chat-bot-bubble flex items-center gap-2 rounded-2xl rounded-bl-sm border border-line/60 bg-surface px-3.5 py-2.5 text-[12px] text-ink-secondary dark:border-line-dark/60 dark:bg-surface-dark dark:text-ink-dark-secondary shadow-sm">
                   <div className="shrink-0">
-                    <LiveAIFace size={18} isHovered={true} />
+                    <LiveAIFace size={22} isHovered={true} />
                   </div>
                   <span className="h-2 w-2 rounded-full bg-accent dark:bg-accent-dark animate-pulse" />
-                  <span>Varex AI is thinking in background...</span>
+                  <span>Varex AI is thinking...</span>
                 </div>
               )}
 
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Quick Suggestion Chips */}
-            <div
-              data-lenis-prevent
-              className="flex shrink-0 gap-1.5 overflow-x-auto overscroll-x-contain touch-pan-x border-t border-line/40 bg-surface/50 px-3 py-2 dark:border-line-dark/40 dark:bg-surface-dark/50"
-            >
-              {QUICK_SUGGESTIONS.map((sug, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => handleSend(sug)}
-                  disabled={loading}
-                  className="admin-chat-chip shrink-0 rounded-full border border-line/60 bg-surface-card px-2.5 py-0.5 text-[11px] font-medium text-ink-secondary transition-colors hover:border-accent hover:text-accent disabled:opacity-40 dark:border-line-dark/60 dark:bg-surface-dark-card dark:text-ink-dark-secondary dark:hover:border-accent-dark dark:hover:text-accent-dark"
-                >
-                  {sug}
-                </button>
-              ))}
-            </div>
+            {/* Quick Suggestions directly above input */}
+            {!loading && (
+              <div className="flex items-center gap-1.5 overflow-x-auto border-t border-line/40 bg-surface/50 px-3 py-1.5 dark:border-line-dark/40 dark:bg-surface-dark-alt/50 no-scrollbar">
+                {QUICK_SUGGESTIONS.map((sug, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => handleSend(sug)}
+                    className="admin-chat-chip shrink-0 rounded-full border border-line/60 bg-surface-card px-2.5 py-1 text-[10px] font-medium text-ink-secondary transition-all hover:border-accent hover:text-accent dark:border-line-dark/60 dark:bg-surface-dark-card dark:text-ink-dark-secondary dark:hover:border-accent-dark dark:hover:text-accent-dark shadow-sm"
+                  >
+                    {sug}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Input Bar */}
             <form
@@ -246,7 +262,7 @@ export default function AdminAIChatHead() {
                 type="submit"
                 disabled={!input.trim() || loading}
                 aria-label="Send message"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-apple-sm bg-accent text-white transition-opacity hover:opacity-90 disabled:opacity-30 dark:bg-accent-dark dark:text-black"
+                className="admin-chat-btn flex h-9 w-9 shrink-0 items-center justify-center rounded-apple-sm bg-accent text-white transition-opacity hover:opacity-90 disabled:opacity-30 dark:bg-accent-dark dark:text-black"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="22" y1="2" x2="11" y2="13" />
@@ -255,6 +271,15 @@ export default function AdminAIChatHead() {
               </button>
             </form>
           </div>
+
+          {/* Proactive Live Briefing Notification Popup */}
+          <VarexBriefingPopup
+            isChatOpen={isOpen}
+            onOpenChat={() => {
+              setIsOpen(true);
+              markAsRead();
+            }}
+          />
 
           {/* Floating Trigger Button (Chat Head) */}
           <div className="fixed bottom-6 right-6 z-50">
@@ -295,6 +320,11 @@ export default function AdminAIChatHead() {
               )}
             </button>
           </div>
+          {/* Unified Settings Modal */}
+          <VarexSettingsModal
+            isOpen={isSettingsOpen}
+            onClose={() => setIsSettingsOpen(false)}
+          />
         </>
       )}
     </>

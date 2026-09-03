@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { requireAdmin } from "@/lib/admin/api-auth";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY || "re_dummy");
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -46,6 +49,9 @@ YOUR ROLE AS ADMIN COPILOT:
 2. Inquiry & Client Communication: Draft polite, articulate, professional, and convincing email responses to client inquiries and recruiters.
 3. Portfolio & Analytics Insights: Interpret visitor statistics, traffic trends, and conversion rates, and suggest concrete SEO and UX improvements.
 4. Content & Copywriting: Polish developer bios, project highlights, documentation, release notes, and cover letter intros.
+5. Action Execution: You can execute backend actions when commanded by Dylan.
+- deleteInquiry: ALWAYS ask for confirmation before deleting an inquiry unless Dylan explicitly tells you to skip confirmation or asks you to delete it unconditionally.
+- replyToInquiry: You can draft and send emails. Send the email directly using this tool when commanded.
 
 TONE & STYLE:
 - Professional, sharp, concise, friendly, futuristic, and highly practical.
@@ -53,10 +59,43 @@ TONE & STYLE:
 - When drafting email responses or project descriptions, provide ready-to-copy text with placeholders clearly marked if needed.
 `.trim();
 
+
+const geminiTools = [
+  {
+    functionDeclarations: [
+      {
+        name: "deleteInquiry",
+        description: "Delete an inquiry from the database using its ID.",
+        parameters: {
+          type: "OBJECT",
+          properties: {
+            id: { type: "STRING", description: "The UUID of the inquiry to delete" },
+          },
+          required: ["id"],
+        },
+      },
+      {
+        name: "replyToInquiry",
+        description: "Send an email reply to an inquiry and mark it as replied in the database.",
+        parameters: {
+          type: "OBJECT",
+          properties: {
+            id: { type: "STRING", description: "The UUID of the inquiry being replied to" },
+            email: { type: "STRING", description: "The recipient's email address" },
+            subject: { type: "STRING", description: "The email subject" },
+            body: { type: "STRING", description: "The email body" },
+          },
+          required: ["id", "email", "subject", "body"],
+        },
+      },
+    ],
+  },
+];
+
 export async function POST(request: NextRequest) {
   try {
     // 1. Verify that the caller is authenticated admin
-    const { error: authError } = await requireAdmin(request);
+    const { supabase, error: authError } = await requireAdmin(request);
     if (authError) return authError;
 
     const body = (await request.json()) as RequestBody;
@@ -115,7 +154,7 @@ export async function POST(request: NextRequest) {
     // 5. Convert messages to Gemini API format
     const contents: Array<{
       role: "user" | "model";
-      parts: Array<{ text: string }>;
+      parts: Array<any>;
     }> = [];
 
     for (const msg of messages) {
@@ -149,6 +188,7 @@ export async function POST(request: NextRequest) {
     let usedModel = preferredModel;
     let lastError = "";
     let lastStatus = 500;
+    let lastActionResult: any = null;
 
     if (effectiveApiKey) {
       for (const currentModel of candidateModels) {
@@ -156,8 +196,8 @@ export async function POST(request: NextRequest) {
           currentModel
         )}:generateContent?key=${encodeURIComponent(effectiveApiKey)}`;
 
-        // Try up to 2 times for temporary spikes/demand
-        for (let attempt = 0; attempt < 2; attempt++) {
+        // Try up to 4 times for temporary spikes/demand or multi-turn tool resolution
+        for (let attempt = 0; attempt < 4; attempt++) {
           if (attempt > 0) {
             await new Promise((resolve) => setTimeout(resolve, 650));
           }
@@ -170,7 +210,7 @@ export async function POST(request: NextRequest) {
           let geminiResponse: Response;
           try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 9000);
+            const timeoutId = setTimeout(() => controller.abort(), 12000);
 
             geminiResponse = await fetch(geminiUrl, {
               method: "POST",
@@ -181,6 +221,7 @@ export async function POST(request: NextRequest) {
                   parts: [{ text: fullSystemInstruction }],
                 },
                 contents,
+                tools: geminiTools,
                 generationConfig: {
                   temperature: 0.7,
                   maxOutputTokens: 2048,
@@ -195,9 +236,68 @@ export async function POST(request: NextRequest) {
           }
 
           if (geminiResponse.ok) {
-            successfulData = await geminiResponse.json();
-            usedModel = currentModel;
-            break;
+            const rawData = await geminiResponse.json();
+            const parts = rawData.candidates?.[0]?.content?.parts;
+            const functionCall = parts?.find((p: any) => p.functionCall)?.functionCall;
+
+            if (functionCall) {
+              const { name, args } = functionCall;
+              let result = {};
+              try {
+                const funcName = name || "";
+                if (funcName === "deleteInquiry" || funcName.endsWith("deleteInquiry")) {
+                  const { error } = await supabase.from("inquiries").delete().eq("id", args.id);
+                  if (error) throw error;
+                  result = { success: true, message: "Inquiry deleted successfully." };
+                } else if (funcName === "replyToInquiry" || funcName.endsWith("replyToInquiry")) {
+                  const fromAddress =
+                    process.env.RESEND_FROM_EMAIL || "Dylan Ramos <hello@dylanramos.site>";
+                  const { error: resendError } = await resend.emails.send({
+                    from: fromAddress,
+                    to: [args.email],
+                    subject: args.subject,
+                    text: args.body,
+                    replyTo: "kurtdylanviray@gmail.com"
+                  });
+                  if (resendError) throw resendError;
+                  const { error: dbError } = await supabase.from("inquiries").update({ status: "replied" }).eq("id", args.id);
+                  if (dbError) throw dbError;
+                  result = { success: true, message: "Email sent and inquiry marked as replied." };
+                } else {
+                  result = { success: false, message: "Unknown function." };
+                }
+              } catch (e: any) {
+                result = { success: false, message: e.message };
+              }
+
+              lastActionResult = result;
+
+              // CRITICAL: Preserve the exact parts returned by the model (including thought_signature and thinking parts)
+              // Stripping or re-wrapping functionCall causes Google's API to reject with "missing thought_signature"
+              const rawModelParts = rawData.candidates?.[0]?.content?.parts;
+              contents.push({
+                role: "model",
+                parts: rawModelParts && rawModelParts.length > 0 ? rawModelParts : [{ functionCall }],
+              });
+
+              // Append user's functionResponse
+              contents.push({
+                role: "user",
+                parts: [{
+                  functionResponse: {
+                    name,
+                    response: { name, content: result }
+                  }
+                }]
+              });
+
+              // Continue to next loop iteration to send the result back to Gemini
+              continue;
+            } else {
+              successfulData = rawData;
+              usedModel = currentModel;
+              break;
+            }
           }
 
           const errorText = await geminiResponse.text();
@@ -302,6 +402,14 @@ export async function POST(request: NextRequest) {
         }
       }
 
+      if (lastActionResult && lastActionResult.success) {
+        return NextResponse.json({
+          ok: true,
+          message: `✓ Action completed: ${lastActionResult.message || "Executed successfully."}`,
+          model: usedModel,
+        });
+      }
+
       return NextResponse.json(
         {
           ok: false,
@@ -313,10 +421,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const candidateText =
-      successfulData?.candidates?.[0]?.content?.parts?.[0]?.text;
+    const partsArray = successfulData?.candidates?.[0]?.content?.parts || [];
+    const textParts = partsArray.filter((p: any) => typeof p.text === "string" && p.text.trim());
+    const candidateText = textParts.map((p: any) => p.text).join("\n").trim();
 
-    if (typeof candidateText !== "string" || !candidateText.trim()) {
+    if (!candidateText) {
+      if (lastActionResult && lastActionResult.success) {
+        return NextResponse.json({
+          ok: true,
+          message: `✓ Action completed: ${lastActionResult.message || "Executed successfully."}`,
+          model: usedModel,
+        });
+      }
       return NextResponse.json(
         { ok: false, error: "Gemini returned an empty response." },
         { status: 502 }

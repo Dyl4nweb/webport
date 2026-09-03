@@ -11,6 +11,12 @@ export interface ChatMessage {
   modelUsed?: string;
 }
 
+export interface TokenUsage {
+  promptTokens: number;
+  candidatesTokens: number;
+  totalTokens: number;
+}
+
 export interface VarexAIContextType {
   messages: ChatMessage[];
   loading: boolean;
@@ -25,6 +31,8 @@ export interface VarexAIContextType {
   setIncludeLiveContext: (val: boolean) => void;
   sendMessage: (prompt: string) => Promise<void>;
   clearMessages: () => void;
+  tokenUsage: TokenUsage;
+  resetTokenUsage: () => void;
   toast: { message: string; type?: "success" | "error" | "info" } | null;
   setToast: (toast: { message: string; type?: "success" | "error" | "info" } | null) => void;
   markAsRead: () => void;
@@ -33,6 +41,7 @@ export interface VarexAIContextType {
 const LOCAL_STORAGE_KEY = "varex_admin_gemini_key";
 const LOCAL_STORAGE_MODEL = "varex_admin_gemini_model";
 const LOCAL_STORAGE_HISTORY = "varex_admin_chat_history";
+const LOCAL_STORAGE_TOKEN_USAGE = "varex_admin_token_usage";
 
 const VarexAIContext = createContext<VarexAIContextType | null>(null);
 
@@ -40,7 +49,7 @@ const DEFAULT_WELCOME: ChatMessage = {
   id: "welcome-init",
   role: "assistant",
   content:
-    "👋 **Greetings Dylan!** I am **Varex AI**, your portfolio's intelligent admin copilot.\n\nI can assist you with:\n- ✉️ **Drafting professional email responses** to client inquiries\n- 📊 **Reviewing visitor traffic & conversion statistics**\n- 🚀 **Writing case studies & project descriptions**\n- ⚡ **Reviewing Next.js, Supabase & TypeScript code**\n- 📝 **Brainstorming new portfolio features**\n\nHow can I help you today?",
+    "**Greetings Dylan.** I am **Varex AI**, your portfolio's intelligent admin copilot.\n\nI can assist you with:\n- **Drafting professional email responses** to client inquiries\n- **Reviewing visitor traffic & conversion statistics**\n- **Writing case studies & technical project highlights**\n- **Reviewing Next.js, Supabase & TypeScript code**\n- **Executing admin commands** (replying or managing inquiries)\n\nHow can I assist you today?",
   timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
   modelUsed: "gemini-3.5-flash-lite",
 };
@@ -49,7 +58,7 @@ const DEFAULT_WELCOME: ChatMessage = {
  * Play a clean futuristic notification chime using Web Audio API.
  * Does not require external audio files and works reliably in all browsers.
  */
-function playCyberChime() {
+export function playCyberChime() {
   try {
     const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
     if (!AudioContextClass) return;
@@ -104,6 +113,11 @@ export function VarexAIProvider({ children }: { children: React.ReactNode }) {
   const [customKey, setCustomKey] = useState("");
   const [selectedModel, setSelectedModel] = useState("gemini-3.5-flash-lite");
   const [includeLiveContext, setIncludeLiveContext] = useState(true);
+  const [tokenUsage, setTokenUsage] = useState<TokenUsage>({
+    promptTokens: 0,
+    candidatesTokens: 0,
+    totalTokens: 0,
+  });
   const [toast, setToast] = useState<{ message: string; type?: "success" | "error" | "info" } | null>(null);
 
   const isOpenRef = useRef(isOpen);
@@ -138,6 +152,16 @@ export function VarexAIProvider({ children }: { children: React.ReactNode }) {
         }
       } catch {}
     }
+
+    const savedTokens = localStorage.getItem(LOCAL_STORAGE_TOKEN_USAGE);
+    if (savedTokens) {
+      try {
+        const parsed = JSON.parse(savedTokens);
+        if (parsed && typeof parsed.totalTokens === "number") {
+          setTokenUsage(parsed);
+        }
+      } catch {}
+    }
   }, []);
 
   // Save history whenever it updates
@@ -159,11 +183,18 @@ export function VarexAIProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const resetTokenUsage = () => {
+    const empty: TokenUsage = { promptTokens: 0, candidatesTokens: 0, totalTokens: 0 };
+    setTokenUsage(empty);
+    localStorage.removeItem(LOCAL_STORAGE_TOKEN_USAGE);
+  };
+
   const clearMessages = () => {
     localStorage.removeItem(LOCAL_STORAGE_HISTORY);
+    resetTokenUsage();
     setMessages([DEFAULT_WELCOME]);
     setUnreadCount(0);
-    setToast({ message: "Chat conversation cleared.", type: "info" });
+    setToast({ message: "Chat conversation & token counters cleared.", type: "info" });
   };
 
   const markAsRead = useCallback(() => {
@@ -185,7 +216,7 @@ export function VarexAIProvider({ children }: { children: React.ReactNode }) {
         await Promise.all([
           supabase
             .from("inquiries")
-            .select("name, email, message, status, created_at")
+            .select("id, name, email, message, status, created_at")
             .order("created_at", { ascending: false })
             .limit(5),
           supabase.from("visitors").select("count").eq("id", 1).single(),
@@ -203,7 +234,7 @@ export function VarexAIProvider({ children }: { children: React.ReactNode }) {
       const inquiriesSummary = (inquiriesRes.data || [])
         .map(
           (inq, idx) =>
-            `${idx + 1}. From: "${inq.name}" <${inq.email}> (${inq.status}, ${new Date(
+            `${idx + 1}. From: "${inq.name}" <${inq.email}> (ID: ${inq.id}, ${inq.status}, ${new Date(
               inq.created_at
             ).toLocaleDateString()}): "${inq.message}"`
         )
@@ -299,6 +330,20 @@ ${projectsSummary || "None listed."}
 
       setMessages([...nextMessages, assistantMessage]);
 
+      if (data.usageMetadata) {
+        setTokenUsage((prev) => {
+          const next: TokenUsage = {
+            promptTokens: (prev.promptTokens || 0) + (data.usageMetadata.promptTokenCount || 0),
+            candidatesTokens: (prev.candidatesTokens || 0) + (data.usageMetadata.candidatesTokenCount || 0),
+            totalTokens: (prev.totalTokens || 0) + (data.usageMetadata.totalTokenCount || 0),
+          };
+          try {
+            localStorage.setItem(LOCAL_STORAGE_TOKEN_USAGE, JSON.stringify(next));
+          } catch {}
+          return next;
+        });
+      }
+
       // Play audio notification chime
       playCyberChime();
 
@@ -320,7 +365,7 @@ ${projectsSummary || "None listed."}
       const errorMessage: ChatMessage = {
         id: "err-" + Date.now(),
         role: "assistant",
-        content: `⚠️ **Error:** ${errorText}\n\n*Check your API key in [/admin/varex-ai](/admin/varex-ai).*`,
+        content: `**Error:** ${errorText}\n\n*Check your API key in [/admin/varex-ai](/admin/varex-ai).*`,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
         modelUsed: selectedModel,
       };
@@ -350,6 +395,8 @@ ${projectsSummary || "None listed."}
         setIncludeLiveContext,
         sendMessage,
         clearMessages,
+        tokenUsage,
+        resetTokenUsage,
         toast,
         setToast,
         markAsRead,

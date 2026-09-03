@@ -124,7 +124,7 @@ export const LiveAIFace = memo(function LiveAIFace({
       <span
         aria-hidden="true"
         className={cn(
-          "absolute -inset-1 rounded-full pointer-events-none transition-all duration-500",
+          "live-ai-face-aura absolute -inset-1 pointer-events-none transition-all duration-500",
           "bg-gradient-to-tr from-violet-500/40 via-fuchsia-500/30 to-cyan-400/40 blur-[5px]",
           isHovered || isActive ? "opacity-100 scale-125 animate-pulse" : "opacity-60 scale-100"
         )}
@@ -133,7 +133,7 @@ export const LiveAIFace = memo(function LiveAIFace({
       {/* Cyber AI Bot Orb / Head */}
       <div
         className={cn(
-          "relative flex items-center justify-center rounded-full overflow-hidden transition-all duration-300",
+          "live-ai-face-orb relative flex items-center justify-center overflow-hidden transition-all duration-300",
           "bg-gradient-to-b from-[#2a2b36] to-[#12131a] dark:from-[#2c2d3d] dark:to-[#0d0e14]",
           "border border-white/20 dark:border-white/25",
           "shadow-[inset_0_1px_2px_rgba(255,255,255,0.3),0_2px_8px_rgba(0,0,0,0.3)]"
@@ -193,7 +193,7 @@ export const LiveAIFace = memo(function LiveAIFace({
               {/* Left Eye */}
               <span
                 className={cn(
-                  "rounded-full bg-gradient-to-b from-cyan-300 to-cyan-400 dark:from-cyan-200 dark:to-cyan-400",
+                  "live-ai-face-eye bg-gradient-to-b from-cyan-300 to-cyan-400 dark:from-cyan-200 dark:to-cyan-400",
                   "shadow-[0_0_8px_rgba(34,211,238,0.9),0_0_2px_#fff]",
                   "transition-all duration-100 ease-out"
                 )}
@@ -206,7 +206,7 @@ export const LiveAIFace = memo(function LiveAIFace({
               {/* Right Eye */}
               <span
                 className={cn(
-                  "rounded-full bg-gradient-to-b from-cyan-300 to-cyan-400 dark:from-cyan-200 dark:to-cyan-400",
+                  "live-ai-face-eye bg-gradient-to-b from-cyan-300 to-cyan-400 dark:from-cyan-200 dark:to-cyan-400",
                   "shadow-[0_0_8px_rgba(34,211,238,0.9),0_0_2px_#fff]",
                   "transition-all duration-100 ease-out"
                 )}

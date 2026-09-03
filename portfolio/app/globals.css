@@ -1440,13 +1440,19 @@ html[data-admin] .overflow-y-auto::-webkit-scrollbar-thumb:hover {
 
 /* ─── Admin Chatbot Per-Theme Design Engine ─── */
 
-/* Universal Floating Bot Trigger (Always Circular Orb Head) */
-.admin-chat-trigger,
-.admin-chat-trigger-ring {
+/* 1. Theme: Modern Minimalist (Apple Monochrome) - The ONLY theme with full circles & pills */
+html[data-theme="modern"] .admin-chat-trigger,
+html[data-theme="modern"] .admin-chat-trigger-ring,
+html[data-theme="modern"] .live-ai-face-orb,
+html[data-theme="modern"] .live-ai-face-aura,
+html[data-theme="modern"] .live-ai-face-eye,
+html:not([data-theme]) .admin-chat-trigger,
+html:not([data-theme]) .admin-chat-trigger-ring,
+html:not([data-theme]) .live-ai-face-orb,
+html:not([data-theme]) .live-ai-face-aura,
+html:not([data-theme]) .live-ai-face-eye {
   border-radius: 9999px !important;
 }
-
-/* 1. Theme: Modern Minimalist (Apple Monochrome) */
 html[data-theme="modern"] .admin-chat-panel,
 html[data-theme="modern"] #varex-ai-workspace {
   border-radius: 24px !important;
@@ -1468,7 +1474,9 @@ html[data-theme="modern"] .admin-chat-bot-bubble {
 html[data-theme="modern"] .admin-chat-input {
   border-radius: 14px !important;
 }
-html[data-theme="modern"] .admin-chat-chip {
+html[data-theme="modern"] .admin-chat-chip,
+html[data-theme="modern"] .admin-chat-btn,
+html[data-theme="modern"] .admin-chat-badge {
   border-radius: 9999px !important;
 }
 html[data-theme="modern"] .admin-chat-trigger {
@@ -1481,7 +1489,6 @@ html[data-theme="modern"] .admin-chat-trigger-ring {
   background: radial-gradient(circle, rgba(140, 140, 145, 0.35) 0%, transparent 70%);
 }
 html[data-theme="modern"] .admin-chat-badge {
-  border-radius: 9999px !important;
   background-color: rgba(29, 29, 31, 0.08);
   color: #1d1d1f;
   border-color: rgba(29, 29, 31, 0.18);
@@ -1492,55 +1499,75 @@ html[data-theme="modern"].dark .admin-chat-badge {
   border-color: rgba(245, 245, 247, 0.22);
 }
 
-/* 2. Theme: Coffee Shop Aesthetic (Warm Linen & Roasted Espresso) */
+/* 2. Theme: Coffee Shop Aesthetic (Warm Linen & Roasted Espresso) - Squircles & Soft Corners, NOT circles */
+html[data-theme="cafe"] .admin-chat-trigger {
+  border-radius: 14px !important;
+  border-color: rgba(180, 101, 42, 0.45) !important;
+  background: linear-gradient(135deg, var(--color-surface-card), rgba(180, 101, 42, 0.12)) !important;
+}
+html[data-theme="cafe"] .admin-chat-trigger-ring {
+  border-radius: 16px !important;
+  background: radial-gradient(circle, rgba(180, 101, 42, 0.45) 0%, transparent 70%) !important;
+}
+html[data-theme="cafe"] .live-ai-face-orb,
+html[data-theme="cafe"] .live-ai-face-aura {
+  border-radius: 20% !important; /* Soft squircle app tile, NEVER a circle */
+}
+html[data-theme="cafe"] .live-ai-face-eye {
+  border-radius: 2px !important;
+}
 html[data-theme="cafe"] .admin-chat-panel,
 html[data-theme="cafe"] #varex-ai-workspace {
-  border-radius: 16px !important;
+  border-radius: 14px !important;
   border-color: rgba(180, 101, 42, 0.3) !important;
   box-shadow: 0 20px 45px -10px rgba(78, 44, 20, 0.2), 0 0 1px 1px rgba(180, 101, 42, 0.15) !important;
 }
 html[data-theme="cafe"].dark .admin-chat-panel,
 html[data-theme="cafe"].dark #varex-ai-workspace {
-  border-radius: 16px !important;
+  border-radius: 14px !important;
   border-color: rgba(180, 101, 42, 0.35) !important;
   box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(180, 101, 42, 0.2) !important;
 }
 html[data-theme="cafe"] .admin-chat-user-bubble {
-  border-radius: 14px 14px 2px 14px !important;
+  border-radius: 12px 12px 2px 12px !important;
   background-color: #b4652a !important;
   color: #ffffff !important;
 }
 html[data-theme="cafe"] .admin-chat-bot-bubble {
-  border-radius: 14px 14px 14px 2px !important;
+  border-radius: 12px 12px 12px 2px !important;
   border-color: rgba(180, 101, 42, 0.25) !important;
 }
 html[data-theme="cafe"] .admin-chat-input {
-  border-radius: 10px !important;
-  border-color: rgba(180, 101, 42, 0.3) !important;
-}
-html[data-theme="cafe"] .admin-chat-chip {
   border-radius: 8px !important;
   border-color: rgba(180, 101, 42, 0.3) !important;
 }
-html[data-theme="cafe"] .admin-chat-trigger {
-  border-color: rgba(180, 101, 42, 0.45) !important;
-  background: linear-gradient(135deg, var(--color-surface-card), rgba(180, 101, 42, 0.12)) !important;
+html[data-theme="cafe"] .admin-chat-chip,
+html[data-theme="cafe"] .admin-chat-btn {
+  border-radius: 6px !important;
+  border-color: rgba(180, 101, 42, 0.3) !important;
+}
+html[data-theme="cafe"] .admin-quick-card {
+  border-radius: 10px !important;
 }
 html[data-theme="cafe"] .admin-chat-trigger:hover {
   border-color: rgba(180, 101, 42, 0.8) !important;
   box-shadow: 0 8px 25px rgba(180, 101, 42, 0.25) !important;
 }
-html[data-theme="cafe"] .admin-chat-trigger-ring {
-  background: radial-gradient(circle, rgba(180, 101, 42, 0.45) 0%, transparent 70%) !important;
-}
 html[data-theme="cafe"] .admin-chat-badge {
-  border-radius: 6px !important;
+  border-radius: 4px !important; /* Crisp squircle label, NEVER a pill */
   background-color: rgba(180, 101, 42, 0.14) !important;
   color: #b4652a !important;
   border-color: rgba(180, 101, 42, 0.3) !important;
 }
 
-/* 3. Theme: Cyber Terminal (Emerald Matrix HUD & Binary CRT) */
+/* 3. Theme: Cyber Terminal (Emerald Matrix HUD & Binary CRT) - Strict 0px Squares */
+html[data-theme="cyber"] .admin-chat-trigger,
+html[data-theme="cyber"] .admin-chat-trigger-ring,
+html[data-theme="cyber"] .live-ai-face-orb,
+html[data-theme="cyber"] .live-ai-face-aura,
+html[data-theme="cyber"] .live-ai-face-eye {
+  border-radius: 0px !important;
+}
 html[data-theme="cyber"] .admin-chat-panel,
 html[data-theme="cyber"] #varex-ai-workspace {
   border-radius: 0px !important;
@@ -1570,15 +1597,16 @@ html[data-theme="cyber"] .admin-chat-bot-bubble {
   border-left-color: #00ff66 !important;
   font-family: var(--font-mono, monospace) !important;
 }
-html[data-theme="cyber"] .admin-chat-input {
-  border-radius: 0px !important;
-  border-color: rgba(0, 255, 102, 0.5) !important;
-  font-family: var(--font-mono, monospace) !important;
-}
-html[data-theme="cyber"] .admin-chat-chip {
+html[data-theme="cyber"] .admin-chat-input,
+html[data-theme="cyber"] .admin-chat-chip,
+html[data-theme="cyber"] .admin-chat-btn,
+html[data-theme="cyber"] .admin-chat-badge,
+html[data-theme="cyber"] .admin-quick-card {
   border-radius: 0px !important;
   border-color: rgba(0, 255, 102, 0.4) !important;
   font-family: var(--font-mono, monospace) !important;
+}
+html[data-theme="cyber"] .admin-chat-chip {
   text-transform: uppercase !important;
 }
 html[data-theme="cyber"] .admin-chat-trigger {
@@ -1593,9 +1621,6 @@ html[data-theme="cyber"] .admin-chat-trigger-ring {
   background: radial-gradient(circle, rgba(0, 255, 102, 0.6) 0%, transparent 70%) !important;
 }
 html[data-theme="cyber"] .admin-chat-badge {
-  border-radius: 0px !important;
   background-color: rgba(0, 255, 102, 0.14) !important;
   color: #00ff66 !important;
-  border-color: rgba(0, 255, 102, 0.4) !important;
-  font-family: var(--font-mono, monospace) !important;
 }

@@ -4,68 +4,65 @@ import { useEffect, useRef, useState } from "react";
 
 import AdminToast from "@/components/admin/AdminToast";
 import { LiveAIFace } from "@/components/ui/LiveAIFace";
+import VarexSettingsModal from "@/components/admin/VarexSettingsModal";
 import { useConfirm } from "@/lib/admin/confirm-context";
 import { useVarexAI } from "@/lib/admin/varex-ai-context";
 
-interface GeminiModelOption {
-  id: string;
-  name: string;
-  badge: string;
-  description: string;
-}
 
-const DEFAULT_MODELS: GeminiModelOption[] = [
-  {
-    id: "gemini-3.5-flash-lite",
-    name: "Gemini 3.5 Flash Lite",
-    badge: "Fast & Stable",
-    description: "Instant response speed with high quota availability",
-  },
-  {
-    id: "gemini-3.5-flash",
-    name: "Gemini 3.5 Flash",
-    badge: "Balanced",
-    description: "Great balance of reasoning, creativity, and speed",
-  },
-  {
-    id: "gemini-flash-lite-latest",
-    name: "Gemini Flash Lite",
-    badge: "Lightweight",
-    description: "Fast lightweight model for instant assistance",
-  },
-  {
-    id: "gemini-3.6-flash",
-    name: "Gemini 3.6 Flash",
-    badge: "Next-Gen",
-    description: "Latest generation model with deep reasoning",
-  },
-];
 
 const QUICK_PROMPTS = [
   {
     title: "Draft Inquiry Reply",
     prompt:
       "Please draft a warm, polite, and professional email response to my latest client inquiry.",
-    icon: "✉️",
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent dark:text-accent-dark">
+        <rect width="20" height="16" x="2" y="4" rx="2" />
+        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+      </svg>
+    ),
   },
   {
     title: "Portfolio Traffic Audit",
     prompt:
       "Analyze my current portfolio metrics and suggest 3 actionable ways to increase client conversions.",
-    icon: "📊",
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent dark:text-accent-dark">
+        <path d="M3 3v18h18" />
+        <path d="m19 9-5 5-4-4-3 3" />
+      </svg>
+    ),
   },
   {
     title: "Project Case Study",
     prompt:
       "Help me write an impressive project overview and technical highlights section for a full-stack web application.",
-    icon: "🚀",
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent dark:text-accent-dark">
+        <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+        <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+        <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+        <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+      </svg>
+    ),
   },
   {
     title: "Next.js & Supabase Tips",
     prompt:
       "What are modern performance optimization and security best practices for my Next.js & Supabase stack?",
-    icon: "⚡",
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent dark:text-accent-dark">
+        <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
+      </svg>
+    ),
   },
+];
+
+const QUICK_SUGGESTIONS = [
+  "Draft reply to newest inquiry",
+  "Summarize visitor traffic",
+  "Write new project highlights",
+  "Check database health",
 ];
 
 export default function AdminVarexAiPage() {
@@ -73,11 +70,8 @@ export default function AdminVarexAiPage() {
     messages,
     loading,
     customKey,
-    saveCustomKey,
     selectedModel,
-    setSelectedModel,
-    includeLiveContext,
-    setIncludeLiveContext,
+    tokenUsage,
     sendMessage,
     clearMessages,
     toast,
@@ -87,9 +81,7 @@ export default function AdminVarexAiPage() {
   const { confirm } = useConfirm();
 
   const [input, setInput] = useState("");
-  const [showKeyInput, setShowKeyInput] = useState(false);
-  const [keyVisible, setKeyVisible] = useState(false);
-  const [localKeyInput, setLocalKeyInput] = useState(customKey);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -99,19 +91,10 @@ export default function AdminVarexAiPage() {
     markAsRead();
   }, [markAsRead]);
 
-  useEffect(() => {
-    setLocalKeyInput(customKey);
-  }, [customKey]);
-
   // Scroll to bottom on new messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
-
-  const handleSaveKey = () => {
-    saveCustomKey(localKeyInput);
-    setShowKeyInput(false);
-  };
 
   const handleClearChat = async () => {
     const ok = await confirm({
@@ -162,10 +145,6 @@ export default function AdminVarexAiPage() {
             <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-accent dark:text-accent-dark">
               Copilot
             </span>
-            <span className="admin-chat-badge inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold border">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent dark:bg-accent-dark animate-pulse" />
-              Gemini Powered
-            </span>
           </div>
 
           <h1 className="mt-1.5 text-[28px] font-semibold tracking-[-0.03em] text-ink dark:text-ink-dark">
@@ -179,21 +158,34 @@ export default function AdminVarexAiPage() {
 
         {/* Action Controls in Header */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* Status Pill */}
+          {/* Token Indicator Pill (Click opens Settings) */}
           <button
             type="button"
-            onClick={() => setShowKeyInput(!showKeyInput)}
-            className="admin-chat-badge inline-flex items-center gap-1.5 rounded-apple-sm border px-3 py-1.5 text-[12px] font-medium transition-colors"
+            onClick={() => setIsSettingsOpen(true)}
+            className="admin-chat-btn admin-chat-badge inline-flex items-center gap-1.5 rounded-apple-sm border px-3 py-1.5 text-[12px] font-medium transition-all hover:border-accent"
+            title="Click to view token usage & model settings"
           >
-            <span className="h-2 w-2 rounded-full bg-accent dark:bg-accent-dark animate-pulse" />
-            {customKey ? "Custom Key Active" : "Server Key (.env.local) Active"}
+            <span
+              className={`h-2 w-2 rounded-full ${
+                (tokenUsage?.totalTokens || 0) >= 30000
+                  ? "bg-red-500"
+                  : (tokenUsage?.totalTokens || 0) >= 24000
+                  ? "bg-amber-500"
+                  : "bg-accent dark:bg-accent-dark"
+              } animate-pulse`}
+            />
+            <span>
+              {(tokenUsage?.totalTokens || 0) > 0
+                ? `${(tokenUsage?.totalTokens || 0).toLocaleString()} tokens`
+                : "Active Context"}
+            </span>
           </button>
 
-          {/* Settings / API Key Button */}
+          {/* Unified Settings & Preferences Button */}
           <button
             type="button"
-            onClick={() => setShowKeyInput(!showKeyInput)}
-            className="inline-flex h-9 items-center gap-1.5 rounded-apple-sm border border-line/70 bg-surface-card px-3 text-[13px] font-medium text-ink transition-colors hover:bg-ink/[0.04] dark:border-line-dark/70 dark:bg-surface-dark-card dark:text-ink-dark dark:hover:bg-ink-dark/[0.06]"
+            onClick={() => setIsSettingsOpen(true)}
+            className="admin-chat-btn inline-flex h-9 items-center gap-1.5 rounded-apple-sm border border-line/70 bg-surface-card px-3 text-[13px] font-medium text-ink transition-colors hover:bg-ink/[0.04] dark:border-line-dark/70 dark:bg-surface-dark-card dark:text-ink-dark dark:hover:bg-ink-dark/[0.06]"
           >
             <svg
               width="15"
@@ -208,14 +200,14 @@ export default function AdminVarexAiPage() {
               <circle cx="12" cy="12" r="3" />
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
             </svg>
-            Key & Config
+            Settings
           </button>
 
           {/* Clear Chat Button */}
           <button
             type="button"
             onClick={handleClearChat}
-            className="inline-flex h-9 items-center gap-1.5 rounded-apple-sm border border-line/70 bg-surface-card px-3 text-[13px] font-medium text-ink-secondary transition-colors hover:text-red-500 dark:border-line-dark/70 dark:bg-surface-dark-card dark:text-ink-dark-secondary dark:hover:text-red-400"
+            className="admin-chat-btn inline-flex h-9 items-center gap-1.5 rounded-apple-sm border border-line/70 bg-surface-card px-3 text-[13px] font-medium text-ink-secondary transition-colors hover:text-red-500 dark:border-line-dark/70 dark:bg-surface-dark-card dark:text-ink-dark-secondary dark:hover:text-red-400"
             title="Clear Chat History"
           >
             <svg
@@ -236,129 +228,6 @@ export default function AdminVarexAiPage() {
         </div>
       </div>
 
-      {/* Settings / API Key Drawer */}
-      {showKeyInput && (
-        <div className="animate-fadeIn rounded-apple-lg border border-line/70 bg-surface-card p-5 shadow-sm dark:border-line-dark/70 dark:bg-surface-dark-card">
-          <div className="flex items-start justify-between">
-            <div>
-              <h3 className="text-[15px] font-semibold text-ink dark:text-ink-dark">
-                Google Gemini API Key Settings
-              </h3>
-              <p className="mt-1 text-[13px] text-ink-secondary dark:text-ink-dark-secondary">
-                Your key in <strong className="text-ink dark:text-ink-dark">.env.local</strong> is automatically active. You can also override it with another key below.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowKeyInput(false)}
-              className="text-ink-secondary hover:text-ink dark:text-ink-dark-secondary dark:hover:text-ink-dark"
-            >
-              ✕
-            </button>
-          </div>
-
-          <div className="mt-4 flex flex-col gap-3">
-            <div className="flex flex-col gap-1.5">
-              <label
-                htmlFor="gemini-key-input"
-                className="text-[12px] font-medium text-ink dark:text-ink-dark"
-              >
-                Gemini API Key
-              </label>
-              <div className="relative flex items-center">
-                <input
-                  id="gemini-key-input"
-                  type={keyVisible ? "text" : "password"}
-                  placeholder="Paste custom Gemini API key..."
-                  value={localKeyInput}
-                  onChange={(e) => setLocalKeyInput(e.target.value)}
-                  className="h-10 w-full rounded-apple-sm border border-line bg-surface px-3 pr-24 font-mono text-[13px] text-ink transition-colors focus:border-accent focus:outline-none dark:border-line-dark dark:bg-surface-dark dark:text-ink-dark dark:focus:border-accent-dark"
-                />
-                <button
-                  type="button"
-                  onClick={() => setKeyVisible(!keyVisible)}
-                  className="absolute right-3 text-[11px] font-medium text-ink-secondary hover:text-ink dark:text-ink-dark-secondary dark:hover:text-ink-dark"
-                >
-                  {keyVisible ? "Hide" : "Show"}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-              <a
-                href="https://aistudio.google.com/app/apikey"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-[12px] font-medium text-accent hover:underline dark:text-accent-dark"
-              >
-                <span>Get API key from Google AI Studio ↗</span>
-              </a>
-
-              <div className="flex items-center gap-2">
-                {customKey && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setLocalKeyInput("");
-                      saveCustomKey("");
-                    }}
-                    className="rounded-apple-sm px-3 py-1.5 text-[12px] font-medium text-red-600 hover:bg-red-500/10 dark:text-red-400"
-                  >
-                    Clear Override
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={handleSaveKey}
-                  className="rounded-apple-sm bg-accent px-4 py-1.5 text-[12px] font-medium text-white transition-opacity hover:opacity-90 dark:bg-accent-dark dark:text-black"
-                >
-                  Save Key
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Model Selector & Live Context Toggle Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-apple-lg border border-line/60 bg-surface-card p-3 dark:border-line-dark/60 dark:bg-surface-dark-card">
-        {/* Model Selector Chips */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="mr-1 text-[12px] font-medium text-ink-secondary dark:text-ink-dark-secondary">
-            Model:
-          </span>
-          {DEFAULT_MODELS.map((model) => {
-            const active = selectedModel === model.id;
-            return (
-              <button
-                key={model.id}
-                type="button"
-                onClick={() => setSelectedModel(model.id)}
-                className={`flex items-center gap-1.5 rounded-apple-sm px-2.5 py-1 text-[12px] font-medium transition-all ${
-                  active
-                    ? "bg-accent text-white font-medium shadow-sm dark:bg-accent-dark dark:text-black"
-                    : "text-ink-secondary hover:bg-ink/[0.04] hover:text-ink dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.06] dark:hover:text-ink-dark"
-                }`}
-              >
-                <span>{model.name}</span>
-                <span className="text-[10px] opacity-75">({model.badge})</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Live Context Toggle */}
-        <label className="inline-flex cursor-pointer items-center gap-2 text-[12px] font-medium text-ink-secondary dark:text-ink-dark-secondary">
-          <input
-            type="checkbox"
-            checked={includeLiveContext}
-            onChange={(e) => setIncludeLiveContext(e.target.checked)}
-            className="h-4 w-4 rounded accent-accent dark:accent-accent-dark"
-          />
-          <span>Include Live Inquiries & Stats</span>
-        </label>
-      </div>
-
       {/* Quick Starter Prompts */}
       <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
         {QUICK_PROMPTS.map((qp, idx) => (
@@ -367,10 +236,12 @@ export default function AdminVarexAiPage() {
             type="button"
             onClick={() => handleSend(qp.prompt)}
             disabled={loading}
-            className="flex flex-col items-start gap-1 rounded-apple-lg border border-line/60 bg-surface-card p-3 text-left transition-all hover:border-accent hover:bg-ink/[0.02] disabled:opacity-50 dark:border-line-dark/60 dark:bg-surface-dark-card dark:hover:border-accent-dark dark:hover:bg-ink-dark/[0.04]"
+            className="admin-quick-card flex flex-col items-start gap-1 rounded-apple-lg border border-line/60 bg-surface-card p-3 text-left transition-all hover:border-accent hover:bg-ink/[0.02] disabled:opacity-50 dark:border-line-dark/60 dark:bg-surface-dark-card dark:hover:border-accent-dark dark:hover:bg-ink-dark/[0.04]"
           >
-            <div className="flex items-center gap-1.5">
-              <span className="text-base">{qp.icon}</span>
+            <div className="flex items-center gap-2">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-accent/10 dark:bg-accent-dark/10">
+                {qp.icon}
+              </span>
               <span className="text-[13px] font-semibold text-ink dark:text-ink-dark">
                 {qp.title}
               </span>
@@ -403,15 +274,10 @@ export default function AdminVarexAiPage() {
               >
                 {/* Sender Identity & Time */}
                 <div className="mb-1.5 flex items-center gap-2 px-1 text-[11px] text-ink-tertiary dark:text-ink-dark-secondary">
-                  {!isUser && <LiveAIFace size={16} />}
+                  {!isUser && <LiveAIFace size={22} />}
                   <span className="font-semibold text-ink dark:text-ink-dark">
                     {isUser ? "Dylan (Admin)" : "Varex AI"}
                   </span>
-                  {msg.modelUsed && !isUser && (
-                    <span className="admin-chat-badge rounded px-1.5 py-0.2 text-[10px] font-medium border">
-                      {msg.modelUsed}
-                    </span>
-                  )}
                   <span>•</span>
                   <span>{msg.timestamp}</span>
                 </div>
@@ -470,10 +336,10 @@ export default function AdminVarexAiPage() {
           {loading && (
             <div className="flex items-start gap-3">
               <div className="admin-chat-bot-bubble flex items-center gap-2.5 rounded-2xl border border-line/60 bg-surface px-4 py-3 text-ink dark:border-line-dark/60 dark:bg-surface-dark dark:text-ink-dark shadow-sm">
-                <LiveAIFace size={20} isHovered={true} />
+                <LiveAIFace size={22} isHovered={true} />
                 <span className="h-2 w-2 rounded-full bg-accent dark:bg-accent-dark animate-pulse" />
                 <span className="text-[13px] font-medium text-ink-secondary dark:text-ink-dark-secondary">
-                  Varex AI is thinking in the background with {selectedModel}...
+                  Varex AI is thinking...
                 </span>
               </div>
             </div>
@@ -484,6 +350,25 @@ export default function AdminVarexAiPage() {
 
         {/* Input Bar Section */}
         <div className="border-t border-line/60 bg-surface p-3.5 dark:border-line-dark/60 dark:bg-surface-dark-alt rounded-b-apple-xl">
+          {/* Quick Suggestions directly above input */}
+          {!loading && (
+            <div className="mb-2.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+              <span className="text-[11px] font-medium text-ink-secondary/70 dark:text-ink-dark-secondary/70 shrink-0">
+                Suggestions:
+              </span>
+              {QUICK_SUGGESTIONS.map((sug, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => handleSend(sug)}
+                  className="admin-chat-chip shrink-0 rounded-full border border-line/60 dark:border-line-dark/60 bg-surface-card dark:bg-surface-dark-card px-2.5 py-1 text-[11px] font-medium text-ink-secondary hover:border-accent hover:text-accent dark:hover:border-accent-dark dark:hover:text-accent-dark transition-all shadow-sm"
+                >
+                  {sug}
+                </button>
+              ))}
+            </div>
+          )}
+
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -515,7 +400,7 @@ export default function AdminVarexAiPage() {
             <button
               type="submit"
               disabled={!input.trim() || loading}
-              className="admin-chat-input flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-accent-dark dark:text-black"
+              className="admin-chat-btn flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-accent-dark dark:text-black"
               aria-label="Send message"
             >
               <svg
@@ -534,12 +419,63 @@ export default function AdminVarexAiPage() {
             </button>
           </form>
 
-          <div className="mt-2 flex items-center justify-between px-1 text-[11px] text-ink-tertiary dark:text-ink-dark-secondary">
-            <span>Press <kbd className="rounded bg-ink/[0.06] px-1 py-0.5 font-mono dark:bg-ink-dark/[0.08]">Enter</kbd> to send, <kbd className="rounded bg-ink/[0.06] px-1 py-0.5 font-mono dark:bg-ink-dark/[0.08]">Shift + Enter</kbd> for new line</span>
-            <span>Persistent Copilot Workspace</span>
+          <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 px-1 text-[11px] text-ink-tertiary dark:text-ink-dark-secondary">
+            <div className="flex items-center gap-3">
+              <span>
+                Press{" "}
+                <kbd className="rounded bg-ink/[0.06] px-1 py-0.5 font-mono dark:bg-ink-dark/[0.08]">
+                  Enter
+                </kbd>{" "}
+                to send
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsSettingsOpen(true)}
+                className="flex items-center gap-1.5 font-medium text-ink-secondary hover:text-accent transition-colors dark:text-ink-dark-secondary dark:hover:text-accent-dark"
+              >
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg>
+                <span>Settings</span>
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsSettingsOpen(true)}
+              className="flex items-center gap-1.5 font-medium text-ink-secondary hover:text-ink transition-colors dark:text-ink-dark-secondary dark:hover:text-ink-dark"
+              title="Click to view token usage"
+            >
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${
+                  (tokenUsage?.totalTokens || 0) >= 30000
+                    ? "bg-red-500"
+                    : (tokenUsage?.totalTokens || 0) >= 24000
+                    ? "bg-amber-500"
+                    : "bg-accent dark:bg-accent-dark"
+                } animate-pulse`}
+              />
+              <span>{(tokenUsage?.totalTokens || 0).toLocaleString()} tokens</span>
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Unified Varex Settings Modal */}
+      <VarexSettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+      />
     </div>
   );
 }

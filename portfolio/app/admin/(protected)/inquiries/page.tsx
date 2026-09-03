@@ -6,7 +6,7 @@ import { useConfirm } from "@/lib/admin/confirm-context";
 import { getSupabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
-type InquiryStatus = "new" | "contacted" | "in_progress" | "completed";
+type InquiryStatus = "new" | "replied" | "contacted" | "in_progress" | "completed";
 
 interface Inquiry {
   id: string;
@@ -25,6 +25,10 @@ const STATUS_META: Record<
     label: "New",
     pill: "bg-blue-500/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400",
   },
+  replied: {
+    label: "Replied",
+    pill: "bg-teal-500/10 text-teal-600 dark:bg-teal-400/10 dark:text-teal-400",
+  },
   contacted: {
     label: "Contacted",
     pill: "bg-amber-500/10 text-amber-600 dark:bg-amber-400/10 dark:text-amber-400",
@@ -42,6 +46,7 @@ const STATUS_META: Record<
 const FILTERS: Array<{ value: InquiryStatus | "all"; label: string }> = [
   { value: "all", label: "All" },
   { value: "new", label: "New" },
+  { value: "replied", label: "Replied" },
   { value: "contacted", label: "Contacted" },
   { value: "in_progress", label: "In Progress" },
   { value: "completed", label: "Completed" },
@@ -239,7 +244,10 @@ export default function AdminInquiriesPage() {
         <ul className="flex flex-col gap-3">
           {filtered.map((inquiry) => {
             const expanded = expandedId === inquiry.id;
-            const meta = STATUS_META[inquiry.status];
+            const meta = STATUS_META[inquiry.status] || {
+              label: inquiry.status ? inquiry.status.charAt(0).toUpperCase() + inquiry.status.slice(1) : "New",
+              pill: "bg-blue-500/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400",
+            };
             const busy = busyId === inquiry.id;
 
             return (

@@ -86,7 +86,7 @@ export function AdminConfirmProvider({ children }: { children: React.ReactNode }
           />
 
           {/* Modal Dialog Card */}
-          <div className="relative z-10 w-full max-w-md overflow-hidden rounded-apple-xl border border-line/70 bg-surface-card p-6 shadow-2xl transition-all duration-200 animate-scaleIn dark:border-line-dark/70 dark:bg-surface-dark-card">
+          <div className="admin-chat-panel relative z-10 w-full max-w-md overflow-hidden rounded-apple-xl border border-line/70 bg-surface-card p-6 shadow-2xl transition-all duration-200 animate-scaleIn dark:border-line-dark/70 dark:bg-surface-dark-card">
             <div className="flex items-start gap-4">
               {/* Tone Icon Badge */}
               <div
@@ -167,7 +167,7 @@ export function AdminConfirmProvider({ children }: { children: React.ReactNode }
                 ref={cancelBtnRef}
                 type="button"
                 onClick={() => handleResolve(false)}
-                className="rounded-apple-sm border border-line/70 bg-surface px-4 py-2 text-[13px] font-medium text-ink transition-colors hover:bg-ink/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 dark:border-line-dark/70 dark:bg-surface-dark dark:text-ink-dark dark:hover:bg-ink-dark/[0.06]"
+                className="admin-chat-btn rounded-apple-sm border border-line/70 bg-surface px-4 py-2 text-[13px] font-medium text-ink transition-colors hover:bg-ink/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 dark:border-line-dark/70 dark:bg-surface-dark dark:text-ink-dark dark:hover:bg-ink-dark/[0.06]"
               >
                 {options.cancelLabel}
               </button>
@@ -175,11 +175,20 @@ export function AdminConfirmProvider({ children }: { children: React.ReactNode }
               <button
                 type="button"
                 onClick={() => handleResolve(true)}
-                className={`rounded-apple-sm px-4 py-2 text-[13px] font-medium text-white shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 ${
+                style={{
+                  backgroundColor:
+                    tone === "danger"
+                      ? "#dc2626"
+                      : tone === "warning"
+                      ? "#d97706"
+                      : undefined,
+                  color: "#ffffff",
+                }}
+                className={`admin-chat-btn rounded-apple-sm px-4 py-2 text-[13px] font-semibold text-white shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 ${
                   tone === "danger"
-                    ? "bg-red-600 hover:bg-red-500 focus-visible:ring-red-500/40"
+                    ? "bg-red-600 hover:bg-red-700 focus-visible:ring-red-500/40"
                     : tone === "warning"
-                    ? "bg-amber-600 hover:bg-amber-500 focus-visible:ring-amber-500/40"
+                    ? "bg-amber-600 hover:bg-amber-700 focus-visible:ring-amber-500/40"
                     : "bg-accent hover:opacity-90 dark:bg-accent-dark dark:text-black focus-visible:ring-accent/40"
                 }`}
               >
