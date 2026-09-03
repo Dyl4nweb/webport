@@ -285,13 +285,13 @@ export default function AdminProjectsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {rows.length === 0 && !loading && (
             <button
               type="button"
               onClick={importStatic}
               disabled={busy}
-              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-line px-4 py-2 text-[13px] font-medium text-ink transition-colors duration-150 hover:border-ink/15 hover:bg-ink/[0.04] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:pointer-events-none disabled:opacity-40 dark:border-line-dark dark:text-ink-dark dark:hover:border-ink-dark/25 dark:hover:bg-ink-dark/[0.06]"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-line px-3.5 py-1.5 sm:px-4 sm:py-2 text-[12.5px] sm:text-[13px] font-medium text-ink transition-colors duration-150 hover:border-ink/15 hover:bg-ink/[0.04] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:pointer-events-none disabled:opacity-40 dark:border-line-dark dark:text-ink-dark dark:hover:border-ink-dark/25 dark:hover:bg-ink-dark/[0.06]"
             >
               Import static projects
             </button>
@@ -301,7 +301,7 @@ export default function AdminProjectsPage() {
             type="button"
             onClick={openCreate}
             disabled={busy}
-            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-ink px-4 py-2 text-[13px] font-medium text-white shadow-sm transition-all duration-150 hover:bg-black hover:opacity-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 disabled:pointer-events-none disabled:opacity-40 dark:bg-white dark:text-black dark:font-semibold dark:hover:bg-white/90 dark:focus-visible:ring-white/50"
+            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-ink px-3.5 py-1.5 sm:px-4 sm:py-2 text-[12.5px] sm:text-[13px] font-medium text-white shadow-sm transition-all duration-150 hover:bg-black hover:opacity-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 disabled:pointer-events-none disabled:opacity-40 dark:bg-white dark:text-black dark:font-semibold dark:hover:bg-white/90 dark:focus-visible:ring-white/50"
           >
             New project
           </button>
@@ -321,12 +321,12 @@ export default function AdminProjectsPage() {
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className="h-[88px] animate-pulse rounded-apple-lg border border-line/70 bg-surface-card dark:border-line-dark/70 dark:bg-surface-dark-card"
+              className="h-20 animate-pulse rounded-apple-lg border border-line/70 bg-surface-card dark:border-line-dark/70 dark:bg-surface-dark-card"
             />
           ))}
         </div>
-      ) : rows.length === 0 ? (
-        <div className="rounded-apple-lg border border-dashed border-line/70 p-10 text-center dark:border-line-dark/70">
+      ) : sorted.length === 0 ? (
+        <div className="rounded-apple-lg border border-dashed border-line/80 p-12 text-center dark:border-line-dark/80">
           <p className="text-[15px] font-medium text-ink dark:text-ink-dark">
             No projects in the CMS yet
           </p>
@@ -341,60 +341,64 @@ export default function AdminProjectsPage() {
           {sorted.map((row) => (
             <li
               key={row.slug}
-              className="flex items-center gap-4 rounded-apple-lg border border-line/70 bg-surface-card p-4 dark:border-line-dark/70 dark:bg-surface-dark-card"
+              className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 rounded-apple-lg border border-line/70 bg-surface-card p-4 dark:border-line-dark/70 dark:bg-surface-dark-card"
             >
-              {/* Thumb */}
-              <span className="h-14 w-20 shrink-0 overflow-hidden rounded-apple-sm bg-ink/[0.04] dark:bg-ink-dark/[0.06]">
-                {row.image && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={row.image}
-                    alt=""
-                    className="h-full w-full object-cover"
-                  />
-                )}
-              </span>
-
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <span className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
-                    {row.name}
-                  </span>
-
-                  {row.featured && (
-                    <span className="rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-amber-600 dark:bg-amber-400/10 dark:text-amber-400">
-                      Featured
-                    </span>
+              <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                {/* Thumb */}
+                <span className="h-12 w-16 sm:h-14 sm:w-20 shrink-0 overflow-hidden rounded-apple-sm bg-ink/[0.04] dark:bg-ink-dark/[0.06]">
+                  {row.image && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={row.image}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
                   )}
-                </div>
-
-                <span className="block truncate text-[13px] text-ink-secondary dark:text-ink-dark-secondary">
-                  {[row.category, row.year, `/${row.slug}`]
-                    .filter(Boolean)
-                    .join(" · ")}
                 </span>
+
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                    <span className="text-[14.5px] sm:text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
+                      {row.name}
+                    </span>
+
+                    {row.featured && (
+                      <span className="rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-amber-600 dark:bg-amber-400/10 dark:text-amber-400">
+                        Featured
+                      </span>
+                    )}
+                  </div>
+
+                  <span className="block truncate text-[12.5px] sm:text-[13px] text-ink-secondary dark:text-ink-dark-secondary">
+                    {[row.category, row.year, `/${row.slug}`]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </span>
+                </div>
               </div>
 
-              <span className="shrink-0 text-[12px] tabular-nums text-ink-tertiary dark:text-ink-dark-secondary">
-                #{row.sort_order}
-              </span>
+              <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t border-line/40 dark:border-line-dark/40 sm:border-none">
+                <span className="text-[11.5px] sm:text-[12px] tabular-nums text-ink-tertiary dark:text-ink-dark-secondary">
+                  #{row.sort_order}
+                </span>
 
-              <div className="flex shrink-0 items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => openEdit(row)}
-                  className="inline-flex items-center rounded-full px-3 py-2 text-[13px] font-medium text-ink-secondary transition-colors duration-150 hover:bg-ink/[0.05] hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.08] dark:hover:text-ink-dark"
-                >
-                  Edit
-                </button>
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <button
+                    type="button"
+                    onClick={() => openEdit(row)}
+                    className="inline-flex items-center rounded-full px-3 py-1.5 text-[12.5px] sm:text-[13px] font-medium text-ink-secondary transition-colors duration-150 hover:bg-ink/[0.05] hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.08] dark:hover:text-ink-dark"
+                  >
+                    Edit
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={() => removeProject(row)}
-                  className="inline-flex items-center rounded-full px-3 py-2 text-[13px] font-medium text-red-500 transition-colors duration-150 hover:bg-red-500/[0.08] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40"
-                >
-                  Delete
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => removeProject(row)}
+                    className="inline-flex items-center rounded-full px-3 py-1.5 text-[12.5px] sm:text-[13px] font-medium text-red-500 transition-colors duration-150 hover:bg-red-500/[0.08] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </li>
           ))}
@@ -417,11 +421,11 @@ export default function AdminProjectsPage() {
             onClick={(e) => e.stopPropagation()}
           >
             {/* Sticky Header */}
-            <div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-line/60 bg-surface/95 px-6 py-4 backdrop-blur-md dark:border-line-dark/60 dark:bg-surface-dark/95 sm:px-8">
+            <div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-line/60 bg-surface/95 px-4 py-3 backdrop-blur-md dark:border-line-dark/60 dark:bg-surface-dark/95 sm:px-8 sm:py-4">
               <div>
                 <h2
                   id="project-modal-title"
-                  className="text-[18px] font-semibold tracking-tight text-ink dark:text-ink-dark"
+                  className="text-[17px] sm:text-[18px] font-semibold tracking-tight text-ink dark:text-ink-dark"
                 >
                   {editingSlug ? `Edit ${editingSlug}` : "New project"}
                 </h2>
@@ -707,11 +711,11 @@ export default function AdminProjectsPage() {
             </div>
 
             {/* Sticky Footer */}
-            <div className="sticky bottom-0 z-10 flex shrink-0 items-center justify-end gap-3 border-t border-line/60 bg-surface/95 px-6 py-4 backdrop-blur-md dark:border-line-dark/60 dark:bg-surface-dark/95 sm:px-8">
+            <div className="sticky bottom-0 z-10 flex shrink-0 items-center justify-end gap-2.5 sm:gap-3 border-t border-line/60 bg-surface/95 px-4 py-3 backdrop-blur-md dark:border-line-dark/60 dark:bg-surface-dark/95 sm:px-8 sm:py-4">
               <button
                 type="button"
                 onClick={() => setFormOpen(false)}
-                className="inline-flex items-center justify-center rounded-full border border-line/70 px-4 py-2 text-[13px] font-medium text-ink-secondary transition-colors duration-150 hover:bg-ink/[0.05] hover:text-ink dark:border-line-dark/70 dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.08] dark:hover:text-ink-dark"
+                className="inline-flex items-center justify-center rounded-full border border-line/70 px-3.5 py-1.5 sm:px-4 sm:py-2 text-[12.5px] sm:text-[13px] font-medium text-ink-secondary transition-colors duration-150 hover:bg-ink/[0.05] hover:text-ink dark:border-line-dark/70 dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.08] dark:hover:text-ink-dark"
               >
                 Cancel
               </button>
@@ -720,7 +724,7 @@ export default function AdminProjectsPage() {
                 type="button"
                 onClick={saveForm}
                 disabled={busy || !form.name.trim() || !form.slug.trim()}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-ink px-5 py-2 text-[13px] font-medium text-white shadow-sm transition-all duration-150 hover:bg-black hover:opacity-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 disabled:pointer-events-none disabled:opacity-40 dark:bg-white dark:text-black dark:font-semibold dark:hover:bg-white/90 dark:focus-visible:ring-white/50"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-ink px-4 py-1.5 sm:px-5 sm:py-2 text-[12.5px] sm:text-[13px] font-medium text-white shadow-sm transition-all duration-150 hover:bg-black hover:opacity-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 disabled:pointer-events-none disabled:opacity-40 dark:bg-white dark:text-black dark:font-semibold dark:hover:bg-white/90 dark:focus-visible:ring-white/50"
               >
                 {busy && (
                   <svg

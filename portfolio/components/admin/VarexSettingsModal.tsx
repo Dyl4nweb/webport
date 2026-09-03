@@ -95,7 +95,7 @@ export default function VarexSettingsModal({
 
       {/* Modal Container */}
       <div
-        className="admin-chat-panel relative z-10 w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-apple-xl border border-line/70 bg-surface-card/95 p-6 shadow-2xl backdrop-blur-2xl transition-all dark:border-line-dark/70 dark:bg-surface-dark-card/95 admin-scrollbar"
+        className="admin-chat-panel relative z-10 w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-apple-xl border border-line/70 bg-surface-card/95 p-4 sm:p-6 shadow-2xl backdrop-blur-2xl transition-all dark:border-line-dark/70 dark:bg-surface-dark-card/95 admin-scrollbar"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -131,7 +131,7 @@ export default function VarexSettingsModal({
         <div className="mt-5 space-y-6">
           {/* 1. TOKEN USAGE & HEALTH INDICATOR */}
           <div className="rounded-apple-lg border border-line/60 bg-surface/60 p-4 dark:border-line-dark/60 dark:bg-surface-dark/60">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div className="flex items-center gap-2">
                 <span className="text-[13px] font-semibold text-ink dark:text-ink-dark">
                   Context Window & Token Usage
@@ -312,7 +312,7 @@ export default function VarexSettingsModal({
                 </button>
               </div>
 
-              <div className="mt-2.5 flex items-center justify-end gap-2">
+              <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
                 {customKey && (
                   <button
                     type="button"
@@ -338,7 +338,7 @@ export default function VarexSettingsModal({
         </div>
 
         {/* Footer */}
-        <div className="mt-6 flex justify-end border-t border-line/50 pt-4 dark:border-line-dark/50">
+        <div className="mt-6 flex flex-wrap items-center justify-end gap-2 border-t border-line/50 pt-4 dark:border-line-dark/50">
           <button
             type="button"
             onClick={onClose}

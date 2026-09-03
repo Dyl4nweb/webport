@@ -62,9 +62,9 @@ export default function Footer() {
           <div className="flex flex-col gap-1.5 items-center md:items-start text-center md:text-left">
             <Link
               href="/"
-              className="group text-2xl min-[360px]:text-3xl sm:text-4xl font-bold tracking-[-0.04em] text-ink dark:text-ink-dark transition-opacity hover:opacity-85 inline-flex items-baseline"
+              className="group text-2xl min-[360px]:text-3xl sm:text-4xl font-bold tracking-[-0.04em] text-ink dark:text-ink-dark transition-opacity hover:opacity-85 inline-block"
             >
-              <GlitchText text={SITE.name} className="inline-block" />
+              <GlitchText text={SITE.name} className="inline" />
               <span className="text-ink-tertiary dark:text-ink-dark-secondary select-none" aria-hidden="true">
                 .
               </span>
@@ -119,27 +119,27 @@ export default function Footer() {
             © {year} <span className="font-medium text-ink dark:text-ink-dark">{SITE.name}</span>. All rights reserved.
           </span>
 
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 order-1 md:order-2">
-            {/* Live Manila Time Status Pill (Always 1 single clean line, never broken) */}
-            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-full bg-surface-alt dark:bg-surface-dark-alt border border-line/60 dark:border-line-dark/60 backdrop-blur-sm shrink-0 select-none whitespace-nowrap">
-              <span className="relative flex h-2 w-2">
+          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 order-1 md:order-2 max-w-full">
+            {/* Live Manila Time Status Pill (Spacious, elegant, never cramped) */}
+            <div className="inline-flex items-center h-9 sm:h-9.5 gap-2 sm:gap-2.5 px-3.5 sm:px-4 rounded-full bg-surface-alt/90 dark:bg-surface-dark-alt/90 border border-line/70 dark:border-line-dark/70 backdrop-blur-sm shrink-0 select-none whitespace-nowrap shadow-xs">
+              <span className="relative flex h-2 w-2 shrink-0">
                 <span className="footer-time-pulse animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="footer-time-dot relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
-              <span className="font-mono text-[10.5px] sm:text-[11.5px] font-medium text-ink dark:text-ink-dark">
+              <span className="font-mono text-[11px] sm:text-[11.5px] font-medium text-ink dark:text-ink-dark">
                 Manila, PH
               </span>
-              <span className="text-ink-tertiary dark:text-ink-dark-secondary text-[10px]">·</span>
-              <span className="footer-time-text tabular-nums font-mono font-semibold text-[10.5px] sm:text-[11.5px] text-emerald-600 dark:text-emerald-400">
+              <span className="text-ink-tertiary/70 dark:text-ink-dark-secondary/70 text-[10px] mx-0.5">·</span>
+              <span className="footer-time-text tabular-nums font-mono font-semibold text-[11px] sm:text-[11.5px] text-emerald-600 dark:text-emerald-400">
                 {manilaTime || "--:--:-- --"}
               </span>
-              <span className="footer-time-badge text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 dark:bg-emerald-400/15 text-emerald-600 dark:text-emerald-400">
+              <span className="footer-time-badge text-[9px] sm:text-[9.5px] font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 dark:bg-emerald-400/15 text-emerald-600 dark:text-emerald-400">
                 UTC+8
               </span>
             </div>
 
-            {/* Visitor Counter Pill */}
-            <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-surface-alt dark:bg-surface-dark-alt border border-line/60 dark:border-line-dark/60 backdrop-blur-sm shrink-0">
+            {/* Visitor Counter Pill with spacious, balanced padding */}
+            <div className="inline-flex items-center h-9 sm:h-9.5 px-3.5 sm:px-4 rounded-full bg-surface-alt/90 dark:bg-surface-dark-alt/90 border border-line/70 dark:border-line-dark/70 backdrop-blur-sm shrink-0 select-none whitespace-nowrap shadow-xs">
               <VisitorCount />
             </div>
           </div>

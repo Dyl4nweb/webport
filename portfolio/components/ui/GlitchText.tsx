@@ -103,15 +103,43 @@ export default function GlitchText({
   const [isGlitching, setIsGlitching] = useState(false);
   const containerRef = useRef<HTMLElement | null>(null);
   const animRef = useRef<number | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasTriggeredRef = useRef(false);
 
+  const stopGlitch = useCallback(() => {
+    if (animRef.current) {
+      cancelAnimationFrame(animRef.current);
+      animRef.current = null;
+    }
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setIsGlitching(false);
+    setDisplayText(text);
+  }, [text]);
+
   const startGlitch = useCallback(() => {
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+
     if (animRef.current) cancelAnimationFrame(animRef.current);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
     setIsGlitching(true);
 
     const startTime = performance.now();
     let lastRenderTime = 0;
     const FRAME_INTERVAL = 28; // ~35fps for responsive energetic cipher wave
+
+    // Safety timeout: guaranteed reset to clean original text
+    timeoutRef.current = setTimeout(() => {
+      stopGlitch();
+    }, duration + 80);
 
     function step(now: number) {
       const elapsed = now - startTime;
@@ -133,14 +161,12 @@ export default function GlitchText({
         }
         animRef.current = requestAnimationFrame(step);
       } else {
-        setDisplayText(text);
-        setIsGlitching(false);
-        animRef.current = null;
+        stopGlitch();
       }
     }
 
     animRef.current = requestAnimationFrame(step);
-  }, [text, duration]);
+  }, [text, duration, stopGlitch]);
 
   // Splash-aware execution helper
   const executeGlitch = useCallback(() => {
@@ -186,10 +212,10 @@ export default function GlitchText({
       const cleanup = executeGlitch();
       return () => {
         if (cleanup) cleanup();
-        if (animRef.current) cancelAnimationFrame(animRef.current);
+        stopGlitch();
       };
     }
-  }, [triggerOnMount, executeGlitch]);
+  }, [triggerOnMount, executeGlitch, stopGlitch]);
 
   // Handle triggerOnScroll via IntersectionObserver
   useEffect(() => {
@@ -218,15 +244,30 @@ export default function GlitchText({
     return () => {
       observer.disconnect();
       if (cleanupExecution) cleanupExecution();
-      if (animRef.current) cancelAnimationFrame(animRef.current);
+      stopGlitch();
     };
-  }, [triggerOnScroll, triggerOnMount, executeGlitch]);
+  }, [triggerOnScroll, triggerOnMount, executeGlitch, stopGlitch]);
 
-  // Sync text prop when it updates without re-triggering scramble
+  // Sync text prop when it updates
   useEffect(() => {
-    setDisplayText(text);
-  }, [text]);
+    stopGlitch();
+  }, [text, stopGlitch]);
 
+  // When not actively glitching, render clean natural text directly so the browser preserves authentic font baseline
+  if (!isGlitching) {
+    return (
+      <Component
+        ref={containerRef as any}
+        onMouseEnter={triggerOnHover ? startGlitch : undefined}
+        onTouchStart={triggerOnHover ? startGlitch : undefined}
+        className={cn("inline select-none", className)}
+      >
+        {text}
+      </Component>
+    );
+  }
+
+  const currentRenderText = displayText;
   const words = text.split(" ");
   let globalCharIndex = 0;
 
@@ -246,12 +287,12 @@ export default function GlitchText({
             <span className="inline-block whitespace-nowrap">
               {word.split("").map((origChar, charOffset) => {
                 const charIdx = wordStartIndex + charOffset;
-                const currentChar = displayText[charIdx] ?? origChar;
+                const currentChar = currentRenderText[charIdx] ?? origChar;
 
                 return (
                   <span
                     key={charIdx}
-                    className="relative inline-block align-baseline overflow-hidden"
+                    className="relative inline-block align-baseline"
                   >
                     <span className="invisible select-none" aria-hidden="true">
                       {origChar}

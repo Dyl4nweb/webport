@@ -1310,7 +1310,7 @@ export default function AdminStoragePage() {
                     </ul>
                   )}
 
-                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <div className="mt-3 flex flex-wrap items-center gap-2 sm:gap-3">
                     <label className="flex items-center gap-2 text-[12.5px] text-ink-secondary dark:text-ink-dark-secondary">
                       Delete rows older than
                       <input
@@ -1324,7 +1324,7 @@ export default function AdminStoragePage() {
                             [table]: e.target.value,
                           }))
                         }
-                        className="w-20 rounded-apple-sm border border-line/70 bg-transparent px-2 py-1.5 text-[13px] tabular-nums text-ink focus:border-accent focus:outline-none dark:border-line-dark/70 dark:text-ink-dark"
+                        className="w-20 rounded-apple-sm border border-line/70 bg-transparent px-2 py-1 text-[12.5px] sm:text-[13px] tabular-nums text-ink focus:border-accent focus:outline-none dark:border-line-dark/70 dark:text-ink-dark"
                       />
                       days
                     </label>
@@ -1332,7 +1332,7 @@ export default function AdminStoragePage() {
                     <button
                       type="button"
                       onClick={() => previewDays(table)}
-                      className="inline-flex items-center justify-center gap-1.5 rounded-full border border-line/80 px-4 py-2 text-[13px] font-medium text-ink-secondary transition-colors duration-150 hover:border-ink/15 hover:bg-ink/[0.04] hover:text-ink active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:pointer-events-none disabled:opacity-40 dark:border-line-dark/80 dark:text-ink-dark-secondary dark:hover:border-ink-dark/25 dark:hover:bg-ink-dark/[0.06] dark:hover:text-ink-dark"
+                      className="inline-flex items-center justify-center gap-1.5 rounded-full border border-line/80 px-3.5 py-1.5 sm:px-4 sm:py-2 text-[12px] sm:text-[13px] font-medium text-ink-secondary transition-colors duration-150 hover:border-ink/15 hover:bg-ink/[0.04] hover:text-ink active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:pointer-events-none disabled:opacity-40 dark:border-line-dark/80 dark:text-ink-dark-secondary dark:hover:border-ink-dark/25 dark:hover:bg-ink-dark/[0.06] dark:hover:text-ink-dark"
                     >
                       Preview date-based cleanup
                     </button>
@@ -1341,7 +1341,7 @@ export default function AdminStoragePage() {
                       <button
                         type="button"
                         onClick={() => previewSelected(table)}
-                        className="inline-flex items-center justify-center gap-1.5 rounded-full bg-red-500 px-4 py-2 text-[13px] font-semibold text-white shadow-sm transition-all duration-150 hover:bg-red-600 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50"
+                        className="inline-flex items-center justify-center gap-1.5 rounded-full bg-red-500 px-3.5 py-1.5 sm:px-4 sm:py-2 text-[12px] sm:text-[13px] font-semibold text-white shadow-sm transition-all duration-150 hover:bg-red-600 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50"
                       >
                         Review {selectedIds.length} selected{" "}
                         {selectedIds.length === 1 ? "row" : "rows"}
@@ -1473,12 +1473,12 @@ export default function AdminStoragePage() {
               </p>
             )}
 
-            <div className="mt-5 flex items-center justify-end gap-2">
+            <div className="mt-5 flex flex-wrap items-center justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setModal(null)}
                 disabled={modalBusy}
-                className="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-medium text-ink-secondary transition-colors duration-150 hover:bg-ink/[0.04] hover:text-ink active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:pointer-events-none disabled:opacity-40 dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.06] dark:hover:text-ink-dark"
+                className="inline-flex items-center justify-center gap-1.5 rounded-full px-3.5 py-1.5 sm:px-4 sm:py-2 text-[12.5px] sm:text-[13px] font-medium text-ink-secondary transition-colors duration-150 hover:bg-ink/[0.04] hover:text-ink active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:pointer-events-none disabled:opacity-40 dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.06] dark:hover:text-ink-dark"
               >
                 Cancel
               </button>
@@ -1487,7 +1487,7 @@ export default function AdminStoragePage() {
                 type="button"
                 onClick={executeConfirmed}
                 disabled={!confirmReady}
-                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-red-500 px-4 py-2 text-[13px] font-semibold text-white shadow-sm transition-all duration-150 hover:bg-red-600 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50 disabled:pointer-events-none disabled:opacity-40"
+                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-red-500 px-3.5 py-1.5 sm:px-4 sm:py-2 text-[12.5px] sm:text-[13px] font-semibold text-white shadow-sm transition-all duration-150 hover:bg-red-600 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50 disabled:pointer-events-none disabled:opacity-40"
               >
                 {modalBusy
                   ? "Deleting…"

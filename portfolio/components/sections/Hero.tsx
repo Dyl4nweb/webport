@@ -428,7 +428,7 @@ export default function Hero() {
             <Button
               href="/resume"
               variant="primary"
-              className="w-auto px-5 py-2.5 sm:px-7 sm:py-3 text-[13.5px] sm:text-[14px]"
+              className="w-auto"
             >
               {copy.resumeBtnText}
             </Button>
@@ -436,7 +436,7 @@ export default function Hero() {
             <Button
               href="/contact"
               variant="secondary"
-              className="w-auto px-5 py-2.5 sm:px-7 sm:py-3 text-[13.5px] sm:text-[14px]"
+              className="w-auto"
             >
               {copy.contactBtnText}
             </Button>

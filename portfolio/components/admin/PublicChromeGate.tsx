@@ -12,7 +12,7 @@ export default function PublicChromeGate() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const isAdmin = pathname === "/admin" || pathname.startsWith("/admin/");
+    const isAdmin = (pathname === "/admin" || pathname.startsWith("/admin/")) && pathname !== "/admin/login";
     if (isAdmin) {
       document.documentElement.setAttribute("data-admin", "");
     } else {

@@ -192,14 +192,14 @@ export default function AdminInquiriesPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5 sm:gap-2">
         {FILTERS.map((f) => (
           <button
             key={f.value}
             type="button"
             onClick={() => setFilter(f.value)}
             className={cn(
-              "inline-flex items-center gap-2 rounded-full px-4 py-2 text-[13px] font-medium",
+              "inline-flex items-center gap-1.5 sm:gap-2 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-[12px] sm:text-[13px] font-medium",
               "transition-[background-color,color] duration-200",
               filter === f.value
                 ? "bg-ink/[0.06] text-ink dark:bg-ink-dark/[0.08] dark:text-ink-dark"
@@ -207,7 +207,7 @@ export default function AdminInquiriesPage() {
             )}
           >
             <span>{f.label}</span>
-            <span className="text-[12px] tabular-nums opacity-60">
+            <span className="text-[11.5px] sm:text-[12px] tabular-nums opacity-60">
               {countsFor(f.value)}
             </span>
           </button>
@@ -262,7 +262,7 @@ export default function AdminInquiriesPage() {
                   type="button"
                   onClick={() => setExpandedId(expanded ? null : inquiry.id)}
                   aria-expanded={expanded}
-                  className="flex w-full flex-col gap-2 p-5 text-left sm:p-6"
+                  className="flex w-full flex-col gap-2 p-4 text-left sm:p-6"
                 >
                   <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
                     <span className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
@@ -280,13 +280,13 @@ export default function AdminInquiriesPage() {
 
                     <time
                       dateTime={inquiry.created_at}
-                      className="ml-auto shrink-0 text-[13px] tabular-nums text-ink-tertiary dark:text-ink-dark-secondary"
+                      className="ml-auto text-[13px] tabular-nums text-ink-tertiary dark:text-ink-dark-secondary"
                     >
                       {relativeTime(inquiry.created_at)}
                     </time>
                   </span>
 
-                  <span className="text-[13px] text-ink-secondary dark:text-ink-dark-secondary">
+                  <span className="text-[13px] text-ink-tertiary dark:text-ink-dark-secondary">
                     {inquiry.email}
                   </span>
 
@@ -305,7 +305,7 @@ export default function AdminInquiriesPage() {
                 </button>
 
                 {expanded && (
-                  <div className="flex flex-col gap-3 border-t border-line/50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 dark:border-line-dark/50">
+                  <div className="flex flex-col gap-3 border-t border-line/50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4 dark:border-line-dark/50">
                     <label className="flex items-center gap-2">
                       <span className="text-[12px] font-medium uppercase tracking-[0.08em] text-ink-tertiary dark:text-ink-dark-secondary">
                         Status
@@ -317,7 +317,7 @@ export default function AdminInquiriesPage() {
                         onChange={(e) =>
                           updateStatus(inquiry, e.target.value as InquiryStatus)
                         }
-                        className="rounded-apple-sm border border-line bg-surface px-3 py-2 text-[13px] font-medium text-ink outline-none transition-colors focus:border-accent disabled:cursor-not-allowed disabled:opacity-60 dark:border-line-dark dark:bg-surface-dark dark:text-ink-dark dark:focus:border-accent-dark"
+                        className="rounded-apple-sm border border-line bg-surface px-3 py-1.5 text-[12.5px] sm:text-[13px] font-medium text-ink outline-none transition-colors focus:border-accent disabled:cursor-not-allowed disabled:opacity-60 dark:border-line-dark dark:bg-surface-dark dark:text-ink-dark dark:focus:border-accent-dark"
                       >
                         {(Object.keys(STATUS_META) as InquiryStatus[]).map(
                           (value) => (
@@ -329,10 +329,10 @@ export default function AdminInquiriesPage() {
                       </select>
                     </label>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                       <a
                         href={`mailto:${inquiry.email}?subject=Re:%20your%20portfolio%20inquiry`}
-                        className="rounded-full px-4 py-2 text-[13px] font-medium text-ink-secondary transition-[background-color,color] duration-200 hover:bg-ink/[0.05] hover:text-ink dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.08] dark:hover:text-ink-dark"
+                        className="rounded-full px-3.5 py-1.5 text-[12.5px] sm:text-[13px] font-medium text-ink-secondary transition-[background-color,color] duration-200 hover:bg-ink/[0.05] hover:text-ink dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.08] dark:hover:text-ink-dark"
                       >
                         Reply by email
                       </a>
@@ -341,7 +341,7 @@ export default function AdminInquiriesPage() {
                         type="button"
                         onClick={() => removeInquiry(inquiry)}
                         disabled={busy}
-                        className="inline-flex items-center rounded-full px-4 py-2 text-[13px] font-medium text-red-500 transition-colors duration-150 hover:bg-red-500/[0.08] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 disabled:pointer-events-none disabled:opacity-40"
+                        className="inline-flex items-center rounded-full px-3.5 py-1.5 text-[12.5px] sm:text-[13px] font-medium text-red-500 transition-colors duration-150 hover:bg-red-500/[0.08] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 disabled:pointer-events-none disabled:opacity-40"
                       >
                         Delete
                       </button>

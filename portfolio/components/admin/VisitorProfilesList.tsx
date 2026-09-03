@@ -281,7 +281,7 @@ export default function VisitorProfilesList({ rows }: { rows: UniqueVisitorRow[]
                   </p>
 
                   {/* Real IP Address with Copy Button */}
-                  <div className="mt-2.5 flex items-center gap-2">
+                  <div className="mt-2.5 flex flex-wrap items-center gap-2">
                     <span className="inline-flex items-center gap-1.5 rounded-lg border border-line/40 bg-surface-card px-2.5 py-1 font-mono text-[11px] text-ink dark:border-line-dark/40 dark:bg-surface-dark-card dark:text-ink-dark">
                       <svg
                         className="h-3 w-3 text-ink-tertiary dark:text-ink-dark-secondary"
@@ -314,7 +314,7 @@ export default function VisitorProfilesList({ rows }: { rows: UniqueVisitorRow[]
               </div>
 
               {/* Bottom Metadata Bar */}
-              <div className="flex items-center justify-between border-t border-line/30 pt-2.5 text-[11px] text-ink-tertiary dark:border-line-dark/30 dark:text-ink-dark-secondary">
+              <div className="flex flex-wrap items-center justify-between gap-1 border-t border-line/30 pt-2.5 text-[11px] text-ink-tertiary dark:border-line-dark/30 dark:text-ink-dark-secondary">
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-ink dark:text-ink-dark">
                     {v.visit_count} {v.visit_count === 1 ? "visit" : "visits"}

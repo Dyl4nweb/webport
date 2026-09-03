@@ -200,12 +200,12 @@ function GmailInner() {
         </div>
 
         {connection.phase === "connected" && (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={loadInbox}
               disabled={loadingMessages || busy}
-              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-line px-4 py-2 text-[13px] font-medium text-ink transition-colors duration-150 hover:border-ink/15 hover:bg-ink/[0.04] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:pointer-events-none disabled:opacity-40 dark:border-line-dark dark:text-ink-dark dark:hover:border-ink-dark/25 dark:hover:bg-ink-dark/[0.06]"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-line px-3.5 py-1.5 sm:px-4 sm:py-2 text-[12.5px] sm:text-[13px] font-medium text-ink transition-colors duration-150 hover:border-ink/15 hover:bg-ink/[0.04] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:pointer-events-none disabled:opacity-40 dark:border-line-dark dark:text-ink-dark dark:hover:border-ink-dark/25 dark:hover:bg-ink-dark/[0.06]"
             >
               {loadingMessages ? "Loading…" : "Refresh"}
             </button>
@@ -214,7 +214,7 @@ function GmailInner() {
               type="button"
               onClick={disconnect}
               disabled={busy}
-              className="inline-flex items-center rounded-full px-4 py-2 text-[13px] font-medium text-red-500 transition-colors duration-150 hover:bg-red-500/[0.08] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 disabled:pointer-events-none disabled:opacity-40"
+              className="inline-flex items-center rounded-full px-3.5 py-1.5 sm:px-4 sm:py-2 text-[12.5px] sm:text-[13px] font-medium text-red-500 transition-colors duration-150 hover:bg-red-500/[0.08] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 disabled:pointer-events-none disabled:opacity-40"
             >
               Disconnect
             </button>
@@ -276,13 +276,13 @@ function GmailInner() {
             type="button"
             onClick={connect}
             disabled={busy}
-            className="mt-6 inline-flex items-center justify-center gap-1.5 rounded-full bg-ink px-6 py-2.5 text-[14px] font-medium text-white shadow-sm transition-all duration-150 hover:bg-black hover:opacity-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 disabled:pointer-events-none disabled:opacity-40 dark:bg-white dark:text-black dark:font-semibold dark:hover:bg-white/90 dark:focus-visible:ring-white/50"
+            className="mt-6 inline-flex items-center justify-center gap-1.5 rounded-full bg-ink px-5 py-2 sm:px-6 sm:py-2.5 text-[13px] sm:text-[14px] font-medium text-white shadow-sm transition-all duration-150 hover:bg-black hover:opacity-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 disabled:pointer-events-none disabled:opacity-40 dark:bg-white dark:text-black dark:font-semibold dark:hover:bg-white/90 dark:focus-visible:ring-white/50"
           >
             {busy ? "Redirecting…" : "Connect Gmail"}
           </button>
         </section>
       ) : (
-        <section className="rounded-apple-lg border border-line/70 bg-surface-card p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
+        <section className="rounded-apple-lg border border-line/70 bg-surface-card p-4 sm:p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
           <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
             Latest messages
           </h2>

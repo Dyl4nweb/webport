@@ -144,7 +144,7 @@ export default function AdminAnalyticsPage() {
       )}
 
       {/* 14-day trend */}
-      <section className="rounded-apple-lg border border-line/70 bg-surface-card p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
+      <section className="rounded-apple-lg border border-line/70 bg-surface-card p-4 sm:p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
         <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
           Page views
           <span className="ml-2 text-[12px] font-normal text-ink-tertiary dark:text-ink-dark-secondary">
@@ -192,7 +192,7 @@ export default function AdminAnalyticsPage() {
       {!loading && (
         <div className="grid gap-4 lg:grid-cols-2">
           {/* Device breakdown */}
-          <section className="rounded-apple-lg border border-line/70 bg-surface-card p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
+          <section className="rounded-apple-lg border border-line/70 bg-surface-card p-4 sm:p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
             <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
               Devices
               <span className="ml-2 text-[12px] font-normal text-ink-tertiary dark:text-ink-dark-secondary">
@@ -229,7 +229,7 @@ export default function AdminAnalyticsPage() {
           </section>
 
           {/* Conversion */}
-          <section className="rounded-apple-lg border border-line/70 bg-surface-card p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
+          <section className="rounded-apple-lg border border-line/70 bg-surface-card p-4 sm:p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
             <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
               Inquiry conversion
               <span className="ml-2 text-[12px] font-normal text-ink-tertiary dark:text-ink-dark-secondary">
@@ -237,30 +237,30 @@ export default function AdminAnalyticsPage() {
               </span>
             </h2>
 
-            <div className="mt-5 grid grid-cols-3 gap-3">
+            <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
               <div className="flex flex-col gap-1">
-                <span className="text-[24px] font-semibold leading-none tabular-nums tracking-[-0.02em] text-ink dark:text-ink-dark">
+                <span className="text-[18px] min-[380px]:text-[20px] sm:text-[24px] font-semibold leading-none tabular-nums tracking-[-0.02em] text-ink dark:text-ink-dark">
                   {rows.length.toLocaleString()}
                 </span>
-                <span className="text-[12px] text-ink-secondary dark:text-ink-dark-secondary">
+                <span className="text-[11.5px] sm:text-[12px] text-ink-secondary dark:text-ink-dark-secondary">
                   Views
                 </span>
               </div>
 
               <div className="flex flex-col gap-1">
-                <span className="text-[24px] font-semibold leading-none tabular-nums tracking-[-0.02em] text-ink dark:text-ink-dark">
+                <span className="text-[18px] min-[380px]:text-[20px] sm:text-[24px] font-semibold leading-none tabular-nums tracking-[-0.02em] text-ink dark:text-ink-dark">
                   {inquiries30d.toLocaleString()}
                 </span>
-                <span className="text-[12px] text-ink-secondary dark:text-ink-dark-secondary">
+                <span className="text-[11.5px] sm:text-[12px] text-ink-secondary dark:text-ink-dark-secondary">
                   Inquiries
                 </span>
               </div>
 
               <div className="flex flex-col gap-1">
-                <span className="text-[24px] font-semibold leading-none tabular-nums tracking-[-0.02em] text-accent dark:text-accent-dark">
+                <span className="text-[18px] min-[380px]:text-[20px] sm:text-[24px] font-semibold leading-none tabular-nums tracking-[-0.02em] text-accent dark:text-accent-dark">
                   {conversion ? `${conversion.rate}%` : "—"}
                 </span>
-                <span className="text-[12px] text-ink-secondary dark:text-ink-dark-secondary">
+                <span className="text-[11.5px] sm:text-[12px] text-ink-secondary dark:text-ink-dark-secondary">
                   Rate
                 </span>
               </div>
@@ -278,7 +278,7 @@ export default function AdminAnalyticsPage() {
       {/* Top pages + referrers */}
       {!loading && (
         <div className="grid gap-4 lg:grid-cols-2">
-          <section className="rounded-apple-lg border border-line/70 bg-surface-card p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
+          <section className="rounded-apple-lg border border-line/70 bg-surface-card p-4 sm:p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
             <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
               Top pages
             </h2>
@@ -309,7 +309,7 @@ export default function AdminAnalyticsPage() {
             )}
           </section>
 
-          <section className="rounded-apple-lg border border-line/70 bg-surface-card p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
+          <section className="rounded-apple-lg border border-line/70 bg-surface-card p-4 sm:p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
             <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
               Top referrers
             </h2>

@@ -307,7 +307,7 @@ export default function AdminVisitorsPage() {
             type="button"
             onClick={runCleanup}
             disabled={cleanupBusy}
-            className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full border border-line px-4 py-2 text-[13px] font-medium text-ink transition-colors duration-150 hover:border-ink/15 hover:bg-ink/[0.04] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:pointer-events-none disabled:opacity-40 dark:border-line-dark dark:text-ink-dark dark:hover:border-ink-dark/25 dark:hover:bg-ink-dark/[0.06]"
+            className="self-start sm:self-auto inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full border border-line px-3.5 py-1.5 sm:px-4 sm:py-2 text-[12.5px] sm:text-[13px] font-medium text-ink transition-colors duration-150 hover:border-ink/15 hover:bg-ink/[0.04] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:pointer-events-none disabled:opacity-40 dark:border-line-dark dark:text-ink-dark dark:hover:border-ink-dark/25 dark:hover:bg-ink-dark/[0.06]"
           >
             {cleanupBusy ? "Cleaning…" : "Run cleanup"}
           </button>
@@ -316,7 +316,7 @@ export default function AdminVisitorsPage() {
 
       {/* Unique visitor profiles */}
       {!loading && (
-        <section className="rounded-apple-lg border border-line/70 bg-surface-card p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
+        <section className="rounded-apple-lg border border-line/70 bg-surface-card p-4 sm:p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-[16px] font-semibold tracking-tight text-ink dark:text-ink-dark">
@@ -338,7 +338,7 @@ export default function AdminVisitorsPage() {
       {!loading && (
         <div className="grid gap-4 lg:grid-cols-2">
           {/* Popular pages */}
-          <section className="rounded-apple-lg border border-line/70 bg-surface-card p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
+          <section className="rounded-apple-lg border border-line/70 bg-surface-card p-4 sm:p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
             <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
               Popular pages
               <span className="ml-2 text-[12px] font-normal text-ink-tertiary dark:text-ink-dark-secondary">
@@ -378,7 +378,7 @@ export default function AdminVisitorsPage() {
           </section>
 
           {/* Top referrers */}
-          <section className="rounded-apple-lg border border-line/70 bg-surface-card p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
+          <section className="rounded-apple-lg border border-line/70 bg-surface-card p-4 sm:p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
             <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
               Referrers
               <span className="ml-2 text-[12px] font-normal text-ink-tertiary dark:text-ink-dark-secondary">
@@ -420,7 +420,7 @@ export default function AdminVisitorsPage() {
       )}
 
       {/* Recent page views */}
-      <section className="rounded-apple-lg border border-line/70 bg-surface-card p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
+      <section className="rounded-apple-lg border border-line/70 bg-surface-card p-4 sm:p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
         <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
           Recent page views
         </h2>

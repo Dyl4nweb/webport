@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminAIChatHead from "@/components/admin/AdminAIChatHead";
+import AdminSplash from "@/components/admin/AdminSplash";
 import { AdminConfirmProvider } from "@/lib/admin/confirm-context";
 import { VarexAIProvider } from "@/lib/admin/varex-ai-context";
 import { useAdminSession } from "@/lib/auth";
@@ -31,6 +32,7 @@ export default function ProtectedAdminLayout({
   return (
     <AdminConfirmProvider>
       <VarexAIProvider>
+        <AdminSplash />
         <div className="min-h-screen bg-surface dark:bg-surface-dark">
           <AdminSidebar open={navOpen} onClose={() => setNavOpen(false)} />
 
@@ -63,7 +65,7 @@ export default function ProtectedAdminLayout({
               </span>
             </div>
 
-            <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-10">
+            <div className="mx-auto w-full max-w-6xl px-3.5 py-5 sm:px-6 sm:py-8 lg:px-10">
               {children}
             </div>
           </main>

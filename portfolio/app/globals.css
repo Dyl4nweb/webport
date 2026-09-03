@@ -193,8 +193,6 @@ html[data-theme="cafe"] footer button {
 
 html[data-theme="cafe"] .footer-time-pulse,
 html[data-theme="cafe"] .footer-time-dot,
-html[data-theme="cafe"] .footer-visitor-pulse,
-html[data-theme="cafe"] .footer-visitor-dot,
 html[data-theme="cafe"] .contact-status-pulse,
 html[data-theme="cafe"] .contact-status-dot,
 html[data-theme="cafe"] .profile-badge-pulse,
@@ -451,8 +449,6 @@ html[data-theme="cyber"] footer button {
 
 html[data-theme="cyber"] .footer-time-pulse,
 html[data-theme="cyber"] .footer-time-dot,
-html[data-theme="cyber"] .footer-visitor-pulse,
-html[data-theme="cyber"] .footer-visitor-dot,
 html[data-theme="cyber"] .contact-status-pulse,
 html[data-theme="cyber"] .contact-status-dot,
 html[data-theme="cyber"] .profile-badge-pulse,
@@ -792,6 +788,137 @@ html[data-theme="cyber"] header[aria-label="macOS Menu Bar"] {
   }
 }
 
+@keyframes tracking-in-expand {
+  0% {
+    letter-spacing: -0.05em;
+    opacity: 0;
+    filter: blur(4px);
+    transform: translateY(4px);
+  }
+  40% {
+    opacity: 0.8;
+    filter: blur(1px);
+  }
+  100% {
+    letter-spacing: 0.28em;
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+.animate-tracking-expand {
+  animation: tracking-in-expand 1.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes text-loading-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-text-shimmer {
+  display: inline-block;
+  color: #1d1d1f;
+  background: linear-gradient(
+    90deg,
+    rgba(29, 29, 31, 0.3) 0%,
+    rgba(29, 29, 31, 0.3) 30%,
+    #1d1d1f 50%,
+    rgba(29, 29, 31, 0.3) 70%,
+    rgba(29, 29, 31, 0.3) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: text-loading-shimmer 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.dark .animate-text-shimmer {
+  color: #ffffff;
+  background: linear-gradient(
+    90deg,
+    rgba(245, 245, 247, 0.3) 0%,
+    rgba(245, 245, 247, 0.3) 30%,
+    #ffffff 50%,
+    rgba(245, 245, 247, 0.3) 70%,
+    rgba(245, 245, 247, 0.3) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+html[data-theme="cyber"] .animate-text-shimmer {
+  color: #059669;
+  background: linear-gradient(
+    90deg,
+    rgba(5, 150, 105, 0.35) 0%,
+    rgba(5, 150, 105, 0.35) 30%,
+    #059669 50%,
+    rgba(5, 150, 105, 0.35) 70%,
+    rgba(5, 150, 105, 0.35) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+html[data-theme="cyber"].dark .animate-text-shimmer {
+  color: #00ff66;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 255, 102, 0.35) 0%,
+    rgba(0, 255, 102, 0.35) 30%,
+    #00ff66 50%,
+    rgba(0, 255, 102, 0.35) 70%,
+    rgba(0, 255, 102, 0.35) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 16px rgba(0, 255, 102, 0.5));
+}
+
+html[data-theme="cafe"] .animate-text-shimmer {
+  color: #b4652a;
+  background: linear-gradient(
+    90deg,
+    rgba(180, 101, 42, 0.35) 0%,
+    rgba(180, 101, 42, 0.35) 30%,
+    #b4652a 50%,
+    rgba(180, 101, 42, 0.35) 70%,
+    rgba(180, 101, 42, 0.35) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+html[data-theme="cafe"].dark .animate-text-shimmer {
+  color: #f8f4ed;
+  background: linear-gradient(
+    90deg,
+    rgba(212, 139, 82, 0.35) 0%,
+    rgba(212, 139, 82, 0.35) 30%,
+    #f8f4ed 50%,
+    rgba(212, 139, 82, 0.35) 70%,
+    rgba(212, 139, 82, 0.35) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 @keyframes hintBounce {
   0%, 100% {
     transform: translateX(-50%) translateY(0);
@@ -1015,6 +1142,13 @@ html[data-theme="cyber"]::view-transition-new(root) {
 
 
 /* ─── Splash screen ─── */
+
+html[data-admin] #splash {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
 
 #splash {
   position: fixed;

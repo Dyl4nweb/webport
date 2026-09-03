@@ -54,54 +54,113 @@ const DEFAULT_WELCOME: ChatMessage = {
   modelUsed: "gemini-3.5-flash-lite",
 };
 
+let sharedAudioCtx: AudioContext | null = null;
+
+function getSharedAudioContext(): AudioContext | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const AudioContextClass =
+      window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    if (!AudioContextClass) return null;
+    if (!sharedAudioCtx || sharedAudioCtx.state === "closed") {
+      sharedAudioCtx = new AudioContextClass();
+    }
+    if (sharedAudioCtx.state === "suspended") {
+      sharedAudioCtx.resume().catch(() => {});
+    }
+    return sharedAudioCtx;
+  } catch {
+    return null;
+  }
+}
+
+// Auto-unlock audio context on any user interaction so background chimes never fail
+if (typeof window !== "undefined") {
+  const unlockAudio = () => {
+    const ctx = getSharedAudioContext();
+    if (ctx && ctx.state === "suspended") {
+      ctx.resume().catch(() => {});
+    }
+  };
+  window.addEventListener("pointerdown", unlockAudio, { passive: true });
+  window.addEventListener("keydown", unlockAudio, { passive: true });
+}
+
 /**
- * Play a clean futuristic notification chime using Web Audio API.
- * Does not require external audio files and works reliably in all browsers.
+ * Play a crystal-clear, premium futuristic notification chime using Web Audio API.
+ * High fidelity dual-tone bell + sub-harmonic, perfectly audible and pleasant.
  */
 export function playCyberChime() {
   try {
-    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-    if (!AudioContextClass) return;
-    const ctx = new AudioContextClass();
+    const ctx = getSharedAudioContext();
+    if (!ctx) return;
 
     if (ctx.state === "suspended") {
-      ctx.resume().catch(() => {});
+      ctx.resume().then(() => playChimeNodes(ctx)).catch(() => {});
+    } else {
+      playChimeNodes(ctx);
     }
+  } catch (err) {
+    console.debug("Audio notification suppressed:", err);
+  }
+}
 
+function playChimeNodes(ctx: AudioContext) {
+  try {
     const now = ctx.currentTime;
 
-    // First harmonious tone (E5 ~ 659.25Hz)
+    // Master volume gain node
+    const masterGain = ctx.createGain();
+    masterGain.gain.setValueAtTime(0.25, now);
+    masterGain.connect(ctx.destination);
+
+    // Tone 1: Crisp high bell (G#5 ~ 830.6Hz -> A#5 ~ 932.3Hz)
     const osc1 = ctx.createOscillator();
     const gain1 = ctx.createGain();
     osc1.type = "sine";
-    osc1.frequency.setValueAtTime(659.25, now);
-    osc1.frequency.exponentialRampToValueAtTime(880, now + 0.12); // slides to A5
+    osc1.frequency.setValueAtTime(830.61, now);
+    osc1.frequency.exponentialRampToValueAtTime(932.33, now + 0.08);
 
-    gain1.gain.setValueAtTime(0.08, now);
-    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+    gain1.gain.setValueAtTime(0.65, now);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
 
     osc1.connect(gain1);
-    gain1.connect(ctx.destination);
+    gain1.connect(masterGain);
 
     osc1.start(now);
-    osc1.stop(now + 0.3);
+    osc1.stop(now + 0.35);
 
-    // Second bell tone (C#6 ~ 1108.73Hz)
+    // Tone 2: Ascending crystal chime (D#6 ~ 1244.5Hz)
     const osc2 = ctx.createOscillator();
     const gain2 = ctx.createGain();
-    osc2.type = "triangle";
-    osc2.frequency.setValueAtTime(1108.73, now + 0.08);
+    osc2.type = "sine";
+    osc2.frequency.setValueAtTime(1244.51, now + 0.09);
 
-    gain2.gain.setValueAtTime(0.06, now + 0.08);
-    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.36);
+    gain2.gain.setValueAtTime(0.75, now + 0.09);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
 
     osc2.connect(gain2);
-    gain2.connect(ctx.destination);
+    gain2.connect(masterGain);
 
-    osc2.start(now + 0.08);
-    osc2.stop(now + 0.38);
+    osc2.start(now + 0.09);
+    osc2.stop(now + 0.58);
+
+    // Tone 3: Warm subtle resonance harmonic (E5 ~ 659.25Hz)
+    const osc3 = ctx.createOscillator();
+    const gain3 = ctx.createGain();
+    osc3.type = "triangle";
+    osc3.frequency.setValueAtTime(659.25, now + 0.09);
+
+    gain3.gain.setValueAtTime(0.25, now + 0.09);
+    gain3.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+
+    osc3.connect(gain3);
+    gain3.connect(masterGain);
+
+    osc3.start(now + 0.09);
+    osc3.stop(now + 0.45);
   } catch (err) {
-    console.debug("Audio notification suppressed:", err);
+    console.debug("Chime playback error:", err);
   }
 }
 

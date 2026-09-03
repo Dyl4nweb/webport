@@ -86,11 +86,11 @@ export function AdminConfirmProvider({ children }: { children: React.ReactNode }
           />
 
           {/* Modal Dialog Card */}
-          <div className="admin-chat-panel relative z-10 w-full max-w-md overflow-hidden rounded-apple-xl border border-line/70 bg-surface-card p-6 shadow-2xl transition-all duration-200 animate-scaleIn dark:border-line-dark/70 dark:bg-surface-dark-card">
-            <div className="flex items-start gap-4">
+          <div className="admin-chat-panel relative z-10 w-full max-w-md overflow-hidden rounded-apple-xl border border-line/70 bg-surface-card p-5 sm:p-6 shadow-2xl transition-all duration-200 animate-scaleIn dark:border-line-dark/70 dark:bg-surface-dark-card">
+            <div className="flex items-start gap-3.5 sm:gap-4">
               {/* Tone Icon Badge */}
               <div
-                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${
+                className={`flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-full ${
                   tone === "danger"
                     ? "border border-red-500/30 bg-red-500/10 text-red-600 dark:border-red-400/30 dark:bg-red-400/15 dark:text-red-400"
                     : tone === "warning"
@@ -151,23 +151,23 @@ export function AdminConfirmProvider({ children }: { children: React.ReactNode }
               <div className="flex-1">
                 <h3
                   id="confirm-modal-title"
-                  className="text-[17px] font-semibold tracking-tight text-ink dark:text-ink-dark"
+                  className="text-[16px] sm:text-[17px] font-semibold tracking-tight text-ink dark:text-ink-dark"
                 >
                   {options.title}
                 </h3>
-                <p className="mt-1.5 text-[14px] leading-relaxed text-ink-secondary dark:text-ink-dark-secondary">
+                <p className="mt-1.5 text-[13px] sm:text-[14px] leading-relaxed text-ink-secondary dark:text-ink-dark-secondary">
                   {options.message}
                 </p>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="mt-6 flex items-center justify-end gap-2.5">
+            <div className="mt-5 sm:mt-6 flex flex-wrap items-center justify-end gap-2 sm:gap-2.5">
               <button
                 ref={cancelBtnRef}
                 type="button"
                 onClick={() => handleResolve(false)}
-                className="admin-chat-btn rounded-apple-sm border border-line/70 bg-surface px-4 py-2 text-[13px] font-medium text-ink transition-colors hover:bg-ink/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 dark:border-line-dark/70 dark:bg-surface-dark dark:text-ink-dark dark:hover:bg-ink-dark/[0.06]"
+                className="admin-chat-btn rounded-apple-sm border border-line/70 bg-surface px-3.5 py-1.5 sm:px-4 sm:py-2 text-[12.5px] sm:text-[13px] font-medium text-ink transition-colors hover:bg-ink/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 dark:border-line-dark/70 dark:bg-surface-dark dark:text-ink-dark dark:hover:bg-ink-dark/[0.06]"
               >
                 {options.cancelLabel}
               </button>
@@ -184,7 +184,7 @@ export function AdminConfirmProvider({ children }: { children: React.ReactNode }
                       : undefined,
                   color: "#ffffff",
                 }}
-                className={`admin-chat-btn rounded-apple-sm px-4 py-2 text-[13px] font-semibold text-white shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 ${
+                className={`admin-chat-btn rounded-apple-sm px-3.5 py-1.5 sm:px-4 sm:py-2 text-[12.5px] sm:text-[13px] font-semibold text-white shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 ${
                   tone === "danger"
                     ? "bg-red-600 hover:bg-red-700 focus-visible:ring-red-500/40"
                     : tone === "warning"

@@ -77,19 +77,13 @@ export default function VisitorCount() {
   if (count === null) return null;
 
   return (
-    <span className="inline-flex items-center gap-2 text-[13px] font-medium select-none">
-      {/* Pulsing live dot (Theme adaptive) */}
-      <span className="relative flex h-2.5 w-2.5 items-center justify-center">
-        <span className="footer-visitor-pulse absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-        <span className="footer-visitor-dot relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-      </span>
-
+    <span className="inline-flex items-center gap-2 sm:gap-2.5 select-none">
       {/* Black & White Character Avatars Facepile (Static, non-clickable) */}
-      <span className="flex -space-x-2 overflow-hidden">
+      <span className="flex -space-x-1 sm:-space-x-1.5 overflow-hidden shrink-0">
         {BW_CHARACTERS.map((char, i) => (
           <span
             key={i}
-            className="inline-flex h-5 w-5 shrink-0 overflow-hidden rounded-full ring-1.5 ring-surface-alt dark:ring-surface-dark-alt"
+            className="inline-flex h-[18px] w-[18px] sm:h-[19px] sm:w-[19px] shrink-0 overflow-hidden rounded-full ring-1.5 ring-surface-alt dark:ring-surface-dark-alt"
             title={char.title}
           >
             {char.svg}
@@ -97,9 +91,9 @@ export default function VisitorCount() {
         ))}
       </span>
 
-      {/* Visitor Count Text — Number only glitch */}
-      <span className="tracking-tight text-ink-secondary dark:text-ink-dark-secondary select-none">
-        <strong className="font-semibold text-ink dark:text-ink-dark">
+      {/* Visitor Count Text — Number only glitch with comfortable breathing room */}
+      <span className="flex items-center gap-1.5 text-[11.5px] sm:text-[12px] font-medium text-ink-secondary dark:text-ink-dark-secondary select-none whitespace-nowrap">
+        <strong className="font-semibold text-ink dark:text-ink-dark tabular-nums tracking-tight">
           <GlitchText
             text={count.toLocaleString()}
             triggerOnMount={true}
@@ -107,8 +101,8 @@ export default function VisitorCount() {
             delay={150}
             duration={700}
           />
-        </strong>{" "}
-        visitors
+        </strong>
+        <span>visitors</span>
       </span>
     </span>
   );

@@ -162,7 +162,7 @@ export default function AdminVarexAiPage() {
           <button
             type="button"
             onClick={() => setIsSettingsOpen(true)}
-            className="admin-chat-btn admin-chat-badge inline-flex items-center gap-1.5 rounded-apple-sm border px-3 py-1.5 text-[12px] font-medium transition-all hover:border-accent"
+            className="admin-chat-btn admin-chat-badge inline-flex items-center gap-1.5 rounded-apple-sm border px-2.5 sm:px-3 py-1.5 text-[11.5px] sm:text-[12px] font-medium transition-all hover:border-accent"
             title="Click to view token usage & model settings"
           >
             <span
@@ -185,11 +185,11 @@ export default function AdminVarexAiPage() {
           <button
             type="button"
             onClick={() => setIsSettingsOpen(true)}
-            className="admin-chat-btn inline-flex h-9 items-center gap-1.5 rounded-apple-sm border border-line/70 bg-surface-card px-3 text-[13px] font-medium text-ink transition-colors hover:bg-ink/[0.04] dark:border-line-dark/70 dark:bg-surface-dark-card dark:text-ink-dark dark:hover:bg-ink-dark/[0.06]"
+            className="admin-chat-btn inline-flex h-8 sm:h-9 items-center gap-1.5 rounded-apple-sm border border-line/70 bg-surface-card px-2.5 sm:px-3 text-[12px] sm:text-[13px] font-medium text-ink transition-colors hover:bg-ink/[0.04] dark:border-line-dark/70 dark:bg-surface-dark-card dark:text-ink-dark dark:hover:bg-ink-dark/[0.06]"
           >
             <svg
-              width="15"
-              height="15"
+              width="14"
+              height="14"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -207,12 +207,12 @@ export default function AdminVarexAiPage() {
           <button
             type="button"
             onClick={handleClearChat}
-            className="admin-chat-btn inline-flex h-9 items-center gap-1.5 rounded-apple-sm border border-line/70 bg-surface-card px-3 text-[13px] font-medium text-ink-secondary transition-colors hover:text-red-500 dark:border-line-dark/70 dark:bg-surface-dark-card dark:text-ink-dark-secondary dark:hover:text-red-400"
+            className="admin-chat-btn inline-flex h-8 sm:h-9 items-center gap-1.5 rounded-apple-sm border border-line/70 bg-surface-card px-2.5 sm:px-3 text-[12px] sm:text-[13px] font-medium text-ink-secondary transition-colors hover:text-red-500 dark:border-line-dark/70 dark:bg-surface-dark-card dark:text-ink-dark-secondary dark:hover:text-red-400"
             title="Clear Chat History"
           >
             <svg
-              width="14"
-              height="14"
+              width="13"
+              height="13"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

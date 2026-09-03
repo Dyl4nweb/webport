@@ -257,7 +257,7 @@ export default function AdminBookingsPage() {
           type="button"
           onClick={runSync}
           disabled={syncing}
-          className="inline-flex items-center justify-center gap-1.5 rounded-full border border-line px-4 py-2 text-[13px] font-medium text-ink transition-colors duration-150 hover:border-ink/15 hover:bg-ink/[0.04] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:pointer-events-none disabled:opacity-40 dark:border-line-dark dark:text-ink-dark dark:hover:border-ink-dark/25 dark:hover:bg-ink-dark/[0.06]"
+          className="self-start sm:self-auto inline-flex items-center justify-center gap-1.5 rounded-full border border-line px-3.5 py-1.5 sm:px-4 sm:py-2 text-[12.5px] sm:text-[13px] font-medium text-ink transition-colors duration-150 hover:border-ink/15 hover:bg-ink/[0.04] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:pointer-events-none disabled:opacity-40 dark:border-line-dark dark:text-ink-dark dark:hover:border-ink-dark/25 dark:hover:bg-ink-dark/[0.06]"
         >
           {syncing ? "Syncing…" : "Sync now"}
         </button>
@@ -271,7 +271,7 @@ export default function AdminBookingsPage() {
       )}
 
       {/* Upcoming */}
-      <section className="rounded-apple-lg border border-line/70 bg-surface-card p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
+      <section className="rounded-apple-lg border border-line/70 bg-surface-card p-4 sm:p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
         <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
           Upcoming
         </h2>
@@ -292,7 +292,7 @@ export default function AdminBookingsPage() {
 
       {/* Past */}
       {!loading && (
-        <section className="rounded-apple-lg border border-line/70 bg-surface-card p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
+        <section className="rounded-apple-lg border border-line/70 bg-surface-card p-4 sm:p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
           <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
             Past &amp; cancelled
           </h2>

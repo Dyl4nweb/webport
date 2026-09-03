@@ -206,6 +206,11 @@ export default async function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `!function(){
+              if (typeof window !== 'undefined' && window.location.pathname.indexOf('/admin') === 0 && window.location.pathname.indexOf('/admin/login') !== 0) {
+                var sAdmin = document.getElementById('splash');
+                if (sAdmin) sAdmin.style.display = 'none';
+                return;
+              }
               if (typeof history !== 'undefined' && 'scrollRestoration' in history) {
                 history.scrollRestoration = 'manual';
               }
