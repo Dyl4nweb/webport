@@ -450,7 +450,7 @@ export const MacControlCenter = memo(function MacControlCenter({
               {SITE.name}
             </span>
             <span className="text-[10px] text-ink-secondary/70 dark:text-ink-dark-secondary/70 truncate">
-              Full Stack Engineer • Portfolio
+              Software Engineer • Portfolio
             </span>
           </div>
           <button
