@@ -17,12 +17,7 @@ export default function AboutCredentials() {
   );
 
   return (
-    <section className="relative overflow-hidden py-12 sm:py-16 md:py-24 bg-surface-alt/25 dark:bg-surface-dark-alt/20">
-      {/* Ambient background glow */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[480px] w-[800px] -translate-x-1/2 transform-gpu rounded-full bg-accent/[0.035] blur-3xl dark:bg-accent-dark/[0.035]"
-      />
+    <section className="relative py-14 sm:py-18 md:py-24">
 
       <Container className="flex flex-col gap-8 sm:gap-12 md:gap-14 px-4 sm:px-6">
         {/* Section Heading */}

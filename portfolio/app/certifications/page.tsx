@@ -46,7 +46,7 @@ export default async function CertificationsPage({ searchParams }: Certification
             </Reveal>
 
             <Reveal delay={140}>
-              <h1 className="mt-4 max-w-3xl text-balance text-3xl min-[360px]:text-4xl sm:text-5xl md:text-6xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.08]">
+              <h1 className="mt-4 max-w-5xl text-balance text-3xl min-[360px]:text-4xl sm:text-5xl md:text-6xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.08] lg:whitespace-nowrap">
                 <GlitchText text="Learning that goes beyond the code." />
               </h1>
             </Reveal>
