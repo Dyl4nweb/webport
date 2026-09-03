@@ -206,9 +206,18 @@ export default async function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `!function(){
-              if (typeof window !== 'undefined' && window.location.pathname.indexOf('/admin') === 0 && window.location.pathname.indexOf('/admin/login') !== 0) {
+              if (typeof window !== 'undefined' && window.location.pathname.indexOf('/admin') === 0) {
                 var sAdmin = document.getElementById('splash');
-                if (sAdmin) sAdmin.style.display = 'none';
+                if (sAdmin) {
+                  sAdmin.style.display = 'none';
+                  sAdmin.classList.add('is-done');
+                }
+                var mAdmin = document.getElementById('app-main');
+                if (mAdmin) {
+                  mAdmin.classList.add('is-ready');
+                  mAdmin.style.opacity = '1';
+                }
+                window.dispatchEvent(new CustomEvent('splash:ready'));
                 return;
               }
               if (typeof history !== 'undefined' && 'scrollRestoration' in history) {
