@@ -221,24 +221,29 @@ export default function AdminAIChatHead() {
                 </div>
               )}
 
+              {/* Suggestions inside chat feed (wrapped, not horizontal scroll) */}
+              {messages.length <= 1 && !loading && (
+                <div className="pt-2">
+                  <p className="mb-2 text-[10.5px] font-semibold uppercase tracking-wider text-ink-secondary/70 dark:text-ink-dark-secondary/70">
+                    Suggested prompts
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {QUICK_SUGGESTIONS.map((sug, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => handleSend(sug)}
+                        className="admin-chat-chip rounded-apple-sm border border-line/60 bg-surface-card px-2.5 py-1.5 text-[11px] font-medium text-ink-secondary transition-all hover:border-accent hover:text-accent dark:border-line-dark/60 dark:bg-surface-dark-card dark:text-ink-dark-secondary dark:hover:border-accent-dark dark:hover:text-accent-dark text-left shadow-sm"
+                      >
+                        {sug}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div ref={messagesEndRef} />
             </div>
-
-            {/* Quick Suggestions directly above input */}
-            {!loading && (
-              <div className="flex items-center gap-1.5 overflow-x-auto border-t border-line/40 bg-surface/50 px-3 py-1.5 dark:border-line-dark/40 dark:bg-surface-dark-alt/50 no-scrollbar">
-                {QUICK_SUGGESTIONS.map((sug, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => handleSend(sug)}
-                    className="admin-chat-chip shrink-0 rounded-full border border-line/60 bg-surface-card px-2.5 py-1 text-[10px] font-medium text-ink-secondary transition-all hover:border-accent hover:text-accent dark:border-line-dark/60 dark:bg-surface-dark-card dark:text-ink-dark-secondary dark:hover:border-accent-dark dark:hover:text-accent-dark shadow-sm"
-                  >
-                    {sug}
-                  </button>
-                ))}
-              </div>
-            )}
 
             {/* Input Bar */}
             <form

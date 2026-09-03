@@ -345,30 +345,32 @@ export default function AdminVarexAiPage() {
             </div>
           )}
 
+          {/* Suggestions inside chat feed (wrapped, not horizontal scroll) */}
+          {messages.length <= 1 && !loading && (
+            <div className="pt-2">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-ink-secondary/70 dark:text-ink-dark-secondary/70">
+                Suggested Actions:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {QUICK_SUGGESTIONS.map((sug, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => handleSend(sug)}
+                    className="admin-chat-chip rounded-apple-sm border border-line/60 dark:border-line-dark/60 bg-surface-card dark:bg-surface-dark-card px-3 py-1.5 text-[12px] font-medium text-ink-secondary hover:border-accent hover:text-accent dark:hover:border-accent-dark dark:hover:text-accent-dark transition-all shadow-sm text-left"
+                  >
+                    {sug}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div ref={messagesEndRef} />
         </div>
 
         {/* Input Bar Section */}
         <div className="border-t border-line/60 bg-surface p-3.5 dark:border-line-dark/60 dark:bg-surface-dark-alt rounded-b-apple-xl">
-          {/* Quick Suggestions directly above input */}
-          {!loading && (
-            <div className="mb-2.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
-              <span className="text-[11px] font-medium text-ink-secondary/70 dark:text-ink-dark-secondary/70 shrink-0">
-                Suggestions:
-              </span>
-              {QUICK_SUGGESTIONS.map((sug, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => handleSend(sug)}
-                  className="admin-chat-chip shrink-0 rounded-full border border-line/60 dark:border-line-dark/60 bg-surface-card dark:bg-surface-dark-card px-2.5 py-1 text-[11px] font-medium text-ink-secondary hover:border-accent hover:text-accent dark:hover:border-accent-dark dark:hover:text-accent-dark transition-all shadow-sm"
-                >
-                  {sug}
-                </button>
-              ))}
-            </div>
-          )}
-
           <form
             onSubmit={(e) => {
               e.preventDefault();
