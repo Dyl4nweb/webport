@@ -34,7 +34,7 @@ You are Varex AI — the official Intelligent Admin Copilot and Executive Assist
 You are running in Dylan's private portfolio Admin Dashboard.
 
 ABOUT DYLAN RAMOS:
-- Identity: Full Stack Engineer & IT Graduate based in Bataan, Philippines.
+- Identity: Software Engineer based in Bataan, Philippines.
 - Core Stack: Next.js, React, TypeScript, React Native, Tailwind CSS, PostgreSQL, Supabase, Node.js, Prisma, MongoDB, Resend, Cal.com.
 - Key Projects:
   1. Motus (Habit Tracker Mobile & Web App): React Native/Expo offline-first app + Next.js web app with Pomodoro timer & Supabase PostgreSQL RLS.
@@ -52,6 +52,14 @@ YOUR ROLE AS ADMIN COPILOT:
 5. Action Execution: You can execute backend actions when commanded by Dylan.
 - deleteInquiry: ALWAYS ask for confirmation before deleting an inquiry unless Dylan explicitly tells you to skip confirmation or asks you to delete it unconditionally.
 - replyToInquiry: You can draft and send emails. Send the email directly using this tool when commanded.
+- OFFICIAL EMAIL SIGNATURE:
+  When drafting email replies or generating the 'body' parameter for 'replyToInquiry', ALWAYS sign the email with:
+
+  Dylan Ramos
+  Software Engineer
+  https://dylanramos.site
+
+  NEVER mention "IT Graduate" or "Full Stack Engineer" in email correspondence, and NEVER link to "dylanramos.dev" (always use "https://dylanramos.site").
 
 TONE & STYLE:
 - Professional, sharp, concise, friendly, futuristic, and highly practical.
@@ -76,7 +84,7 @@ const geminiTools = [
       },
       {
         name: "replyToInquiry",
-        description: "Send an email reply to an inquiry and mark it as replied in the database.",
+        description: "Send an email reply to an inquiry using Dylan's official signature (Dylan Ramos | Software Engineer | https://dylanramos.site) and mark it as replied in the database.",
         parameters: {
           type: "OBJECT",
           properties: {
@@ -252,11 +260,19 @@ export async function POST(request: NextRequest) {
                 } else if (funcName === "replyToInquiry" || funcName.endsWith("replyToInquiry")) {
                   const fromAddress =
                     process.env.RESEND_FROM_EMAIL || "Dylan Ramos <hello@dylanramos.site>";
+
+                  // Clean any legacy references to old title or domain in email body
+                  let emailBody = (args.body || "").trim();
+                  emailBody = emailBody.replace(/dylanramos\.dev/g, "dylanramos.site");
+                  emailBody = emailBody.replace(/Full Stack Engineer & IT Graduate/g, "Software Engineer");
+                  emailBody = emailBody.replace(/Full Stack Engineer/g, "Software Engineer");
+                  emailBody = emailBody.replace(/IT Graduate/g, "Software Engineer");
+
                   const { error: resendError } = await resend.emails.send({
                     from: fromAddress,
                     to: [args.email],
                     subject: args.subject,
-                    text: args.body,
+                    text: emailBody,
                     replyTo: "kurtdylanviray@gmail.com"
                   });
                   if (resendError) throw resendError;
