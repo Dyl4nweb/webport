@@ -3,11 +3,13 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
 
-const CIPHER_UPPER = "ABCDEFGHJKLMNOPQRSTUVWXYZ0123456789";
-const CIPHER_LOWER = "abcdefghjknopqrsuvxyz";
+const CIPHER_UPPER_NORMAL = "ABCDEFGHJKLNOPRSTUVXYZ";
+const CIPHER_UPPER_WIDE = "WMQ";
+const CIPHER_UPPER_NARROW = "IJ";
+const CIPHER_LOWER_NORMAL = "abcdeghknopqsuvxyz";
+const CIPHER_LOWER_NARROW = "ijltrf";
+const CIPHER_LOWER_WIDE = "wm";
 const CIPHER_NUMBERS = "0123456789";
-const NARROW_CHARS = "ijltrfI1!|:;/";
-const WIDE_CHARS = "wmWM#&@%Q";
 
 function getCipherChar(char: string): string {
   // Preserve spaces and sentence punctuation for clarity and clean formatting
@@ -38,19 +40,28 @@ function getCipherChar(char: string): string {
     return char;
   }
 
-  if (NARROW_CHARS.includes(char)) {
-    return NARROW_CHARS[Math.floor(Math.random() * NARROW_CHARS.length)];
+  if (CIPHER_LOWER_NARROW.includes(char)) {
+    return CIPHER_LOWER_NARROW[Math.floor(Math.random() * CIPHER_LOWER_NARROW.length)];
   }
-  if (WIDE_CHARS.includes(char)) {
-    return WIDE_CHARS[Math.floor(Math.random() * WIDE_CHARS.length)];
+  if (CIPHER_LOWER_WIDE.includes(char)) {
+    return CIPHER_LOWER_WIDE[Math.floor(Math.random() * CIPHER_LOWER_WIDE.length)];
+  }
+  if (CIPHER_UPPER_NARROW.includes(char)) {
+    return CIPHER_UPPER_NARROW[Math.floor(Math.random() * CIPHER_UPPER_NARROW.length)];
+  }
+  if (CIPHER_UPPER_WIDE.includes(char)) {
+    return CIPHER_UPPER_WIDE[Math.floor(Math.random() * CIPHER_UPPER_WIDE.length)];
   }
   if (char >= "0" && char <= "9") {
     return CIPHER_NUMBERS[Math.floor(Math.random() * CIPHER_NUMBERS.length)];
   }
   if (char >= "A" && char <= "Z") {
-    return CIPHER_UPPER[Math.floor(Math.random() * CIPHER_UPPER.length)];
+    return CIPHER_UPPER_NORMAL[Math.floor(Math.random() * CIPHER_UPPER_NORMAL.length)];
   }
-  return CIPHER_LOWER[Math.floor(Math.random() * CIPHER_LOWER.length)];
+  if (char >= "a" && char <= "z") {
+    return CIPHER_LOWER_NORMAL[Math.floor(Math.random() * CIPHER_LOWER_NORMAL.length)];
+  }
+  return char;
 }
 
 function isAppReady(): boolean {

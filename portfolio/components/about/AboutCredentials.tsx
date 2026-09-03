@@ -27,12 +27,13 @@ export default function AboutCredentials() {
       <Container className="flex flex-col gap-8 sm:gap-12 md:gap-14 px-4 sm:px-6">
         {/* Section Heading */}
         <Reveal>
-          <div className="mx-auto w-full max-w-2xl text-center">
+          <div className="mx-auto w-full max-w-4xl text-center">
             <SectionHeading
               eyebrow="Academics & Credentials"
               title="Education & Certifications"
               deck="Academic degree, technical background, and verified industry credentials."
               align="center"
+              titleClassName="md:whitespace-nowrap max-w-none"
             />
           </div>
         </Reveal>

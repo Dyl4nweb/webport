@@ -75,7 +75,7 @@ export default function ContactPage() {
 
           {/* Main Headline matching Hero style */}
           <Reveal delay={120}>
-            <h1 className="mt-3.5 sm:mt-5 max-w-3xl text-balance text-2xl min-[360px]:text-[28px] sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.12] sm:leading-[1.08] text-center">
+            <h1 className="mt-3.5 sm:mt-5 max-w-5xl text-balance text-2xl min-[360px]:text-[28px] sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.12] sm:leading-[1.08] text-center lg:whitespace-nowrap">
               <GlitchText text="Let's build something exceptional." />
             </h1>
           </Reveal>

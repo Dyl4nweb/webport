@@ -72,6 +72,7 @@ export default function Services() {
             eyebrow="Services"
             title="How I can help your team or business"
             align="left"
+            titleClassName="lg:whitespace-nowrap max-w-none"
           />
         </Reveal>
 

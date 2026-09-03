@@ -7,6 +7,7 @@ interface SectionHeadingProps {
   deck?: string;
   align?: "left" | "center";
   className?: string;
+  titleClassName?: string;
 }
 
 export default function SectionHeading({
@@ -15,6 +16,7 @@ export default function SectionHeading({
   deck,
   align = "center",
   className,
+  titleClassName,
 }: SectionHeadingProps) {
   return (
     <div
@@ -29,7 +31,12 @@ export default function SectionHeading({
           {eyebrow}
         </span>
       )}
-      <h2 className="max-w-2xl text-balance text-2xl min-[360px]:text-[26px] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-ink dark:text-ink-dark leading-[1.14] sm:leading-[1.08]">
+      <h2
+        className={cn(
+          "max-w-4xl text-balance text-2xl min-[360px]:text-[26px] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-ink dark:text-ink-dark leading-[1.14] sm:leading-[1.08]",
+          titleClassName
+        )}
+      >
         <GlitchText text={title} />
       </h2>
       {deck && (
