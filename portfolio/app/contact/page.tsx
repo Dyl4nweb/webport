@@ -54,35 +54,23 @@ export default function ContactPage() {
 
         {/* Header content */}
         <div className="flex flex-col items-center text-center">
-          {/* Availability Status (Minimalist, cohesive layout) */}
-          <Reveal delay={60}>
-            <div className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 select-none text-center">
-              <div className="inline-flex items-center gap-1.5 whitespace-nowrap">
-                <span className="relative flex h-2 w-2 shrink-0">
-                  <span className="contact-status-pulse absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="contact-status-dot relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-                </span>
-                <span className="font-semibold uppercase tracking-[0.08em] sm:tracking-[0.14em] text-[10px] min-[360px]:text-[10.5px] sm:text-[11.5px] text-ink dark:text-ink-dark">
-                  AVAILABLE FOR NEW OPPORTUNITIES
-                </span>
-              </div>
-              <span className="text-ink-tertiary dark:text-ink-dark-secondary text-[10px]">·</span>
-              <span className="text-[10.5px] sm:text-[12px] text-ink-secondary dark:text-ink-dark-secondary font-medium whitespace-nowrap">
-                Manila (UTC+8)
-              </span>
-            </div>
+          {/* Eyebrow matching Projects, Experience, and Certifications pages */}
+          <Reveal delay={80}>
+            <span className="font-mono text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.18em] text-accent dark:text-accent-dark">
+              Contact
+            </span>
           </Reveal>
 
-          {/* Main Headline matching Hero style */}
+          {/* Main Headline matching other pages (Projects, Experience) */}
           <Reveal delay={120}>
-            <h1 className="mt-3.5 sm:mt-5 max-w-5xl text-balance text-2xl min-[360px]:text-[28px] sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.12] sm:leading-[1.08] text-center lg:whitespace-nowrap">
+            <h1 className="mt-4 max-w-5xl text-balance text-3xl min-[360px]:text-4xl sm:text-5xl md:text-[48px] lg:text-[56px] xl:text-6xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.08] text-center md:whitespace-nowrap">
               <GlitchText text="Let's build something exceptional." />
             </h1>
           </Reveal>
 
           {/* Punchy, Clean Subhead */}
           <Reveal delay={180}>
-            <p className="mt-3 sm:mt-4 max-w-xl text-[14px] sm:text-[17px] leading-relaxed text-ink-secondary dark:text-ink-dark-secondary">
+            <p className="mt-5 max-w-xl text-balance text-[16px] sm:text-[17px] md:text-[19px] leading-[1.75] text-ink-secondary dark:text-ink-dark-secondary">
               Open for full-time engineering roles, freelance builds, and technical consultations.
             </p>
           </Reveal>
