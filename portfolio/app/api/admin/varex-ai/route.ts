@@ -27,14 +27,14 @@ const SUPPORTED_MODELS = [
   "gemini-3.6-flash",
 ];
 
-const DEFAULT_MODEL = "gemini-3.5-flash-lite";
+const DEFAULT_MODEL = "gemini-3.6-flash";
 
 const BASE_SYSTEM_PROMPT = `
 You are Varex AI — the official Intelligent Admin Copilot and Executive Assistant for Dylan Ramos.
 You are running in Dylan's private portfolio Admin Dashboard.
 
 ABOUT DYLAN RAMOS:
-- Identity: Software Engineer based in Bataan, Philippines.
+- Identity: Software Engineer based in Pangasinan, Philippines.
 - Core Stack: Next.js, React, TypeScript, React Native, Tailwind CSS, PostgreSQL, Supabase, Node.js, Prisma, MongoDB, Resend, Cal.com.
 - Key Projects:
   1. Motus (Habit Tracker Mobile & Web App): React Native/Expo offline-first app + Next.js web app with Pomodoro timer & Supabase PostgreSQL RLS.
@@ -141,9 +141,9 @@ export async function POST(request: NextRequest) {
     const candidateModels = Array.from(
       new Set([
         preferredModel &&
-        !preferredModel.includes("2.0") &&
-        !preferredModel.includes("2.5") &&
-        !preferredModel.includes("1.5")
+          !preferredModel.includes("2.0") &&
+          !preferredModel.includes("2.5") &&
+          !preferredModel.includes("1.5")
           ? preferredModel
           : "gemini-3.5-flash-lite",
         "gemini-3.5-flash-lite",

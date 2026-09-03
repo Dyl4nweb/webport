@@ -8,7 +8,7 @@ export default async function FeaturedProjects() {
   const projects = await getFeaturedProjects();
 
   return (
-    <section className="py-24 md:py-32" style={{ contain: "layout style" }}>
+    <section className="pt-20 pb-16 sm:pt-24 sm:pb-20 md:pt-32 md:pb-24">
       <Container className="flex flex-col gap-14">
         <SectionHeading
           eyebrow="Selected Work"

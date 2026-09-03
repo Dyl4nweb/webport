@@ -142,7 +142,7 @@ export default function HobbiesInterests() {
                     <div
                       key={hobby.id}
                       className={cn(
-                        "group inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[12px] sm:text-[13px] font-semibold uppercase tracking-wider transition-all duration-300 select-none cursor-default",
+                        "group inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[12px] sm:text-[13px] font-semibold uppercase tracking-wider transition-all duration-300 select-none",
                         "border border-line/70 dark:border-line-dark/70 bg-surface-card dark:bg-surface-dark-card text-ink dark:text-ink-dark shadow-sm",
                         "hover:border-black/30 dark:hover:border-white/30 hover:bg-surface-alt dark:hover:bg-[#232326] hover:scale-105 hover:shadow-md"
                       )}

@@ -8,7 +8,7 @@ export const projects: Project[] = [
     description:
       "A luxury dark-themed habit tracking mobile app built offline-first with React Native and Expo, featuring one-tap check-ins, freeze credits, Pomodoro focus sessions, milestone badges, and 70-day consistency heatmaps powered by AsyncStorage. Soon releasing on the Google Play Store, with iOS App Store rollout targeted by next month — stay updated!",
     role: "Lead Mobile Developer",
-    year: "2025 — Present",
+    year: "2026 — Present",
     category: "Mobile App",
     image: "/images/projects/motus-mobile.png",
     screenshots: [

@@ -1412,14 +1412,22 @@ html[data-admin] .overflow-y-auto::-webkit-scrollbar-thumb:hover {
 
 @media (hover: hover) and (pointer: fine) {
   html:not([data-admin]),
-  html:not([data-admin]) body,
-  html:not([data-admin]) #splash,
-  html:not([data-admin]) a,
-  html:not([data-admin]) button,
-  html:not([data-admin]) [role="button"],
-  html:not([data-admin]) input,
-  html:not([data-admin]) textarea {
-    cursor: url("data:image/svg+xml,%3Csvg width='24' height='32' viewBox='0 0 24 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5 1.5L1.5 25.5L7.2 20.2L12.4 30.5L16.2 28.6L11 18.3L18.8 18.3L1.5 1.5Z' fill='%23000000' stroke='%23FFFFFF' stroke-width='1.8' stroke-linejoin='miter' stroke-miterlimit='4'/%3E%3C/svg%3E") 0 0, auto;
+  html:not([data-admin]) * {
+    cursor: url("data:image/svg+xml,%3Csvg width='24' height='32' viewBox='0 0 24 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5 1.5L1.5 25.5L7.2 20.2L12.4 30.5L16.2 28.6L11 18.3L18.8 18.3L1.5 1.5Z' fill='%23000000' stroke='%23FFFFFF' stroke-width='1.8' stroke-linejoin='miter' stroke-miterlimit='4'/%3E%3C/svg%3E") 0 0, auto !important;
+  }
+
+  html:not([data-admin]) .cursor-grab {
+    cursor: grab !important;
+  }
+
+  html:not([data-admin]) .cursor-grabbing {
+    cursor: grabbing !important;
+  }
+
+  html:not([data-admin]) :disabled,
+  html:not([data-admin]) [disabled],
+  html:not([data-admin]) .cursor-not-allowed {
+    cursor: not-allowed !important;
   }
 }
 

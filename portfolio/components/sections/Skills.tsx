@@ -47,7 +47,7 @@ function SkillPill({ name }: { name: string }) {
         "px-3.5 py-1.5 sm:px-4.5 sm:py-2",
         "transition-[background-color,border-color,box-shadow,transform] duration-200",
         "hover:-translate-y-0.5 hover:bg-white dark:hover:bg-[#1c1c1f] hover:border-black/20 dark:hover:border-white/20 hover:shadow-md",
-        "cursor-default select-none"
+        "select-none"
       )}
     >
       <TechIcon name={name} />

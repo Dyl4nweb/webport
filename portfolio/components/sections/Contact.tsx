@@ -24,39 +24,38 @@ export default function Contact() {
   };
 
   return (
-    <section className="relative overflow-hidden py-20 sm:py-28 md:py-32" style={{ contain: "layout style" }}>
-      {/* Subtle Monochrome Ambient Glow */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-0 -z-20 h-[360px] w-[600px] -translate-x-1/2 rounded-full bg-black/[0.02] dark:bg-white/[0.03] blur-3xl"
-      />
-
+    <section className="relative pt-14 pb-20 sm:pt-16 sm:pb-28 md:pt-20 md:pb-32">
       <Container>
         {/* Header content */}
         <div className="flex flex-col items-center text-center">
-          {/* Availability Status (Minimalist, no card container) */}
+          {/* Availability Status (Minimalist, cohesive layout) */}
           <Reveal>
-            <div className="flex flex-col min-[420px]:flex-row items-center justify-center gap-1.5 sm:gap-2 select-none text-center">
-              <div className="inline-flex items-center gap-1.5 sm:gap-2">
-                <span className="relative flex h-2 w-2">
+            <div className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 select-none text-center">
+              <div className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                <span className="relative flex h-2 w-2 shrink-0">
                   <span className="contact-status-pulse absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                   <span className="contact-status-dot relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                 </span>
-                <span className="font-semibold uppercase tracking-[0.11em] sm:tracking-[0.14em] text-[10px] min-[360px]:text-[11px] sm:text-[11.5px] text-ink dark:text-ink-dark">
+                <span className="font-semibold uppercase tracking-[0.08em] sm:tracking-[0.14em] text-[10px] min-[360px]:text-[10.5px] sm:text-[11.5px] text-ink dark:text-ink-dark">
                   AVAILABLE FOR NEW OPPORTUNITIES
                 </span>
               </div>
-              <span className="hidden min-[420px]:inline text-ink-tertiary dark:text-ink-dark-secondary text-[10px]">·</span>
-              <span className="text-[11px] sm:text-[12px] text-ink-secondary dark:text-ink-dark-secondary font-medium">
+              <span className="text-ink-tertiary dark:text-ink-dark-secondary text-[10px]">·</span>
+              <span className="text-[10.5px] sm:text-[12px] text-ink-secondary dark:text-ink-dark-secondary font-medium whitespace-nowrap">
                 Manila (UTC+8)
               </span>
             </div>
           </Reveal>
 
-          {/* Main Headline matching Hero style */}
+          {/* Main Headline with GlitchText and Clean Responsive Break */}
           <Reveal delay={60}>
-            <h2 className="mt-3.5 sm:mt-4 max-w-3xl text-balance text-2xl min-[360px]:text-[28px] sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.12] sm:leading-[1.08]">
-              <GlitchText text="Have a project in mind? Let's build it." />
+            <h2 className="mt-3.5 sm:mt-4 max-w-3xl text-2xl min-[360px]:text-[26px] sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-[-0.03em] sm:tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.2] sm:leading-[1.08] text-center">
+              <span className="block sm:inline">
+                <GlitchText text="Have a project in mind?" />
+              </span>{" "}
+              <span className="block sm:inline">
+                <GlitchText text="Let's build it." />
+              </span>
             </h2>
           </Reveal>
         </div>

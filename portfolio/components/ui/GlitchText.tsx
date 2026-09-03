@@ -3,11 +3,11 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
 
-const CIPHER_UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_#*+~$&%<>";
-const CIPHER_LOWER = "abcdefghijklmnopqrstuvwxyz0123456789_#*+~$&%<>";
+const CIPHER_UPPER = "ABCDEFGHJKLMNOPQRSTUVWXYZ0123456789";
+const CIPHER_LOWER = "abcdefghjknopqrsuvxyz";
 const CIPHER_NUMBERS = "0123456789";
 const NARROW_CHARS = "ijltrfI1!|:;/";
-const WIDE_CHARS = "wmWM#&@%";
+const WIDE_CHARS = "wmWM#&@%Q";
 
 function getCipherChar(char: string): string {
   // Preserve spaces and sentence punctuation for clarity and clean formatting
@@ -230,7 +230,7 @@ export default function GlitchText({
           ref={containerRef as any}
           onMouseEnter={triggerOnHover ? startGlitch : undefined}
           onTouchStart={triggerOnHover ? startGlitch : undefined}
-          className={cn("inline cursor-default select-none", className)}
+          className={cn("inline select-none", className)}
         >
           {beforeStr}
           <span className={cn("inline-block whitespace-nowrap", highlightClassName)}>
@@ -246,7 +246,7 @@ export default function GlitchText({
         ref={containerRef as any}
         onMouseEnter={triggerOnHover ? startGlitch : undefined}
         onTouchStart={triggerOnHover ? startGlitch : undefined}
-        className={cn("inline cursor-default select-none", className)}
+        className={cn("inline select-none", className)}
       >
         {text}
       </Component>
@@ -312,7 +312,7 @@ export default function GlitchText({
       ref={containerRef as any}
       onMouseEnter={triggerOnHover ? startGlitch : undefined}
       onTouchStart={triggerOnHover ? startGlitch : undefined}
-      className={cn("inline cursor-default select-none", className)}
+      className={cn("inline select-none", className)}
     >
       {contentNodes}
     </Component>
