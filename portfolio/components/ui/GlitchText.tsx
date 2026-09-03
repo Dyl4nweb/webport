@@ -219,27 +219,10 @@ export default function GlitchText({
   const highlightStart = highlightText && text.includes(highlightText) ? text.indexOf(highlightText) : -1;
   const highlightEnd = highlightStart !== -1 && highlightText ? highlightStart + highlightText.length : -1;
 
-  if (!isGlitching) {
-    if (highlightStart !== -1 && highlightEnd !== -1) {
-      const beforeStr = text.slice(0, highlightStart);
-      const highlightStr = text.slice(highlightStart, highlightEnd);
-      const afterStr = text.slice(highlightEnd);
-
-      return (
-        <Component
-          ref={containerRef as any}
-          onMouseEnter={triggerOnHover ? startGlitch : undefined}
-          onTouchStart={triggerOnHover ? startGlitch : undefined}
-          className={cn("inline select-none", className)}
-        >
-          {beforeStr}
-          <span className={cn("inline-block whitespace-nowrap", highlightClassName)}>
-            {highlightStr}
-          </span>
-          {afterStr}
-        </Component>
-      );
-    }
+  if (highlightStart !== -1 && highlightEnd !== -1) {
+    const beforeStr = displayText.slice(0, highlightStart);
+    const highlightStr = displayText.slice(highlightStart, highlightEnd);
+    const afterStr = displayText.slice(highlightEnd);
 
     return (
       <Component
@@ -248,63 +231,13 @@ export default function GlitchText({
         onTouchStart={triggerOnHover ? startGlitch : undefined}
         className={cn("inline select-none", className)}
       >
-        {text}
-      </Component>
-    );
-  }
-
-  const renderWordTokens = (subText: string, baseOffset: number) => {
-    const subTokens = subText.split(/(\s+)/);
-    let offsetCounter = baseOffset;
-
-    return subTokens.map((token, tIdx) => {
-      const tokenStart = offsetCounter;
-      offsetCounter += token.length;
-
-      if (/^\s+$/.test(token)) {
-        return <span key={tIdx}>{token}</span>;
-      }
-
-      return (
-        <span key={tIdx} className="inline-block whitespace-nowrap">
-          {token.split("").map((origChar, cOffset) => {
-            const charIdx = tokenStart + cOffset;
-            const currentChar = displayText[charIdx] ?? origChar;
-
-            return (
-              <span key={charIdx} className="relative inline-block align-baseline">
-                <span className="invisible select-none" aria-hidden="true">
-                  {origChar}
-                </span>
-                <span className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  {currentChar}
-                </span>
-              </span>
-            );
-          })}
-        </span>
-      );
-    });
-  };
-
-  let contentNodes: React.ReactNode;
-
-  if (highlightStart !== -1 && highlightEnd !== -1) {
-    const beforeStr = text.slice(0, highlightStart);
-    const highlightStr = displayText.slice(highlightStart, highlightEnd);
-    const afterStr = text.slice(highlightEnd);
-
-    contentNodes = (
-      <>
-        {renderWordTokens(beforeStr, 0)}
-        <span className={cn("inline-block whitespace-nowrap", highlightClassName)}>
+        {beforeStr}
+        <span className={cn("inline", highlightClassName)}>
           {highlightStr}
         </span>
-        {renderWordTokens(afterStr, highlightEnd)}
-      </>
+        {afterStr}
+      </Component>
     );
-  } else {
-    contentNodes = renderWordTokens(text, 0);
   }
 
   return (
@@ -314,7 +247,7 @@ export default function GlitchText({
       onTouchStart={triggerOnHover ? startGlitch : undefined}
       className={cn("inline select-none", className)}
     >
-      {contentNodes}
+      {displayText}
     </Component>
   );
 }

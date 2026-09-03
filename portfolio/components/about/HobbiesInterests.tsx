@@ -136,13 +136,13 @@ export default function HobbiesInterests() {
                   align="left"
                 />
 
-                {/* Hobbies Pill Badges (Hover-only display) */}
-                <div className="mt-8 flex flex-wrap items-center gap-2.5 sm:gap-3">
+                {/* Hobbies Pill Badges */}
+                <div className="mt-6 sm:mt-8 flex flex-wrap items-center gap-2 sm:gap-2.5 md:gap-3">
                   {HOBBIES_LIST.map((hobby) => (
                     <div
                       key={hobby.id}
                       className={cn(
-                        "group inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[12px] sm:text-[13px] font-semibold uppercase tracking-wider transition-all duration-300 select-none",
+                        "group inline-flex items-center gap-2 rounded-full px-3.5 py-2 sm:px-4 sm:py-2.5 text-[11px] min-[360px]:text-[12px] sm:text-[13px] font-semibold uppercase tracking-wider transition-all duration-300 select-none whitespace-nowrap shrink-0",
                         "border border-line/70 dark:border-line-dark/70 bg-surface-card dark:bg-surface-dark-card text-ink dark:text-ink-dark shadow-sm",
                         "hover:border-black/30 dark:hover:border-white/30 hover:bg-surface-alt dark:hover:bg-[#232326] hover:scale-105 hover:shadow-md"
                       )}
@@ -150,7 +150,7 @@ export default function HobbiesInterests() {
                       <span className="text-base transition-transform duration-200 group-hover:scale-120">
                         {hobby.emoji}
                       </span>
-                      <span>{hobby.label}</span>
+                      <span className="whitespace-nowrap">{hobby.label}</span>
                     </div>
                   ))}
                 </div>

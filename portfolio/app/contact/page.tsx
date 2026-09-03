@@ -73,15 +73,10 @@ export default function ContactPage() {
             </div>
           </Reveal>
 
-          {/* Main Headline with GlitchText and Clean Responsive Break */}
+          {/* Main Headline matching Hero style */}
           <Reveal delay={120}>
-            <h1 className="mt-3.5 sm:mt-5 max-w-3xl text-2xl min-[360px]:text-[26px] sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-[-0.03em] sm:tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.2] sm:leading-[1.08] text-center">
-              <span className="block sm:inline">
-                <GlitchText text="Let's build something" />
-              </span>{" "}
-              <span className="block sm:inline">
-                <GlitchText text="exceptional." />
-              </span>
+            <h1 className="mt-3.5 sm:mt-5 max-w-3xl text-balance text-2xl min-[360px]:text-[28px] sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.12] sm:leading-[1.08] text-center">
+              <GlitchText text="Let's build something exceptional." />
             </h1>
           </Reveal>
 
