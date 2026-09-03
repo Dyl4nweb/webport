@@ -277,10 +277,10 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
               </div>
 
               {/* Identity block */}
-              <div className="flex min-w-0 flex-1 flex-col justify-between">
+              <div className="flex min-w-0 flex-1 flex-col justify-between min-h-[84px]">
                 <div>
                   <h2 className="truncate text-[25px] font-bold leading-tight tracking-[-0.02em] text-black/90 dark:text-white/90">
-                    <GlitchText triggerOnMount triggerOnHover={true} delay={220} duration={800} text={SITE.name} />
+                    <GlitchText triggerOnMount triggerOnHover={true} delay={220} duration={800} text={SITE.name} className="tabular-nums" />
                   </h2>
                   <p className="mt-1 truncate font-mono text-[11px] font-medium uppercase tracking-wide text-black/45 dark:text-white/40">
                     <GlitchText triggerOnMount triggerOnHover={false} delay={280} duration={700} text={SITE.role} />
@@ -294,12 +294,12 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
                   </p>
                 </div>
 
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap items-center gap-1.5 min-h-[22px]">
                   {topSkills.map((skill, idx) => (
                     <span
                       key={skill}
                       className={cn(
-                        "inline-flex items-center rounded-[4px] px-2 py-[3px]",
+                        "inline-flex items-center shrink-0 rounded-[4px] px-2 py-[3px]",
                         "font-mono text-[9.5px] font-medium uppercase tracking-wide",
                         "bg-black/[0.04] text-black/55 ring-1 ring-black/[0.06]",
                         "dark:bg-white/[0.06] dark:text-white/55 dark:ring-white/[0.08]",

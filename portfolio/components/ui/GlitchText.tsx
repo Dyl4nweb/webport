@@ -253,24 +253,7 @@ export default function GlitchText({
     stopGlitch();
   }, [text, stopGlitch]);
 
-  // When not actively glitching, render clean natural text directly so the browser preserves authentic font baseline
-  if (!isGlitching) {
-    return (
-      <Component
-        ref={containerRef as any}
-        onMouseEnter={triggerOnHover ? startGlitch : undefined}
-        onTouchStart={triggerOnHover ? startGlitch : undefined}
-        className={cn("inline select-none", className)}
-      >
-        {text}
-      </Component>
-    );
-  }
-
-  const currentRenderText = displayText;
-  const words = text.split(" ");
-  let globalCharIndex = 0;
-
+  // Render displayText directly with zero layout shift, preserving authentic line-height and bounding box
   return (
     <Component
       ref={containerRef as any}
@@ -278,36 +261,7 @@ export default function GlitchText({
       onTouchStart={triggerOnHover ? startGlitch : undefined}
       className={cn("inline select-none", className)}
     >
-      {words.map((word, wordIdx) => {
-        const wordStartIndex = globalCharIndex;
-        globalCharIndex += word.length + 1;
-
-        return (
-          <React.Fragment key={wordIdx}>
-            <span className="inline-block whitespace-nowrap">
-              {word.split("").map((origChar, charOffset) => {
-                const charIdx = wordStartIndex + charOffset;
-                const currentChar = currentRenderText[charIdx] ?? origChar;
-
-                return (
-                  <span
-                    key={charIdx}
-                    className="relative inline-block align-baseline"
-                  >
-                    <span className="invisible select-none" aria-hidden="true">
-                      {origChar}
-                    </span>
-                    <span className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      {currentChar}
-                    </span>
-                  </span>
-                );
-              })}
-            </span>
-            {wordIdx < words.length - 1 ? " " : null}
-          </React.Fragment>
-        );
-      })}
+      {displayText}
     </Component>
   );
 }
