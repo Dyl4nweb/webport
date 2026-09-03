@@ -193,7 +193,7 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
       {/* Perspective wrapper */}
       <div
         className={cn(
-          "w-full max-w-[460px]",
+          "w-full max-w-[500px]",
           "transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
           entered
             ? "translate-y-0 scale-100 opacity-100"
@@ -294,7 +294,7 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
                   </p>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-1.5 min-h-[22px]">
+                <div className="flex items-center gap-1.5 flex-nowrap overflow-hidden min-h-[22px]">
                   {topSkills.map((skill, idx) => (
                     <span
                       key={skill}
