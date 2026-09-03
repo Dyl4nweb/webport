@@ -66,7 +66,7 @@ export default async function ProjectsPage() {
             </Reveal>
 
             <Reveal delay={140}>
-              <h1 className="mt-4 max-w-5xl text-balance text-3xl min-[360px]:text-4xl sm:text-5xl md:text-6xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.08] lg:whitespace-nowrap">
+              <h1 className="mt-4 max-w-5xl text-balance text-3xl min-[360px]:text-4xl sm:text-5xl md:text-[48px] lg:text-[56px] xl:text-6xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.08] md:whitespace-nowrap">
                 <GlitchText text="Ideas I've Turned Into Products." />
               </h1>
             </Reveal>

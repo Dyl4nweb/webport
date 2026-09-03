@@ -227,29 +227,8 @@ export default function GlitchText({
     setDisplayText(text);
   }, [text]);
 
-  const highlightStart = highlightText && text.includes(highlightText) ? text.indexOf(highlightText) : -1;
-  const highlightEnd = highlightStart !== -1 && highlightText ? highlightStart + highlightText.length : -1;
-
-  if (highlightStart !== -1 && highlightEnd !== -1) {
-    const beforeStr = displayText.slice(0, highlightStart);
-    const highlightStr = displayText.slice(highlightStart, highlightEnd);
-    const afterStr = displayText.slice(highlightEnd);
-
-    return (
-      <Component
-        ref={containerRef as any}
-        onMouseEnter={triggerOnHover ? startGlitch : undefined}
-        onTouchStart={triggerOnHover ? startGlitch : undefined}
-        className={cn("inline select-none", className)}
-      >
-        {beforeStr}
-        <span className={cn("inline", highlightClassName)}>
-          {highlightStr}
-        </span>
-        {afterStr}
-      </Component>
-    );
-  }
+  const words = text.split(" ");
+  let globalCharIndex = 0;
 
   return (
     <Component
@@ -258,7 +237,36 @@ export default function GlitchText({
       onTouchStart={triggerOnHover ? startGlitch : undefined}
       className={cn("inline select-none", className)}
     >
-      {displayText}
+      {words.map((word, wordIdx) => {
+        const wordStartIndex = globalCharIndex;
+        globalCharIndex += word.length + 1;
+
+        return (
+          <React.Fragment key={wordIdx}>
+            <span className="inline-block whitespace-nowrap">
+              {word.split("").map((origChar, charOffset) => {
+                const charIdx = wordStartIndex + charOffset;
+                const currentChar = displayText[charIdx] ?? origChar;
+
+                return (
+                  <span
+                    key={charIdx}
+                    className="relative inline-block align-baseline overflow-hidden"
+                  >
+                    <span className="invisible select-none" aria-hidden="true">
+                      {origChar}
+                    </span>
+                    <span className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      {currentChar}
+                    </span>
+                  </span>
+                );
+              })}
+            </span>
+            {wordIdx < words.length - 1 ? " " : null}
+          </React.Fragment>
+        );
+      })}
     </Component>
   );
 }
