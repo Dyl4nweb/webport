@@ -41,8 +41,7 @@ export default function AboutCredentials() {
               <div>
                 {/* Header Tag & Years */}
                 <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400 border border-emerald-500/20 dark:border-emerald-400/20 px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="inline-flex items-center rounded-full bg-accent/10 text-accent dark:bg-accent-dark/10 dark:text-accent-dark border border-accent/20 dark:border-accent-dark/20 px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider">
                     Degree Completed
                   </span>
                   <span className="font-mono text-[11.5px] sm:text-[12px] font-medium text-ink-secondary dark:text-ink-dark-secondary">
