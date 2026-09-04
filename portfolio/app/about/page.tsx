@@ -88,7 +88,7 @@ export default function AboutPage() {
                   About me
                 </span>
 
-                <h1 className="max-w-2xl text-balance text-3xl min-[360px]:text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-ink dark:text-ink-dark leading-[1.08]">
+                <h1 className="max-w-2xl text-3xl min-[360px]:text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-ink dark:text-ink-dark leading-[1.08]">
                   <GlitchText text={`I'm ${SITE.name} — Software Engineer.`} />
                 </h1>
 
