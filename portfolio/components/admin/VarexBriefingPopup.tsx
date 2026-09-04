@@ -111,8 +111,18 @@ export default function VarexBriefingPopup({
       window.speechSynthesis.getVoices();
     }
 
-    // If user just logged in, or if it hasn't been dismissed recently in this tab
-    const justLoggedIn = sessionStorage.getItem("admin_just_logged_in") === "1";
+    // Check if the splash screen is currently active/just finished (within the last 4 seconds)
+    let justLoggedIn = false;
+    if (typeof window !== "undefined") {
+      const lastSplashStr = sessionStorage.getItem("admin_splash_timestamp");
+      if (lastSplashStr) {
+        const elapsed = Date.now() - parseInt(lastSplashStr, 10);
+        if (elapsed < 4000) {
+          justLoggedIn = true;
+        }
+      }
+    }
+
     const dismissedAt = sessionStorage.getItem("varex_briefing_dismissed_at");
 
     if (hasTriggeredInSession) return;
@@ -153,6 +163,17 @@ export default function VarexBriefingPopup({
         setBriefing(data);
 
         // Delay appearance slightly so the dashboard entrance finishes smoothly
+        let delay = 1200;
+        if (typeof window !== "undefined") {
+          const lastSplashStr = sessionStorage.getItem("admin_splash_timestamp");
+          if (lastSplashStr) {
+            const elapsed = Date.now() - parseInt(lastSplashStr, 10);
+            if (elapsed < 3150) {
+              delay = Math.max(1200, 3150 - elapsed + 400); // Wait for splash + 400ms breathing room
+            }
+          }
+        }
+
         timer = setTimeout(() => {
           setVisible(true);
           playCyberChime();
@@ -173,7 +194,7 @@ export default function VarexBriefingPopup({
             speechText += ` All client inquiries are up to date.`;
           }
           speakText(speechText);
-        }, 1200);
+        }, delay);
 
         // Auto dismiss after 16 seconds
         autoDismissTimer = setTimeout(() => {

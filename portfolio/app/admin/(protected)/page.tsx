@@ -85,39 +85,7 @@ export default function AdminOverviewPage() {
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [animateCharts, setAnimateCharts] = useState(false);
-  const [justLoggedIn, setJustLoggedIn] = useState(false);
   const [dateStr, setDateStr] = useState("");
-  const [hasSpokenWelcome, setHasSpokenWelcome] = useState(false);
-
-  // Force load voices on mount for speech synthesis
-  useEffect(() => {
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.getVoices();
-    }
-  }, []);
-
-  const speakText = (text: string) => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
-    
-    const utterance = new SpeechSynthesisUtterance(text);
-    const voices = window.speechSynthesis.getVoices();
-    
-    // Find French or American voice
-    let preferredVoice = voices.find(v => v.lang.toLowerCase().includes('fr-') || v.name.toLowerCase().includes('french'));
-    if (!preferredVoice) {
-      preferredVoice = voices.find(v => v.lang === 'en-US');
-    }
-    
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
-    }
-    
-    utterance.pitch = 1;
-    utterance.rate = 1.05;
-
-    window.speechSynthesis.speak(utterance);
-  };
 
   useEffect(() => {
     setMounted(true);
@@ -128,16 +96,6 @@ export default function AdminOverviewPage() {
         day: "numeric",
       })
     );
-
-    if (typeof window !== "undefined") {
-      const lastSplashStr = sessionStorage.getItem("admin_splash_timestamp");
-      if (lastSplashStr) {
-        const elapsed = Date.now() - parseInt(lastSplashStr, 10);
-        if (elapsed < 4000) {
-          setJustLoggedIn(true);
-        }
-      }
-    }
 
     let cancelled = false;
 
@@ -212,18 +170,6 @@ export default function AdminOverviewPage() {
       cancelled = true;
     };
   }, []);
-
-  useEffect(() => {
-    if (!loading && justLoggedIn && mounted && !hasSpokenWelcome) {
-      setHasSpokenWelcome(true);
-      const summary = `Welcome back, Dylan Ramos. You have ${stats.newInquiries} new inquiries, ${stats.upcomingBookings} upcoming bookings, and a total of ${stats.visitors} visitors on your portfolio.`;
-      
-      // Add a slight delay to ensure the DOM is ready and the user is fully logged in
-      setTimeout(() => {
-        speakText(summary);
-      }, 500);
-    }
-  }, [loading, justLoggedIn, mounted, stats, hasSpokenWelcome]);
 
   // Analytics computed states
   const trend = useMemo(() => {
