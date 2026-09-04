@@ -129,17 +129,15 @@ export default function AdminOverviewPage() {
       })
     );
 
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        const lastSplashStr = sessionStorage.getItem("admin_splash_timestamp");
-        if (lastSplashStr) {
-          const elapsed = Date.now() - parseInt(lastSplashStr, 10);
-          if (elapsed < 4000) {
-            setJustLoggedIn(true);
-          }
+    if (typeof window !== "undefined") {
+      const lastSplashStr = sessionStorage.getItem("admin_splash_timestamp");
+      if (lastSplashStr) {
+        const elapsed = Date.now() - parseInt(lastSplashStr, 10);
+        if (elapsed < 4000) {
+          setJustLoggedIn(true);
         }
       }
-    }, []);
+    }
 
     let cancelled = false;
 
