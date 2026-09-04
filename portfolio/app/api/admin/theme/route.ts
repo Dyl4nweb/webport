@@ -45,19 +45,9 @@ async function requireAdmin(request: NextRequest) {
   }
 
   const supabase = getSupabaseWithToken(token);
-
-  const { data: userData, error: userErr } = await supabase.auth.getUser();
-  if (!userData?.user) {
-    return {
-      error: NextResponse.json(
-        { ok: false, reason: "unauthorized", message: userErr?.message || "Invalid or expired session. Please log in again." },
-        { status: 401 }
-      ),
-    };
-  }
-
   const { data: isAdmin, error: rpcErr } = await supabase.rpc("is_admin");
   if (isAdmin !== true) {
+    console.error("requireAdmin rpc failed:", rpcErr, isAdmin);
     return {
       error: NextResponse.json(
         { ok: false, reason: "forbidden", message: rpcErr?.message || "User account does not have admin permissions." },
@@ -66,7 +56,7 @@ async function requireAdmin(request: NextRequest) {
     };
   }
 
-  return { supabase, user: userData.user };
+  return { supabase, user: { id: "admin" } as any };
 }
 
 // GET: Authoritative fetch of the active global site theme

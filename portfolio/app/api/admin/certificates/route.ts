@@ -59,21 +59,12 @@ async function requireAdmin(request: NextRequest) {
   }
 
   const supabase = getSupabaseWithToken(token);
-
-  const { data: userData } = await supabase.auth.getUser();
-  if (!userData?.user) {
-    return {
-      error: NextResponse.json({ ok: false, reason: "unauthorized" }, { status: 401 }),
-    };
-  }
-
-  const { data: isAdmin } = await supabase.rpc("is_admin");
+  const { data: isAdmin, error: rpcErr } = await supabase.rpc("is_admin");
   if (isAdmin !== true) {
     return {
       error: NextResponse.json({ ok: false, reason: "forbidden" }, { status: 403 }),
     };
   }
-
   return { supabase };
 }
 

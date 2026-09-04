@@ -9,6 +9,7 @@ import { playCyberChime, useVarexAI } from "@/lib/admin/varex-ai-context";
 // Speech Synthesis Helper
 let lastSpokenText = "";
 let lastSpokenTime = 0;
+let hasTriggeredInSession = false;
 
 const speakText = (text: string) => {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
@@ -114,10 +115,14 @@ export default function VarexBriefingPopup({
     const justLoggedIn = sessionStorage.getItem("admin_just_logged_in") === "1";
     const dismissedAt = sessionStorage.getItem("varex_briefing_dismissed_at");
 
+    if (hasTriggeredInSession) return;
+
     // If dismissed less than 60 seconds ago and not a fresh login, wait
     if (!justLoggedIn && dismissedAt && Date.now() - Number(dismissedAt) < 60000) {
       return;
     }
+    
+    hasTriggeredInSession = true;
 
     let timer: NodeJS.Timeout;
     let autoDismissTimer: NodeJS.Timeout;
@@ -152,7 +157,16 @@ export default function VarexBriefingPopup({
           setVisible(true);
           playCyberChime();
           
-          let speechText = `Welcome back, Dylan! You have ${data.totalVisitors} total visitors on your portfolio.`;
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+          const dateStr = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+          
+          let speechText = `Welcome back, Dylan! As of ${timeStr} on ${dateStr}, your portfolio has reached ${data.totalVisitors} total visitors.`;
+          
+          if (data.viewsToday > 0) {
+            speechText += ` Your users have increased by ${data.viewsToday} in the last 24 hours.`;
+          }
+
           if (data.newInquiries > 0) {
             speechText += ` You have ${data.newInquiries} unread client ${data.newInquiries === 1 ? "inquiry" : "inquiries"} waiting for your reply.`;
           } else {
@@ -359,19 +373,18 @@ export default function VarexBriefingPopup({
         ) : briefing ? (
           <div className="animate-in fade-in duration-300">
             <p>
-              Welcome back, Dylan! You have{" "}
+              Welcome back, Dylan! As of {new Date().toLocaleTimeString('en-US', {hour: 'numeric', minute: '2-digit'})} on {new Date().toLocaleDateString('en-US', {month: 'long', day: 'numeric'})}, you have{" "}
               <strong className="font-semibold text-ink dark:text-ink-dark">
                 {briefing.totalVisitors.toLocaleString()} total visitors
-              </strong>{" "}
-              on your portfolio
+              </strong>
               {briefing.viewsToday > 0 ? (
                 <>
                   {" "}
                   (
                   <span className="font-medium text-emerald-600 dark:text-emerald-400">
-                    +{briefing.viewsToday.toLocaleString()} views
+                    +{briefing.viewsToday.toLocaleString()} users
                   </span>{" "}
-                  in the last 24h)
+                  in the last 24 hours)
                 </>
               ) : null}
               .

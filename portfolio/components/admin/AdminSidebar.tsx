@@ -16,7 +16,6 @@ const NAV_ITEMS: { name: string; href: string; badge?: string }[] = [
   { name: "Bookings", href: "/admin/bookings" },
   { name: "Analytics", href: "/admin/analytics" },
   { name: "Visitors", href: "/admin/visitors" },
-  { name: "Gmail", href: "/admin/gmail" },
   { name: "Activity", href: "/admin/activity" },
   { name: "Projects", href: "/admin/projects" },
   { name: "Certificates", href: "/admin/certificates" },
@@ -115,7 +114,7 @@ export default function AdminSidebar({
 
       <nav
         data-lenis-prevent
-        className="admin-scrollbar flex flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain border-t border-line/50 pt-3 dark:border-line-dark/50"
+        className="admin-scrollbar flex flex-1 flex-col gap-0.5 overflow-x-hidden overflow-y-auto overscroll-contain border-t border-line/50 pt-3 dark:border-line-dark/50"
       >
         {NAV_ITEMS.map((item) => {
           const active =
@@ -127,15 +126,26 @@ export default function AdminSidebar({
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`flex h-9 items-center justify-between rounded-apple-sm px-3 text-[13px] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+              className={`group relative flex h-[38px] items-center justify-between rounded-apple-sm px-3 text-[13.5px] font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
                 active
                   ? "bg-accent/[0.08] text-accent dark:bg-accent-dark/[0.12] dark:text-accent-dark"
-                  : "text-ink-secondary hover:bg-ink/[0.04] hover:text-ink dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.06] dark:hover:text-ink-dark"
+                  : "text-ink-secondary hover:bg-ink/[0.04] hover:text-ink hover:translate-x-0.5 dark:text-ink-dark-secondary dark:hover:bg-ink-dark/[0.06] dark:hover:text-ink-dark"
               }`}
             >
-              <span>{item.name}</span>
+              {/* Animated active indicator */}
+              {active && (
+                <div
+                  className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-accent dark:bg-accent-dark"
+                  style={{ viewTransitionName: "sidebar-active-indicator" }}
+                />
+              )}
+              
+              <span className="relative z-10 flex items-center gap-2">
+                {item.name}
+              </span>
+
               {item.badge && (
-                <span className="admin-chat-badge inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] font-semibold border">
+                <span className="admin-chat-badge relative z-10 inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] font-semibold border shadow-sm">
                   <span className="h-1 w-1 rounded-full bg-accent dark:bg-accent-dark animate-pulse" />
                   {item.badge}
                 </span>
@@ -170,6 +180,20 @@ export default function AdminSidebar({
         </button>
       </div>
       </aside>
+
+      {/* Full-screen Loading Overlay for Logout */}
+      {signingOut && (
+        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-surface-card/60 backdrop-blur-2xl dark:bg-surface-dark-card/60 animate-in fade-in duration-300">
+          <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-accent/10 dark:bg-accent-dark/10 shadow-[0_0_20px_rgba(var(--accent),0.2)]">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-accent dark:text-accent-dark animate-spin" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+            </svg>
+          </div>
+          <p className="mt-5 text-[15px] font-medium tracking-wide text-ink dark:text-ink-dark animate-pulse">
+            Logging out...
+          </p>
+        </div>
+      )}
     </>
   );
 }
