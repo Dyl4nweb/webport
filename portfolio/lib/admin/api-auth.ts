@@ -18,7 +18,7 @@ export async function requireAdmin(
 
   if (!token) {
     return {
-      error: NextResponse.json({ ok: false, reason: "unauthorized" }, { status: 401 }),
+      error: NextResponse.json({ ok: false, error: "Unauthorized: Missing authentication token." }, { status: 401 }),
     };
   }
 
@@ -27,14 +27,14 @@ export async function requireAdmin(
   const { data: userData } = await supabase.auth.getUser();
   if (!userData?.user) {
     return {
-      error: NextResponse.json({ ok: false, reason: "unauthorized" }, { status: 401 }),
+      error: NextResponse.json({ ok: false, error: "Unauthorized: Invalid or expired session." }, { status: 401 }),
     };
   }
 
   const { data: isAdmin } = await supabase.rpc("is_admin");
   if (isAdmin !== true) {
     return {
-      error: NextResponse.json({ ok: false, reason: "forbidden" }, { status: 403 }),
+      error: NextResponse.json({ ok: false, error: "Forbidden: You do not have admin privileges." }, { status: 403 }),
     };
   }
 

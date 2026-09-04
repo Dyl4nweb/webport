@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import AdminToast from "@/components/admin/AdminToast";
 import LiveAIFace from "@/components/ui/LiveAIFace";
 import GlitchText from "@/components/ui/GlitchText";
 import VarexSettingsModal from "@/components/admin/VarexSettingsModal";
@@ -86,13 +85,6 @@ export default function AdminAIChatHead() {
 
   return (
     <>
-      {/* Toast Notification (Active on all admin pages) */}
-      <AdminToast
-        message={toast?.message ?? null}
-        type={toast?.type ?? "success"}
-        onClose={() => setToast(null)}
-      />
-
       {/* Hide the floating drawer and button if on dedicated /admin/varex-ai page */}
       {!isDedicatedPage && (
         <>

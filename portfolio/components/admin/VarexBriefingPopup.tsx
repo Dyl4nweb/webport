@@ -4,7 +4,54 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import LiveAIFace from "@/components/ui/LiveAIFace";
 import { getSupabase } from "@/lib/supabase";
-import { playCyberChime } from "@/lib/admin/varex-ai-context";
+import { playCyberChime, useVarexAI } from "@/lib/admin/varex-ai-context";
+
+// Speech Synthesis Helper
+let lastSpokenText = "";
+let lastSpokenTime = 0;
+
+const speakText = (text: string) => {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  
+  const now = Date.now();
+  // Prevent duplicate speech from React Strict Mode or rapid re-renders
+  if (text === lastSpokenText && now - lastSpokenTime < 1000) {
+    return;
+  }
+  
+  lastSpokenText = text;
+  lastSpokenTime = now;
+  
+  window.speechSynthesis.cancel();
+  
+  const utterance = new SpeechSynthesisUtterance(text);
+  const voices = window.speechSynthesis.getVoices();
+  
+  // Try to find a good male voice across browsers (Safari, Chrome, Edge)
+  let preferredVoice = voices.find(v => {
+    const name = v.name.toLowerCase();
+    return name.includes('thomas') || // Mac French Male
+           name.includes('daniel') || // Mac UK Male
+           name.includes('david') || // Windows US Male
+           name.includes('google uk english male') || // Chrome Male
+           name.includes('google us english') || // Chrome fallback
+           name.includes('fred') || // Mac US Male
+           name.includes('arthur'); // Mac Male
+  });
+  
+  if (!preferredVoice) {
+    preferredVoice = voices.find(v => v.lang === 'en-US' || v.lang === 'en-GB');
+  }
+  
+  if (preferredVoice) {
+    utterance.voice = preferredVoice;
+  }
+  
+  utterance.pitch = 0.9; // Slightly lower pitch for a more masculine/Jarvis feel
+  utterance.rate = 1.05;
+
+  window.speechSynthesis.speak(utterance);
+};
 
 interface VarexBriefingPopupProps {
   isChatOpen: boolean;
@@ -28,9 +75,41 @@ export default function VarexBriefingPopup({
     message: string;
     actionLink?: string;
     actionText?: string;
+    type?: "success" | "error" | "info";
   } | null>(null);
+  
+  const { toast, setToast } = useVarexAI();
+
+  // Watch for toast messages from Varex AI context and display them as a realtime alert
+  useEffect(() => {
+    if (toast) {
+      setRealtimeAlert({
+        title: toast.type === "error" ? "System Alert" : "Varex Copilot",
+        message: toast.message,
+        type: toast.type === "error" ? "error" : "success"
+      });
+      setVisible(true);
+      playCyberChime();
+      speakText(toast.message);
+      
+      // Auto-dismiss the toast alert after 4 seconds
+      const t = setTimeout(() => {
+        setVisible(false);
+        setTimeout(() => {
+          setToast(null);
+          setRealtimeAlert(null);
+        }, 300); // Wait for exit animation
+      }, 4000);
+      return () => clearTimeout(t);
+    }
+  }, [toast, setToast]);
 
   useEffect(() => {
+    // Force load voices
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.getVoices();
+    }
+
     // If user just logged in, or if it hasn't been dismissed recently in this tab
     const justLoggedIn = sessionStorage.getItem("admin_just_logged_in") === "1";
     const dismissedAt = sessionStorage.getItem("varex_briefing_dismissed_at");
@@ -72,6 +151,14 @@ export default function VarexBriefingPopup({
         timer = setTimeout(() => {
           setVisible(true);
           playCyberChime();
+          
+          let speechText = `Welcome back, Dylan! You have ${data.totalVisitors} total visitors on your portfolio.`;
+          if (data.newInquiries > 0) {
+            speechText += ` You have ${data.newInquiries} unread client ${data.newInquiries === 1 ? "inquiry" : "inquiries"} waiting for your reply.`;
+          } else {
+            speechText += ` All client inquiries are up to date.`;
+          }
+          speakText(speechText);
         }, 1200);
 
         // Auto dismiss after 16 seconds
@@ -95,12 +182,16 @@ export default function VarexBriefingPopup({
         (payload) => {
           const inq = payload.new as any;
           playCyberChime();
+          const title = "New Inquiry Received!";
+          const msg = `"${inq.name}" just sent an inquiry.`;
           setRealtimeAlert({
-            title: "New Inquiry Received!",
+            title,
             message: `"${inq.name}" just sent an inquiry: "${(inq.message || "").slice(0, 75)}…"`,
             actionLink: "/admin/inquiries",
             actionText: "View Inquiry",
+            type: "info"
           });
+          speakText(`${title} ${msg}`);
           setBriefing((prev) =>
             prev ? { ...prev, newInquiries: prev.newInquiries + 1 } : null
           );
@@ -114,12 +205,16 @@ export default function VarexBriefingPopup({
           const count = payload.new?.count;
           if (count) {
             playCyberChime();
+            const title = "Live Visitor Update";
+            const msg = `New visitor detected! Total portfolio visitors: ${Number(count)}`;
             setRealtimeAlert({
-              title: "Live Visitor Update",
+              title,
               message: `New visitor detected! Total portfolio visitors: ${Number(count).toLocaleString()}`,
               actionLink: "/admin/visitors",
               actionText: "View Visitors",
+              type: "success"
             });
+            speakText(`${title}. ${msg}`);
             setBriefing((prev) =>
               prev ? { ...prev, totalVisitors: count } : null
             );
@@ -133,12 +228,16 @@ export default function VarexBriefingPopup({
         (payload) => {
           const view = payload.new as any;
           playCyberChime();
+          const title = "Live Traffic Detected";
+          const msg = `Visitor opened page: "${view.path || "/"}"`;
           setRealtimeAlert({
-            title: "Live Traffic Detected",
-            message: `Visitor opened page: "${view.path || "/"}"`,
+            title,
+            message: msg,
             actionLink: "/admin/analytics",
             actionText: "View Analytics",
+            type: "info"
           });
+          speakText(`${title}. ${msg}`);
           setBriefing((prev) =>
             prev ? { ...prev, viewsToday: (prev.viewsToday || 0) + 1 } : null
           );
@@ -160,13 +259,27 @@ export default function VarexBriefingPopup({
   };
 
   // Hide automatically if the user opens the full chat panel
-  if (isChatOpen || !visible || (!briefing && !realtimeAlert)) return null;
+  if (isChatOpen || (!briefing && !realtimeAlert)) return null;
+
+  const dotColor = realtimeAlert?.type === "error" ? "bg-red-500" 
+                 : realtimeAlert?.type === "success" ? "bg-emerald-500" 
+                 : realtimeAlert?.type === "info" ? "bg-accent dark:bg-accent-dark" 
+                 : "bg-emerald-500";
+
+  const textColor = realtimeAlert?.type === "error" ? "text-red-500 dark:text-red-400" 
+                 : realtimeAlert?.type === "success" ? "text-emerald-500 dark:text-emerald-400" 
+                 : realtimeAlert?.type === "info" ? "text-accent dark:text-accent-dark" 
+                 : "text-accent dark:text-accent-dark";
 
   return (
     <div
       role="status"
       aria-live="polite"
-      className="admin-chat-panel fixed bottom-[84px] right-3 sm:right-6 z-50 w-[calc(100vw-1.5rem)] sm:w-[340px] max-w-[360px] overflow-hidden rounded-apple-xl border border-line/80 bg-surface-card/95 p-4 shadow-2xl backdrop-blur-xl transition-all duration-300 animate-fadeIn dark:border-line-dark/80 dark:bg-surface-dark-card/95"
+      className={`admin-chat-panel fixed bottom-[84px] right-3 sm:right-6 z-50 w-[calc(100vw-1.5rem)] sm:w-[340px] max-w-[360px] overflow-hidden rounded-apple-xl border border-line/80 bg-surface-card/95 p-4 backdrop-blur-xl transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] dark:border-line-dark/80 dark:bg-surface-dark-card/95 ${
+        visible 
+          ? "translate-y-0 opacity-100 scale-100 shadow-2xl shadow-accent/5 dark:shadow-accent-dark/5" 
+          : "translate-y-8 opacity-0 scale-95 pointer-events-none"
+      }`}
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b border-line/50 pb-2.5 dark:border-line-dark/50">
@@ -177,8 +290,8 @@ export default function VarexBriefingPopup({
               Varex AI
             </span>
             <span className="admin-chat-badge flex items-center gap-1 px-2 py-0.5 text-[9px] font-semibold border">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Live Update
+              <span className={`h-1.5 w-1.5 rounded-full ${dotColor} animate-pulse`} />
+              {realtimeAlert ? realtimeAlert.title : "Live Update"}
             </span>
           </div>
         </div>
@@ -234,17 +347,17 @@ export default function VarexBriefingPopup({
       {/* Briefing Message Content */}
       <div className="mt-3 text-[12.5px] leading-relaxed text-ink/90 dark:text-ink-dark/90">
         {realtimeAlert ? (
-          <div>
-            <p className="font-semibold text-accent dark:text-accent-dark flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              {realtimeAlert.title}
+          <div className="animate-in fade-in slide-in-from-bottom-1 duration-300">
+            <p className={`font-semibold ${textColor} flex items-center gap-1.5`}>
+              <span className={`h-2 w-2 rounded-full ${dotColor} animate-pulse`} />
+              System Notification
             </p>
-            <p className="mt-1 text-ink dark:text-ink-dark">
+            <p className="mt-1 text-ink dark:text-ink-dark font-medium">
               {realtimeAlert.message}
             </p>
           </div>
         ) : briefing ? (
-          <div>
+          <div className="animate-in fade-in duration-300">
             <p>
               Welcome back, Dylan! You have{" "}
               <strong className="font-semibold text-ink dark:text-ink-dark">

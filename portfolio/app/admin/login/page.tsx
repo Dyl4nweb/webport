@@ -39,6 +39,13 @@ export default function AdminLoginPage() {
       sessionStorage.setItem("admin_just_logged_in", "1");
       sessionStorage.removeItem("varex_briefing_dismissed_at");
       sessionStorage.removeItem("varex_briefing_session_seen");
+      
+      // Unlock Web Speech API (bypasses browser autoplay restrictions for the session)
+      if ("speechSynthesis" in window) {
+        const silentUtterance = new SpeechSynthesisUtterance("");
+        silentUtterance.volume = 0;
+        window.speechSynthesis.speak(silentUtterance);
+      }
     }
 
     router.replace("/admin");
