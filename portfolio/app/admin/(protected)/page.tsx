@@ -85,6 +85,7 @@ export default function AdminOverviewPage() {
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [animateCharts, setAnimateCharts] = useState(false);
+  const [justLoggedIn, setJustLoggedIn] = useState(false);
   const [dateStr, setDateStr] = useState("");
 
   useEffect(() => {
@@ -96,6 +97,16 @@ export default function AdminOverviewPage() {
         day: "numeric",
       })
     );
+
+    if (typeof window !== "undefined") {
+      const lastSplashStr = sessionStorage.getItem("admin_splash_timestamp");
+      if (lastSplashStr) {
+        const elapsed = Date.now() - parseInt(lastSplashStr, 10);
+        if (elapsed < 4000) {
+          setJustLoggedIn(true);
+        }
+      }
+    }
 
     let cancelled = false;
 
