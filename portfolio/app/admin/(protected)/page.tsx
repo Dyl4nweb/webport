@@ -129,17 +129,17 @@ export default function AdminOverviewPage() {
       })
     );
 
-    if (typeof window !== "undefined") {
-      const lastSplashStr = sessionStorage.getItem("admin_splash_timestamp");
-      if (lastSplashStr) {
-        const elapsed = Date.now() - parseInt(lastSplashStr, 10);
-        // If the splash screen is currently playing (less than ~4 seconds ago), 
-        // treat it as a fresh session to trigger Varex's welcome voice.
-        if (elapsed < 4000) {
-          setJustLoggedIn(true);
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        const lastSplashStr = sessionStorage.getItem("admin_splash_timestamp");
+        if (lastSplashStr) {
+          const elapsed = Date.now() - parseInt(lastSplashStr, 10);
+          if (elapsed < 4000) {
+            setJustLoggedIn(true);
+          }
         }
       }
-    }
+    }, []);
 
     let cancelled = false;
 
