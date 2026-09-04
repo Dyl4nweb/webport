@@ -171,101 +171,8 @@ export default function AdminVarexAiPage() {
     window.speechSynthesis.speak(utterance);
   };
 
-  const triggerWakeBriefing = async () => {
-    playCyberChime();
-    setToast({ message: "Wake word detected. Initializing briefing...", type: "success" });
-    try {
-      const supabase = getSupabase();
-      const [visitorsRes, inquiriesRes] = await Promise.all([
-        supabase.from("visitors").select("count").eq("id", 1).single(),
-        supabase.from("inquiries").select("*", { count: "exact", head: true }).eq("status", "new"),
-      ]);
-      const visitors = visitorsRes.data?.count || 0;
-      const inq = inquiriesRes.count || 0;
-      
-      const text = `Systems online. Welcome back, Admin. We currently have ${visitors} total visitors, and ${inq > 0 ? inq + ' unread inquiries' : 'no new inquiries'}. All systems are running smoothly. How can I assist you?`;
-      speakText(text);
-    } catch (e) {
-      speakText("Systems online. Welcome back. I am unable to retrieve live statistics at the moment, but all core functions are nominal.");
-    }
-  };
-
-  // Continuous Listening Hook for Voice Mode
-  useEffect(() => {
-    let recognition: any = null;
-    let keepAliveTimer: NodeJS.Timeout;
-    let consecutiveErrors = 0;
-
-    if (viewMode === "voice") {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      if (SpeechRecognition) {
-        recognition = new SpeechRecognition();
-        recognition.continuous = true;
-        recognition.interimResults = true;
-        recognition.lang = 'en-US';
-
-        recognition.onstart = () => {
-          setIsListening(true);
-          consecutiveErrors = 0; // Reset on successful start
-        };
-        
-        recognition.onresult = (event: any) => {
-          let transcript = "";
-          for (let i = event.resultIndex; i < event.results.length; ++i) {
-            transcript += event.results[i][0].transcript;
-          }
-          const lower = transcript.toLowerCase();
-          
-          if (lower.includes("wake up varex") || lower.includes("wakeup varex") || lower.includes("wake up jarvis")) {
-            // Stop listening temporarily to avoid echoing itself
-            recognition.stop();
-            triggerWakeBriefing();
-          }
-        };
-
-        recognition.onerror = (e: any) => {
-          if (e.error === "network") {
-            consecutiveErrors++;
-            if (consecutiveErrors === 1) {
-               const isBrave = (navigator as any).brave !== undefined;
-               if (isBrave) {
-                 consecutiveErrors = 999; // Force abort
-                 console.error("Speech recognition blocked by Brave Browser.");
-                 setToast({ message: "Brave blocks Voice Recognition for privacy. Please use Chrome or Edge for Voice Mode.", type: "error" });
-               } else {
-                 console.error("Speech recognition network error. Check connection or browser support.");
-                 setToast({ message: "Network error with voice recognition. Retrying...", type: "error" });
-               }
-            }
-          } else if (e.error !== "no-speech") {
-            console.error("Continuous recognition error:", e.error);
-          }
-        };
-
-        recognition.onend = () => {
-          setIsListening(false);
-          // Restart if still in voice mode and not currently speaking the briefing
-          if (viewModeRef.current === "voice" && !isSpeakingRef.current) {
-            if (consecutiveErrors >= 3) {
-              console.error("Stopping continuous listening due to repeated errors.");
-              return; // Give up after 3 consecutive errors
-            }
-            const delay = consecutiveErrors > 0 ? 5000 : 500; // Backoff if error occurred
-            keepAliveTimer = setTimeout(() => {
-              try { recognition.start(); } catch(e){}
-            }, delay);
-          }
-        };
-        
-        try { recognition.start(); } catch(e){}
-      }
-    }
-
-    return () => {
-      clearTimeout(keepAliveTimer);
-      if (recognition) recognition.stop();
-    };
-  }, [viewMode]);
+  // Wake word continuous listening removed to prevent network errors.
+  // We rely on manual push-to-talk via the startListening function.
 
   const startListening = () => {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -797,14 +704,17 @@ export default function AdminVarexAiPage() {
           
           <div className="relative z-10 flex flex-col items-center justify-center gap-8 text-center">
             {/* Animated Orb */}
-            <div className={`relative flex h-40 w-40 items-center justify-center rounded-full transition-all duration-700 ${isSpeaking ? 'scale-110 shadow-[0_0_80px_rgba(var(--color-accent),0.6)] dark:shadow-[0_0_80px_rgba(var(--color-accent-dark),0.6)]' : 'scale-100 shadow-[0_0_40px_rgba(var(--color-accent),0.3)] dark:shadow-[0_0_40px_rgba(var(--color-accent-dark),0.3)]'}`}>
+            <div 
+              onClick={isListening || isSpeaking ? () => {} : startListening}
+              className={`relative flex h-40 w-40 cursor-pointer items-center justify-center rounded-full transition-all duration-700 ${isSpeaking ? 'scale-110 shadow-[0_0_80px_rgba(var(--color-accent),0.6)] dark:shadow-[0_0_80px_rgba(var(--color-accent-dark),0.6)]' : isListening ? 'scale-105 shadow-[0_0_60px_rgba(var(--color-accent),0.4)] dark:shadow-[0_0_60px_rgba(var(--color-accent-dark),0.4)]' : 'scale-100 shadow-[0_0_40px_rgba(var(--color-accent),0.3)] dark:shadow-[0_0_40px_rgba(var(--color-accent-dark),0.3)] hover:scale-105'}`}
+            >
               <div className="absolute inset-0 rounded-full border-2 border-accent/30 dark:border-accent-dark/30 animate-[spin_4s_linear_infinite]"></div>
               <div className="absolute inset-2 rounded-full border border-accent/20 dark:border-accent-dark/20 animate-[spin_3s_linear_infinite_reverse]"></div>
               
-              <div className={`absolute inset-4 rounded-full bg-accent/20 dark:bg-accent-dark/20 backdrop-blur-xl ${isSpeaking ? 'animate-pulse' : ''}`}></div>
+              <div className={`absolute inset-4 rounded-full bg-accent/20 dark:bg-accent-dark/20 backdrop-blur-xl ${isSpeaking || isListening ? 'animate-pulse' : ''}`}></div>
               
               <div className="relative z-10 flex flex-col items-center justify-center text-accent dark:text-accent-dark">
-                {isSpeaking ? (
+                {isSpeaking || isListening ? (
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-pulse">
                     <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
                     <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
@@ -823,12 +733,14 @@ export default function AdminVarexAiPage() {
             {/* Status Text */}
             <div className="flex flex-col gap-2">
               <h2 className="text-[22px] font-semibold tracking-[-0.02em] text-ink dark:text-white">
-                {isSpeaking ? "Varex is speaking..." : "Awaiting Voice Command"}
+                {isSpeaking ? "Varex is speaking..." : isListening ? "Listening..." : "Awaiting Voice Command"}
               </h2>
               <p className="text-[14px] text-ink-secondary dark:text-zinc-400">
                 {isSpeaking 
-                  ? "Listen to the briefing." 
-                  : "Say \"Wake up Varex\" to receive a live system briefing."}
+                  ? "Listen to the response." 
+                  : isListening
+                  ? "Speak your command now."
+                  : "Click the orb to speak to Varex."}
               </p>
             </div>
             
