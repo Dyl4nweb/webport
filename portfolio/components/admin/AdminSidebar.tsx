@@ -36,6 +36,8 @@ export default function AdminSidebar({
 
   async function handleSignOut() {
     setSigningOut(true);
+    // Add a slight delay so the premium shutdown animation is fully visible
+    await new Promise((resolve) => setTimeout(resolve, 1800));
     await signOut();
     router.replace("/admin/login");
   }
@@ -181,17 +183,29 @@ export default function AdminSidebar({
       </div>
       </aside>
 
-      {/* Full-screen Loading Overlay for Logout */}
+      {/* Premium Full-screen Logout Splash Screen */}
       {signingOut && (
-        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-surface-card/60 backdrop-blur-2xl dark:bg-surface-dark-card/60 animate-in fade-in duration-300">
-          <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-accent/10 dark:bg-accent-dark/10 shadow-[0_0_20px_rgba(var(--accent),0.2)]">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-accent dark:text-accent-dark animate-spin" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-            </svg>
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center gap-3 px-6 text-center bg-[#fbfbfd] dark:bg-[#000000] animate-in fade-in duration-500"
+          style={{ backgroundColor: "var(--splash-bg, #fbfbfd)" }}
+        >
+          <div className="flex flex-col items-center justify-center gap-1.5 sm:gap-2.5">
+            <p className="animate-tracking-expand font-text text-[13px] sm:text-[15px] md:text-[17px] font-medium uppercase text-ink-secondary/90 dark:text-ink-dark-secondary/90 select-none">
+              system shutdown
+            </p>
+
+            <h1 className="animate-text-shimmer text-[32px] min-[380px]:text-[40px] sm:text-[50px] md:text-[60px] font-bold tracking-[-0.035em] select-none animate-[fadeUp_0.8s_cubic-bezier(0.16,1,0.3,1)_0.18s_both]">
+              GOODBYE
+            </h1>
+
+            {/* Subtle loading dots */}
+            <div className="mt-8 flex gap-2.5 animate-[fadeUp_0.8s_cubic-bezier(0.16,1,0.3,1)_0.4s_both]">
+              <div className="h-1.5 w-1.5 rounded-full bg-accent/70 dark:bg-accent-dark/70 animate-pulse" style={{ animationDelay: "0ms" }} />
+              <div className="h-1.5 w-1.5 rounded-full bg-accent/70 dark:bg-accent-dark/70 animate-pulse" style={{ animationDelay: "150ms" }} />
+              <div className="h-1.5 w-1.5 rounded-full bg-accent/70 dark:bg-accent-dark/70 animate-pulse" style={{ animationDelay: "300ms" }} />
+            </div>
           </div>
-          <p className="mt-5 text-[15px] font-medium tracking-wide text-ink dark:text-ink-dark animate-pulse">
-            Logging out...
-          </p>
         </div>
       )}
     </>
