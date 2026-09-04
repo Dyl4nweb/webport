@@ -134,13 +134,18 @@ export default function AdminVarexAiPage() {
     
     const utterance = new SpeechSynthesisUtterance(text);
     const voices = window.speechSynthesis.getVoices();
+    // Prioritize Jarvis-like male voices
+    let preferredVoice = voices.find(v => 
+      v.name.includes("Google UK English Male") || 
+      v.name.includes("Microsoft David") || 
+      v.name.includes("Microsoft Mark") ||
+      v.name.includes("Daniel") || 
+      v.name.toLowerCase().includes("male")
+    );
     
-    // Prioritize Jarvis-like male voices (Google UK English Male is common in Chrome)
-    let preferredVoice = voices.find(v => v.name.includes("Google UK English Male") || v.name.includes("Google US English"));
-    
-    // Fallback to any voice with "male" in the name for English or French
+    // Fallback to any English voice if no male voice is found
     if (!preferredVoice) {
-      preferredVoice = voices.find(v => v.name.toLowerCase().includes('male') && (v.lang.startsWith('en-') || v.lang.startsWith('fr-')));
+      preferredVoice = voices.find(v => v.lang.startsWith('en-'));
     }
     
     // Final fallback
@@ -694,6 +699,9 @@ export default function AdminVarexAiPage() {
                   <span>{(tokenUsage?.totalTokens || 0).toLocaleString()} tokens</span>
                 </button>
               </div>
+              <div className="mt-1.5 px-1 text-[10px] text-ink-tertiary/70 dark:text-ink-dark-secondary/70">
+                Note: AI Voice features are best supported on Google Chrome.
+              </div>
             </div>
           </div>
         </>
@@ -741,6 +749,9 @@ export default function AdminVarexAiPage() {
                   : isListening
                   ? "Speak your command now."
                   : "Click the orb to speak to Varex."}
+              </p>
+              <p className="text-[12px] text-ink-tertiary dark:text-zinc-500 mt-2">
+                * AI Voice commands are fully supported on Google Chrome.
               </p>
             </div>
             
