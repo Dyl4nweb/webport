@@ -27,10 +27,10 @@ export default function Contact() {
     <section className="relative pt-14 pb-20 sm:pt-16 sm:pb-28 md:pt-20 md:pb-32">
       <Container>
         {/* Header content */}
-        <div className="flex flex-col items-center text-center">
+        <div className="flex w-full flex-col items-center justify-center text-center">
           {/* Availability Status (Minimalist, cohesive layout) */}
-          <Reveal>
-            <div className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 select-none text-center">
+          <Reveal className="w-full flex justify-center">
+            <div className="relative inline-flex flex-wrap items-center justify-center gap-x-1.5 sm:gap-x-2 gap-y-1 select-none text-center">
               <div className="inline-flex items-center gap-1.5 whitespace-nowrap">
                 <span className="relative flex h-2 w-2 shrink-0">
                   <span className="contact-status-pulse absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
@@ -40,15 +40,18 @@ export default function Contact() {
                   AVAILABLE FOR NEW OPPORTUNITIES
                 </span>
               </div>
-              <span className="text-ink-tertiary dark:text-ink-dark-secondary text-[10px]">·</span>
-              <span className="text-[10.5px] sm:text-[12px] text-ink-secondary dark:text-ink-dark-secondary font-medium whitespace-nowrap">
-                Manila (UTC+8)
-              </span>
+              
+              <div className="flex sm:absolute sm:left-full sm:ml-2 items-center gap-1.5 whitespace-nowrap">
+                <span className="text-ink-tertiary dark:text-ink-dark-secondary text-[10px]">·</span>
+                <span className="text-[10.5px] sm:text-[12px] text-ink-secondary dark:text-ink-dark-secondary font-medium">
+                  Manila (UTC+8)
+                </span>
+              </div>
             </div>
           </Reveal>
 
           {/* Main Headline matching Hero style */}
-          <Reveal delay={60}>
+          <Reveal delay={60} className="w-full flex justify-center">
             <h2 className="mt-3.5 sm:mt-4 max-w-4xl lg:max-w-5xl text-balance text-2xl min-[360px]:text-[26px] sm:text-4xl md:text-5xl lg:text-[54px] xl:text-6xl font-bold tracking-[-0.03em] sm:tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.18] sm:leading-[1.1] text-center xl:whitespace-nowrap">
               <GlitchText text="Have a project in mind? Let's build it." />
             </h2>

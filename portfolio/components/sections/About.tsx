@@ -103,11 +103,11 @@ export default function About() {
             {/* Corner detail */}
             <div
               className="
-                absolute bottom-4 left-4
+                absolute bottom-3 left-3 min-[360px]:bottom-4 min-[360px]:left-4
                 rounded-2xl
                 border border-white/20
                 bg-black/40
-                px-3 py-2.5
+                px-2.5 py-2 min-[360px]:px-3 min-[360px]:py-2.5
                 text-white
                 backdrop-blur-md
                 transition-[transform,background-color]
@@ -119,11 +119,11 @@ export default function About() {
                 sm:px-4 sm:py-3
               "
             >
-              <span className="block text-[9px] font-semibold uppercase tracking-[0.16em] text-white/70 sm:text-[10px]">
+              <span className="block text-[8.5px] min-[360px]:text-[9px] font-semibold uppercase tracking-[0.16em] text-white/70 sm:text-[10px]">
                 About me
               </span>
 
-              <span className="mt-1 block text-[12px] font-medium sm:text-[13px]">
+              <span className="mt-0.5 min-[360px]:mt-1 block text-[11px] min-[360px]:text-[12px] font-medium sm:text-[13px]">
                 Engineer · Builder
               </span>
             </div>
@@ -133,23 +133,23 @@ export default function About() {
         {/* Content */}
         <Reveal
           delay={120}
-          className="flex max-w-2xl flex-col items-start"
+          className="flex w-full max-w-2xl flex-col items-start"
         >
           <span className="mb-3 sm:mb-4 font-mono text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.18em] text-accent dark:text-accent-dark">
             About
           </span>
 
-          <h2 className="text-3xl min-[360px]:text-4xl sm:text-5xl md:text-5xl lg:text-[56px] font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.08]">
+          <h2 className="text-2xl min-[360px]:text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold tracking-[-0.03em] sm:tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.14] sm:leading-[1.08]">
             <GlitchText text="I turn complex problems into simple, useful experiences." />
           </h2>
 
           <div
             className="
-              mt-5 sm:mt-6
-              max-w-xl
-              space-y-4
-              text-[15px] sm:text-[17px]
-              leading-[1.8]
+              mt-4 sm:mt-6
+              w-full max-w-xl
+              space-y-3.5 sm:space-y-4
+              text-[14.5px] min-[360px]:text-[15px] sm:text-[17px]
+              leading-[1.7] sm:leading-[1.8]
               text-ink-secondary
               dark:text-ink-dark-secondary
             "
@@ -167,12 +167,12 @@ export default function About() {
           </div>
 
           {/* Actions */}
-          <div className="mt-7 sm:mt-8 flex flex-wrap items-center gap-4">
+          <div className="mt-6 sm:mt-8 flex flex-wrap items-center gap-3 sm:gap-4 w-full">
             <Button href="/about" variant="primary">
               More about me
             </Button>
 
-            <span className="font-mono text-[12px] sm:text-[13px] text-ink-tertiary dark:text-ink-dark-secondary">
+            <span className="font-mono text-[11px] min-[360px]:text-[12px] sm:text-[13px] text-ink-tertiary dark:text-ink-dark-secondary">
               Engineering × Product × Design
             </span>
           </div>

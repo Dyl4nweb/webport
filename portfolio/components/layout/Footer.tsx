@@ -104,7 +104,7 @@ export default function Footer() {
                   rel="noreferrer"
                   title={link.label}
                   aria-label={link.label}
-                  className="flex h-8.5 w-8.5 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-surface-alt dark:bg-surface-dark-alt border border-line/60 dark:border-line-dark/60 text-ink-secondary transition-all duration-200 hover:scale-105 hover:border-line-dark/40 hover:text-ink dark:text-ink-dark-secondary dark:hover:border-line/40 dark:hover:text-ink-dark"
+                  className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-surface-alt dark:bg-surface-dark-alt border border-line/60 dark:border-line-dark/60 text-ink-secondary transition-all duration-200 hover:scale-105 hover:border-line-dark/40 hover:text-ink dark:text-ink-dark-secondary dark:hover:border-line/40 dark:hover:text-ink-dark"
                 >
                   {socialIcons[link.icon]}
                 </a>
