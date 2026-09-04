@@ -253,15 +253,71 @@ export default function GlitchText({
     stopGlitch();
   }, [text, stopGlitch]);
 
-  // Render displayText directly with zero layout shift, preserving authentic line-height and bounding box
+  // Render displayText with zero layout shift.
+  // When not glitching, render original clean text directly for maximum performance.
+  if (!isGlitching) {
+    return (
+      <Component
+        ref={containerRef as any}
+        onMouseEnter={triggerOnHover ? startGlitch : undefined}
+        onTouchStart={triggerOnHover ? startGlitch : undefined}
+        className={cn("inline select-none", className)}
+        aria-label={text}
+      >
+        {text}
+      </Component>
+    );
+  }
+
+  // When glitching, lock every character to the exact layout width of the original character
+  // and preserve word tokens with whitespace-nowrap so lines NEVER disarrange or reflow on mobile.
+  const tokens = text.match(/\S+|\s+/g) || [text];
+  let charIndex = 0;
+
   return (
     <Component
       ref={containerRef as any}
       onMouseEnter={triggerOnHover ? startGlitch : undefined}
       onTouchStart={triggerOnHover ? startGlitch : undefined}
       className={cn("inline select-none", className)}
+      aria-label={text}
     >
-      {displayText}
+      {tokens.map((token, tokenIdx) => {
+        if (/^\s+$/.test(token)) {
+          charIndex += token.length;
+          return <span key={tokenIdx}>{token}</span>;
+        }
+
+        const chars = token.split("");
+        return (
+          <span key={tokenIdx} className="inline-block whitespace-nowrap">
+            {chars.map((origChar, charInTokenIdx) => {
+              const idx = charIndex++;
+              const cipherChar = displayText[idx] ?? origChar;
+
+              return (
+                <span
+                  key={charInTokenIdx}
+                  className="inline-grid [grid-template-areas:'stack'] align-baseline"
+                >
+                  <span
+                    className="invisible [grid-area:stack] select-none"
+                    aria-hidden="true"
+                  >
+                    {origChar}
+                  </span>
+                  <span
+                    className="[grid-area:stack] text-center select-none overflow-visible"
+                    aria-hidden="true"
+                  >
+                    {cipherChar}
+                  </span>
+                </span>
+              );
+            })}
+          </span>
+        );
+      })}
     </Component>
   );
 }

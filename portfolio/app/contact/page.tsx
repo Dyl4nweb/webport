@@ -63,7 +63,7 @@ export default function ContactPage() {
 
           {/* Main Headline matching other pages (Projects, Experience) */}
           <Reveal delay={120}>
-            <h1 className="mt-4 max-w-5xl text-balance text-3xl min-[360px]:text-4xl sm:text-5xl md:text-[48px] lg:text-[56px] xl:text-6xl font-bold tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.08] text-center md:whitespace-nowrap">
+            <h1 className="mt-4 max-w-5xl text-balance text-3xl min-[375px]:text-4xl sm:text-5xl md:text-[48px] lg:text-[56px] xl:text-6xl font-bold tracking-[-0.04em] sm:tracking-[-0.05em] text-ink dark:text-ink-dark leading-[1.14] sm:leading-[1.08] text-center md:whitespace-nowrap">
               <GlitchText text="Let's build something exceptional." />
             </h1>
           </Reveal>

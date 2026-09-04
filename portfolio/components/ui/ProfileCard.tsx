@@ -7,6 +7,7 @@ import { socialLinks } from "@/data/social";
 import { cn } from "@/lib/utils";
 import GlitchText from "@/components/ui/GlitchText";
 import TechIcon from "@/components/ui/TechIcon";
+import { useActiveTheme } from "@/lib/useActiveTheme";
 
 interface ProfileCardProps {
   open?: boolean;
@@ -75,6 +76,7 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
   const [entered, setEntered] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const { badgeNo, bars } = useBadgeId(SITE.name);
+  const { theme } = useActiveTheme();
 
   useEffect(() => {
     if (open) {
@@ -143,7 +145,7 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
   return createPortal(
     <div
       className={cn(
-        "fixed inset-0 z-[250] flex items-center justify-center p-3.5 sm:p-4",
+        "fixed inset-0 z-[250] flex items-center justify-center p-4 min-[380px]:p-5 sm:p-6",
         "transition-[opacity,backdrop-filter] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
         entered ? "opacity-100" : "pointer-events-none opacity-0",
       )}
@@ -200,7 +202,7 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
       {/* Perspective wrapper */}
       <div
         className={cn(
-          "w-full max-w-[430px] sm:max-w-[450px]",
+          "w-full max-w-[355px] min-[390px]:max-w-[375px] min-[420px]:max-w-[395px] sm:max-w-[450px]",
           "transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
           entered
             ? "translate-y-0 scale-100 opacity-100"
@@ -228,7 +230,7 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
           {/* Card — laminated badge, portrait-photo ID layout */}
           <div
             className={cn(
-              "profile-badge-card relative overflow-hidden rounded-[18px]",
+              "profile-badge-card relative overflow-hidden rounded-[20px]",
               "bg-[#fafafa] dark:bg-[#161618]",
               "border border-black/[0.06] dark:border-white/[0.08]",
               "shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_20px_40px_-15px_rgba(0,0,0,0.35)] sm:shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_30px_60px_-25px_rgba(0,0,0,0.35)]",
@@ -245,12 +247,12 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
             />
 
             {/* Header strip */}
-            <div className="relative flex items-center justify-between border-b border-dashed border-black/[0.08] px-4.5 py-2.5 sm:px-6 sm:py-3 dark:border-white/[0.08]">
+            <div className="relative flex items-center justify-between border-b border-dashed border-black/[0.08] px-3.5 min-[390px]:px-4 sm:px-6 py-2 min-[390px]:py-2.5 sm:py-3 dark:border-white/[0.08]">
               <div className="flex items-center gap-1.5">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="text-black/35 dark:text-white/30">
                   <path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16" />
                 </svg>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-black/40 dark:text-white/35">
+                <span className="text-[9.5px] min-[390px]:text-[10px] font-semibold uppercase tracking-[0.16em] text-black/40 dark:text-white/35">
                   <GlitchText triggerOnMount triggerOnHover={false} delay={100} duration={600} text="Developer ID" />
                 </span>
               </div>
@@ -259,24 +261,24 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
                   <span className="profile-badge-pulse absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500/60" />
                   <span className="profile-badge-dot relative inline-flex h-[6px] w-[6px] rounded-full bg-emerald-500" />
                 </span>
-                <span className="font-mono text-[10px] font-medium tracking-wide text-black/40 dark:text-white/35">
+                <span className="font-mono text-[9.5px] min-[390px]:text-[10px] font-medium tracking-wide text-black/40 dark:text-white/35">
                   <GlitchText triggerOnMount triggerOnHover={false} delay={160} duration={500} text="ACTIVE" />
                 </span>
               </div>
             </div>
 
             {/* Body */}
-            <div className="relative flex items-center gap-3.5 sm:gap-4.5 px-4.5 py-4 sm:px-6 sm:py-5">
+            <div className="relative flex items-center gap-3 min-[390px]:gap-3.5 sm:gap-4.5 px-3.5 min-[390px]:px-4 sm:px-6 py-3 min-[390px]:py-3.5 sm:py-5">
               {/* Portrait photo — square ID badge photo */}
               <div
-                className="profile-badge-photo relative h-[78px] w-[78px] sm:h-[86px] sm:w-[86px] shrink-0 overflow-hidden rounded-[12px] ring-1 ring-black/[0.08] dark:ring-white/[0.1]"
+                className="profile-badge-photo relative h-[78px] w-[78px] min-[390px]:h-[84px] min-[390px]:w-[84px] sm:h-[92px] sm:w-[92px] shrink-0 overflow-hidden rounded-[13px] ring-1 ring-black/[0.08] dark:ring-white/[0.1]"
                 style={{ transform: "translateZ(0)", backfaceVisibility: "hidden" }}
               >
                 <Image
                   src="/images/profile/profile.png"
                   alt={SITE.name}
                   fill
-                  sizes="172px"
+                  sizes="184px"
                   quality={95}
                   className="object-cover"
                   style={{ transform: "translateZ(0)" }}
@@ -284,15 +286,15 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
               </div>
 
               {/* Identity block */}
-              <div className="flex min-w-0 flex-1 flex-col justify-between min-h-[78px] sm:min-h-[86px]">
+              <div className="flex min-w-0 flex-1 flex-col justify-between min-h-[78px] min-[390px]:min-h-[84px] sm:min-h-[92px]">
                 <div>
-                  <h2 className="truncate text-[20px] sm:text-[23px] font-bold leading-tight tracking-[-0.02em] text-black/90 dark:text-white/90">
+                  <h2 className="truncate text-[19px] min-[390px]:text-[21px] sm:text-[23px] font-bold leading-tight tracking-[-0.02em] text-black/90 dark:text-white/90">
                     <GlitchText triggerOnMount triggerOnHover={true} delay={220} duration={800} text={SITE.name} className="tabular-nums" />
                   </h2>
-                  <p className="mt-0.5 sm:mt-1 truncate font-mono text-[10.5px] sm:text-[11px] font-medium uppercase tracking-wide text-black/45 dark:text-white/40">
+                  <p className="mt-0.5 truncate font-mono text-[10px] min-[390px]:text-[10.5px] sm:text-[11px] font-medium uppercase tracking-wide text-black/45 dark:text-white/40">
                     <GlitchText triggerOnMount triggerOnHover={false} delay={280} duration={700} text={SITE.role} />
                   </p>
-                  <p className="mt-1 sm:mt-1.5 flex items-center gap-1 text-[10.5px] sm:text-[11px] text-black/40 dark:text-white/35">
+                  <p className="mt-0.5 min-[390px]:mt-1 flex items-center gap-1 text-[10px] min-[390px]:text-[10.5px] sm:text-[11px] text-black/40 dark:text-white/35">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
                       <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                       <circle cx="12" cy="10" r="3" />
@@ -301,8 +303,8 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
                   </p>
                 </div>
 
-                {/* Tech icons row with interactive hover name tooltip */}
-                <div className="mt-2 flex items-center gap-1 sm:gap-1.5 flex-nowrap min-h-[26px]">
+                {/* Tech icons row with interactive theme-matching hover name tooltip */}
+                <div className="mt-1.5 min-[390px]:mt-2 flex items-center gap-1 min-[390px]:gap-1.5 flex-nowrap min-h-[24px] min-[390px]:min-h-[26px]">
                   {topTech.map((tech) => (
                     <div
                       key={tech.name}
@@ -312,34 +314,32 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
                     >
                       <span
                         className={cn(
-                          "inline-flex h-[25px] w-[25px] sm:h-[27px] sm:w-[27px] shrink-0 items-center justify-center rounded-[5px] cursor-pointer",
-                          "bg-black/[0.04] ring-1 ring-black/[0.06]",
-                          "dark:bg-white/[0.06] dark:ring-white/[0.08]",
-                          "transition-all duration-200 hover:scale-110 hover:bg-black/[0.08] dark:hover:bg-white/[0.12]",
+                          "profile-tech-btn inline-flex h-[23px] w-[23px] min-[390px]:h-[25px] min-[390px]:w-[25px] sm:h-[27px] sm:w-[27px] shrink-0 items-center justify-center cursor-pointer",
+                          "rounded-[5px] bg-black/[0.04] ring-1 ring-black/[0.06] dark:bg-white/[0.06] dark:ring-white/[0.08]",
+                          "transition-all duration-200 hover:scale-110",
                           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 dark:focus-visible:ring-white/40",
                         )}
                       >
-                        <TechIcon name={tech.name} size={15} />
+                        <TechIcon name={tech.name} size={14} />
                       </span>
 
-                      {/* Tooltip on hover */}
+                      {/* Tooltip on hover — styled to match Modern, Cafe, or Cyber themes */}
                       <span
                         role="tooltip"
                         className={cn(
-                          "pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30",
+                          "profile-tech-tooltip pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30",
                           "opacity-0 scale-95 translate-y-1",
                           "group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0",
                           "group-focus-visible:opacity-100 group-focus-visible:scale-100 group-focus-visible:translate-y-0",
                           "transition-all duration-150 ease-out",
-                          "rounded-[4px] px-1.5 py-0.5 whitespace-nowrap",
-                          "font-mono text-[9px] font-semibold tracking-tight",
-                          "!bg-neutral-900 !text-white shadow-md dark:!bg-white dark:!text-neutral-950",
+                          "whitespace-nowrap px-1.5 py-0.5",
                         )}
                       >
+                        <span className="profile-tech-cyber-prefix hidden opacity-75 mr-0.5 font-mono" aria-hidden="true">&gt;</span>
                         {tech.label}
                         {/* Tooltip arrow */}
                         <span
-                          className="absolute top-full left-1/2 -translate-x-1/2 -mt-[1px] border-4 border-transparent !border-t-neutral-900 dark:!border-t-white"
+                          className="profile-tech-tooltip-arrow absolute top-full left-1/2 -translate-x-1/2 -mt-[1px] border-4 border-transparent"
                           aria-hidden="true"
                         />
                       </span>
@@ -349,31 +349,308 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
               </div>
             </div>
 
+            {/* Scoped Theme Styles for Badgeware Geometry, Tech Stack & Social Links */}
+            <style>{`
+              /* ─── Guaranteed Badgeware Geometry Across All Themes & Mobile Viewports ─── */
+              .profile-badge-card,
+              html[data-theme="modern"] .profile-badge-card,
+              html[data-theme="cafe"] .profile-badge-card,
+              html[data-theme="cafe"].dark .profile-badge-card,
+              html[data-theme="cyber"] .profile-badge-card,
+              html[data-theme="cyber"].dark .profile-badge-card {
+                border-radius: 20px !important;
+              }
+
+              .profile-badge-card .profile-badge-photo,
+              html[data-theme="modern"] .profile-badge-card .profile-badge-photo,
+              html[data-theme="cafe"] .profile-badge-card .profile-badge-photo,
+              html[data-theme="cafe"].dark .profile-badge-card .profile-badge-photo,
+              html[data-theme="cyber"] .profile-badge-card .profile-badge-photo,
+              html[data-theme="cyber"].dark .profile-badge-card .profile-badge-photo {
+                border-radius: 13px !important;
+              }
+
+              .profile-lanyard-hole,
+              html[data-theme="modern"] .profile-lanyard-hole,
+              html[data-theme="cafe"] .profile-lanyard-hole,
+              html[data-theme="cafe"].dark .profile-lanyard-hole,
+              html[data-theme="cyber"] .profile-lanyard-hole,
+              html[data-theme="cyber"].dark .profile-lanyard-hole {
+                border-radius: 9999px !important;
+              }
+
+              .profile-badge-card .profile-book-btn,
+              .profile-badge-card a[href*="cal.com"],
+              html[data-theme="modern"] .profile-badge-card .profile-book-btn,
+              html[data-theme="cafe"] .profile-badge-card .profile-book-btn,
+              html[data-theme="cafe"].dark .profile-badge-card .profile-book-btn,
+              html[data-theme="cyber"] .profile-badge-card .profile-book-btn,
+              html[data-theme="cyber"].dark .profile-badge-card .profile-book-btn {
+                border-radius: 9999px !important;
+              }
+
+              /* ─── 1. Modern Theme (Apple Minimalist Monochrome) ─── */
+              .profile-badge-card .profile-tech-btn {
+                border-radius: 5px;
+                transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+              }
+              .profile-badge-card .profile-social-btn {
+                border-radius: 9999px;
+                transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+              }
+              .profile-badge-card .profile-tech-btn:hover,
+              .profile-badge-card .profile-social-btn:hover {
+                background-color: rgba(0, 0, 0, 0.09) !important;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+              }
+              .dark .profile-badge-card .profile-tech-btn:hover,
+              .dark .profile-badge-card .profile-social-btn:hover {
+                background-color: rgba(255, 255, 255, 0.14) !important;
+                box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+              }
+
+              .profile-badge-card span.profile-tech-tooltip {
+                border-radius: 4px !important;
+                font-family: var(--font-mono), monospace !important;
+                font-size: 9px !important;
+                font-weight: 600 !important;
+                letter-spacing: -0.01em !important;
+                background-color: #18181b !important;
+                color: #ffffff !important;
+                border: 1px solid rgba(255, 255, 255, 0.16) !important;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+                text-shadow: none !important;
+              }
+              .dark .profile-badge-card span.profile-tech-tooltip {
+                background-color: #ffffff !important;
+                color: #09090b !important;
+                border: 1px solid rgba(0, 0, 0, 0.12) !important;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+                text-shadow: none !important;
+              }
+              .profile-badge-card span.profile-tech-tooltip-arrow {
+                border-top-color: #18181b !important;
+              }
+              .dark .profile-badge-card span.profile-tech-tooltip-arrow {
+                border-top-color: #ffffff !important;
+              }
+
+              /* ─── 2. ☕ Cafe / Coffee Shop Theme (Carved Wood & Roasted Espresso) ─── */
+              html[data-theme="cafe"] .profile-badge-card .profile-tech-btn {
+                border-radius: 6px !important;
+                background-color: rgba(90, 48, 18, 0.14) !important;
+                border: 1px solid rgba(90, 48, 18, 0.28) !important;
+                color: #381e0e !important;
+                transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+              }
+              html[data-theme="cafe"] .profile-badge-card .profile-tech-btn:hover {
+                background-color: rgba(141, 98, 56, 0.32) !important;
+                border-color: #8d6238 !important;
+                box-shadow: 0 3px 12px rgba(141, 98, 56, 0.45) !important;
+                transform: scale(1.14) !important;
+              }
+              html[data-theme="cafe"] .profile-badge-card .profile-social-btn {
+                border-radius: 9999px !important;
+                color: #381e0e !important;
+                transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+              }
+              html[data-theme="cafe"] .profile-badge-card .profile-social-btn:hover {
+                background-color: rgba(141, 98, 56, 0.28) !important;
+                color: #2b170c !important;
+                border-color: #8d6238 !important;
+                box-shadow: 0 3px 10px rgba(141, 98, 56, 0.4) !important;
+                transform: scale(1.14) !important;
+              }
+              html[data-theme="cafe"].dark .profile-badge-card .profile-tech-btn {
+                background-color: rgba(0, 0, 0, 0.45) !important;
+                border: 1px solid rgba(160, 100, 60, 0.35) !important;
+                color: #eed7c0 !important;
+              }
+              html[data-theme="cafe"].dark .profile-badge-card .profile-tech-btn:hover {
+                background-color: rgba(180, 101, 42, 0.35) !important;
+                border-color: #b4652a !important;
+                box-shadow: 0 3px 14px rgba(180, 101, 42, 0.55) !important;
+                transform: scale(1.14) !important;
+              }
+              html[data-theme="cafe"].dark .profile-badge-card .profile-social-btn {
+                color: #eed7c0 !important;
+              }
+              html[data-theme="cafe"].dark .profile-badge-card .profile-social-btn:hover {
+                background-color: rgba(180, 101, 42, 0.32) !important;
+                color: #f3dec9 !important;
+                border-color: #b4652a !important;
+                box-shadow: 0 3px 12px rgba(180, 101, 42, 0.45) !important;
+                transform: scale(1.14) !important;
+              }
+
+              /* White Enamel Pill CTA for Cafe Badge (matches user reference image) */
+              html[data-theme="cafe"] .profile-badge-card .profile-book-btn,
+              html[data-theme="cafe"].dark .profile-badge-card .profile-book-btn {
+                background-color: #ffffff !important;
+                color: #2b170c !important;
+                border-radius: 9999px !important;
+                border: none !important;
+                box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35), 0 1px 0 rgba(255, 255, 255, 0.8) inset !important;
+              }
+              html[data-theme="cafe"] .profile-badge-card .profile-book-btn span,
+              html[data-theme="cafe"].dark .profile-badge-card .profile-book-btn span {
+                color: #2b170c !important;
+                font-weight: 700 !important;
+              }
+
+              html[data-theme="cafe"] .profile-badge-card span.profile-tech-tooltip {
+                border-radius: 5px !important;
+                font-family: var(--font-serif), Georgia, Cambria, serif !important;
+                font-size: 9.5px !important;
+                font-weight: 700 !important;
+                letter-spacing: 0.02em !important;
+                background-color: #2b170c !important;
+                color: #faede1 !important;
+                border: 1px solid #8d6238 !important;
+                box-shadow: 0 4px 14px rgba(43, 23, 12, 0.55), inset 0 1px 0 rgba(255, 235, 205, 0.2) !important;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+              }
+              html[data-theme="cafe"].dark .profile-badge-card span.profile-tech-tooltip {
+                background-color: #170d07 !important;
+                color: #f3dec9 !important;
+                border: 1px solid #a86f3d !important;
+                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85), 0 0 12px rgba(180, 101, 42, 0.3), inset 0 1px 0 rgba(255, 200, 120, 0.15) !important;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95) !important;
+              }
+              html[data-theme="cafe"] .profile-badge-card span.profile-tech-tooltip-arrow {
+                border-top-color: #2b170c !important;
+              }
+              html[data-theme="cafe"].dark .profile-badge-card span.profile-tech-tooltip-arrow {
+                border-top-color: #170d07 !important;
+              }
+
+              /* ─── 3. 🟢 Cyber Terminal Theme (Tactical HUD & Matrix CRT) ─── */
+              html[data-theme="cyber"] .profile-badge-card .profile-tech-btn {
+                border-radius: 0px !important;
+                background-color: rgba(5, 150, 105, 0.1) !important;
+                border: 1px solid rgba(5, 150, 105, 0.35) !important;
+                color: #042b1b !important;
+                transition: all 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+              }
+              html[data-theme="cyber"] .profile-badge-card .profile-tech-btn:hover {
+                background-color: rgba(5, 150, 105, 0.28) !important;
+                border-color: #059669 !important;
+                box-shadow: 0 0 12px rgba(5, 150, 105, 0.5) !important;
+                transform: scale(1.14) !important;
+              }
+              html[data-theme="cyber"] .profile-badge-card .profile-social-btn {
+                border-radius: 0px !important;
+                color: #042b1b !important;
+                transition: all 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+              }
+              html[data-theme="cyber"] .profile-badge-card .profile-social-btn:hover {
+                background-color: rgba(5, 150, 105, 0.25) !important;
+                border: 1px solid #059669 !important;
+                box-shadow: 0 0 12px rgba(5, 150, 105, 0.5) !important;
+                transform: scale(1.14) !important;
+              }
+              html[data-theme="cyber"].dark .profile-badge-card .profile-tech-btn {
+                background-color: rgba(0, 255, 102, 0.08) !important;
+                border: 1px solid rgba(0, 255, 102, 0.35) !important;
+                color: #00ff66 !important;
+              }
+              html[data-theme="cyber"].dark .profile-badge-card .profile-tech-btn:hover {
+                background-color: rgba(0, 255, 102, 0.24) !important;
+                border-color: #00ff66 !important;
+                box-shadow: 0 0 18px rgba(0, 255, 102, 0.85) !important;
+                transform: scale(1.14) !important;
+              }
+              html[data-theme="cyber"].dark .profile-badge-card .profile-social-btn {
+                color: #00ff66 !important;
+              }
+              html[data-theme="cyber"].dark .profile-badge-card .profile-social-btn:hover {
+                background-color: rgba(0, 255, 102, 0.2) !important;
+                border: 1px solid #00ff66 !important;
+                box-shadow: 0 0 16px rgba(0, 255, 102, 0.85) !important;
+                transform: scale(1.14) !important;
+              }
+
+              html[data-theme="cyber"] .profile-badge-card span.profile-tech-tooltip {
+                border-radius: 0px !important;
+                font-family: var(--font-mono), monospace !important;
+                font-size: 8.5px !important;
+                font-weight: 700 !important;
+                letter-spacing: 0.08em !important;
+                text-transform: uppercase !important;
+                background-color: #042b1b !important;
+                color: #00ff66 !important;
+                border: 1px solid #059669 !important;
+                box-shadow: 0 0 12px rgba(5, 150, 105, 0.45), inset 0 0 4px rgba(0, 255, 102, 0.2) !important;
+                text-shadow: 0 0 6px rgba(0, 255, 102, 0.6) !important;
+              }
+              html[data-theme="cyber"].dark .profile-badge-card span.profile-tech-tooltip {
+                background-color: #030705 !important;
+                color: #00ff66 !important;
+                border: 1px solid #00ff66 !important;
+                box-shadow: 0 0 18px rgba(0, 255, 102, 0.75), inset 0 0 6px rgba(0, 255, 102, 0.35) !important;
+                text-shadow: 0 0 8px rgba(0, 255, 102, 0.95) !important;
+              }
+              html[data-theme="cyber"] .profile-badge-card span.profile-tech-tooltip-arrow {
+                border-top-color: #042b1b !important;
+              }
+              html[data-theme="cyber"].dark .profile-badge-card span.profile-tech-tooltip-arrow {
+                border-top-color: #030705 !important;
+              }
+              html[data-theme="cyber"] .profile-tech-cyber-prefix {
+                display: inline !important;
+              }
+            `}</style>
+
             {/* Perforated tear line */}
-            <div className="relative flex items-center px-4.5 sm:px-6">
+            <div className="relative flex items-center px-3.5 min-[390px]:px-4.5 sm:px-6">
               <div className="h-px w-full border-t border-dashed border-black/[0.1] dark:border-white/[0.1]" />
             </div>
 
             {/* Footer — actions */}
-            <div className="relative flex items-center justify-between gap-1 px-4.5 py-3 sm:px-6 sm:py-4">
+            <div className="relative flex items-center justify-between gap-1 px-3.5 min-[390px]:px-4.5 sm:px-6 py-2.5 min-[390px]:py-3 sm:py-4">
               <div className="flex items-center gap-0.5 sm:gap-1">
                 {socialLinks.map((link) => (
-                  <a
+                  <div
                     key={link.label}
-                    href={link.url}
-                    target={link.url.startsWith("http") ? "_blank" : undefined}
-                    rel="noreferrer"
-                    aria-label={link.label}
-                    className={cn(
-                      "flex h-7.5 w-7.5 sm:h-8 sm:w-8 items-center justify-center rounded-full",
-                      "text-black/40 transition-all duration-200",
-                      "hover:bg-black/[0.05] hover:text-black/75",
-                      "dark:text-white/35",
-                      "dark:hover:bg-white/[0.08] dark:hover:text-white/75",
-                    )}
+                    className="group relative inline-flex"
                   >
-                    {socialIcons[link.icon] ?? link.label}
-                  </a>
+                    <a
+                      href={link.url}
+                      target={link.url.startsWith("http") ? "_blank" : undefined}
+                      rel="noreferrer"
+                      aria-label={link.label}
+                      className={cn(
+                        "profile-social-btn flex h-[28px] w-[28px] min-[390px]:h-[30px] min-[390px]:w-[30px] sm:h-8 sm:w-8 items-center justify-center rounded-full cursor-pointer",
+                        "text-black/45 transition-all duration-200",
+                        "hover:bg-black/[0.05] hover:text-black/80 hover:scale-110",
+                        "dark:text-white/40 dark:hover:bg-white/[0.08] dark:hover:text-white/80",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 dark:focus-visible:ring-white/40",
+                      )}
+                    >
+                      {socialIcons[link.icon] ?? link.label}
+                    </a>
+
+                    {/* Tooltip on hover — matching active theme (Modern, Cafe, Cyber) */}
+                    <span
+                      role="tooltip"
+                      className={cn(
+                        "profile-tech-tooltip pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30",
+                        "opacity-0 scale-95 translate-y-1",
+                        "group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0",
+                        "group-focus-visible:opacity-100 group-focus-visible:scale-100 group-focus-visible:translate-y-0",
+                        "transition-all duration-150 ease-out",
+                        "whitespace-nowrap px-1.5 py-0.5",
+                      )}
+                    >
+                      <span className="profile-tech-cyber-prefix hidden opacity-75 mr-0.5 font-mono" aria-hidden="true">&gt;</span>
+                      {link.label}
+                      {/* Tooltip arrow */}
+                      <span
+                        className="profile-tech-tooltip-arrow absolute top-full left-1/2 -translate-x-1/2 -mt-[1px] border-4 border-transparent"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </div>
                 ))}
               </div>
 
@@ -382,8 +659,8 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
                 target="_blank"
                 rel="noreferrer"
                 className={cn(
-                  "inline-flex items-center gap-1 sm:gap-1.5 rounded-full px-3.5 py-[6px] sm:px-4 sm:py-[7px]",
-                  "text-[11px] sm:text-[11.5px] font-semibold tracking-tight whitespace-nowrap",
+                  "profile-book-btn inline-flex items-center gap-1 sm:gap-1.5 rounded-full px-3 py-[5px] min-[390px]:px-3.5 min-[390px]:py-[6px] sm:px-4 sm:py-[7px]",
+                  "text-[10.5px] min-[390px]:text-[11px] sm:text-[11.5px] font-semibold tracking-tight whitespace-nowrap",
                   "!bg-black !text-white dark:!bg-white dark:!text-black",
                   "transition-all duration-200",
                   "hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/10 dark:hover:shadow-white/10",
@@ -394,8 +671,8 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
             </div>
 
             {/* Badge footer strip — barcode + ID number, the signature detail */}
-            <div className="relative flex items-center justify-between border-t border-black/[0.06] bg-black/[0.02] px-4.5 py-2 sm:px-6 sm:py-2.5 dark:border-white/[0.06] dark:bg-white/[0.02]">
-              <svg width="108" height="13" viewBox="0 0 120 14" className="sm:w-[120px] sm:h-[14px] text-black/30 dark:text-white/25">
+            <div className="relative flex items-center justify-between border-t border-black/[0.06] bg-black/[0.02] px-3.5 min-[390px]:px-4.5 sm:px-6 py-2 sm:py-2.5 dark:border-white/[0.06] dark:bg-white/[0.02]">
+              <svg width="98" height="13" viewBox="0 0 120 14" className="min-[390px]:w-[108px] sm:w-[120px] sm:h-[14px] text-black/30 dark:text-white/25">
                 {(() => {
                   let x = 0;
                   return bars.map((w, i) => {
@@ -407,7 +684,7 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
                   });
                 })()}
               </svg>
-              <span className="font-mono text-[9.5px] sm:text-[10px] font-medium tracking-wider text-black/35 dark:text-white/30">
+              <span className="font-mono text-[9px] min-[390px]:text-[9.5px] sm:text-[10px] font-medium tracking-wider text-black/35 dark:text-white/30">
                 №&nbsp;<GlitchText triggerOnMount triggerOnHover={true} delay={440} duration={650} text={badgeNo} />
               </span>
             </div>
