@@ -200,7 +200,7 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
       {/* Perspective wrapper */}
       <div
         className={cn(
-          "w-full max-w-[480px]",
+          "w-full max-w-[430px] sm:max-w-[450px]",
           "transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
           entered
             ? "translate-y-0 scale-100 opacity-100"
@@ -228,7 +228,7 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
           {/* Card — laminated badge, portrait-photo ID layout */}
           <div
             className={cn(
-              "profile-badge-card relative overflow-hidden rounded-[16px] sm:rounded-[18px]",
+              "profile-badge-card relative overflow-hidden rounded-[18px]",
               "bg-[#fafafa] dark:bg-[#161618]",
               "border border-black/[0.06] dark:border-white/[0.08]",
               "shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_20px_40px_-15px_rgba(0,0,0,0.35)] sm:shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_30px_60px_-25px_rgba(0,0,0,0.35)]",
@@ -266,17 +266,17 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
             </div>
 
             {/* Body */}
-            <div className="relative flex items-center gap-3.5 sm:gap-5 px-4.5 py-4 sm:px-6 sm:py-5">
+            <div className="relative flex items-center gap-3.5 sm:gap-4.5 px-4.5 py-4 sm:px-6 sm:py-5">
               {/* Portrait photo — square ID badge photo */}
               <div
-                className="profile-badge-photo relative h-[88px] w-[88px] sm:h-[98px] sm:w-[98px] shrink-0 overflow-hidden rounded-[12px] sm:rounded-[14px] ring-1 ring-black/[0.08] dark:ring-white/[0.1]"
+                className="profile-badge-photo relative h-[78px] w-[78px] sm:h-[86px] sm:w-[86px] shrink-0 overflow-hidden rounded-[12px] ring-1 ring-black/[0.08] dark:ring-white/[0.1]"
                 style={{ transform: "translateZ(0)", backfaceVisibility: "hidden" }}
               >
                 <Image
                   src="/images/profile/profile.png"
                   alt={SITE.name}
                   fill
-                  sizes="196px"
+                  sizes="172px"
                   quality={95}
                   className="object-cover"
                   style={{ transform: "translateZ(0)" }}
@@ -284,9 +284,9 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
               </div>
 
               {/* Identity block */}
-              <div className="flex min-w-0 flex-1 flex-col justify-between min-h-[88px] sm:min-h-[98px]">
+              <div className="flex min-w-0 flex-1 flex-col justify-between min-h-[78px] sm:min-h-[86px]">
                 <div>
-                  <h2 className="truncate text-[20px] sm:text-[25px] font-bold leading-tight tracking-[-0.02em] text-black/90 dark:text-white/90">
+                  <h2 className="truncate text-[20px] sm:text-[23px] font-bold leading-tight tracking-[-0.02em] text-black/90 dark:text-white/90">
                     <GlitchText triggerOnMount triggerOnHover={true} delay={220} duration={800} text={SITE.name} className="tabular-nums" />
                   </h2>
                   <p className="mt-0.5 sm:mt-1 truncate font-mono text-[10.5px] sm:text-[11px] font-medium uppercase tracking-wide text-black/45 dark:text-white/40">
@@ -301,22 +301,49 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
                   </p>
                 </div>
 
-                {/* Tech icons row */}
-                <div className="mt-2.5 flex items-center gap-1 sm:gap-1.5 flex-wrap min-h-[28px]">
+                {/* Tech icons row with interactive hover name tooltip */}
+                <div className="mt-2 flex items-center gap-1 sm:gap-1.5 flex-nowrap min-h-[26px]">
                   {topTech.map((tech) => (
-                    <span
+                    <div
                       key={tech.name}
-                      title={tech.label}
+                      tabIndex={0}
+                      className="group relative inline-flex"
                       aria-label={tech.label}
-                      className={cn(
-                        "inline-flex h-[26px] w-[26px] sm:h-[28px] sm:w-[28px] shrink-0 items-center justify-center rounded-[6px]",
-                        "bg-black/[0.04] ring-1 ring-black/[0.06]",
-                        "dark:bg-white/[0.06] dark:ring-white/[0.08]",
-                        "transition-all duration-200 hover:scale-110 hover:bg-black/[0.08] dark:hover:bg-white/[0.12]",
-                      )}
                     >
-                      <TechIcon name={tech.name} size={15} />
-                    </span>
+                      <span
+                        className={cn(
+                          "inline-flex h-[25px] w-[25px] sm:h-[27px] sm:w-[27px] shrink-0 items-center justify-center rounded-[5px] cursor-pointer",
+                          "bg-black/[0.04] ring-1 ring-black/[0.06]",
+                          "dark:bg-white/[0.06] dark:ring-white/[0.08]",
+                          "transition-all duration-200 hover:scale-110 hover:bg-black/[0.08] dark:hover:bg-white/[0.12]",
+                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 dark:focus-visible:ring-white/40",
+                        )}
+                      >
+                        <TechIcon name={tech.name} size={15} />
+                      </span>
+
+                      {/* Tooltip on hover */}
+                      <span
+                        role="tooltip"
+                        className={cn(
+                          "pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 z-30",
+                          "opacity-0 scale-95 translate-y-1",
+                          "group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0",
+                          "group-focus-visible:opacity-100 group-focus-visible:scale-100 group-focus-visible:translate-y-0",
+                          "transition-all duration-150 ease-out",
+                          "rounded-[4px] px-1.5 py-0.5 whitespace-nowrap",
+                          "font-mono text-[9px] font-semibold tracking-tight",
+                          "!bg-neutral-900 !text-white shadow-md dark:!bg-white dark:!text-neutral-950",
+                        )}
+                      >
+                        {tech.label}
+                        {/* Tooltip arrow */}
+                        <span
+                          className="absolute top-full left-1/2 -translate-x-1/2 -mt-[1px] border-4 border-transparent !border-t-neutral-900 dark:!border-t-white"
+                          aria-hidden="true"
+                        />
+                      </span>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -357,13 +384,12 @@ export default function ProfileCard({ open = false, onClose = () => { } }: Profi
                 className={cn(
                   "inline-flex items-center gap-1 sm:gap-1.5 rounded-full px-3.5 py-[6px] sm:px-4 sm:py-[7px]",
                   "text-[11px] sm:text-[11.5px] font-semibold tracking-tight whitespace-nowrap",
-                  "bg-black text-white",
-                  "dark:bg-white dark:text-black",
+                  "!bg-black !text-white dark:!bg-white dark:!text-black",
                   "transition-all duration-200",
                   "hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/10 dark:hover:shadow-white/10",
                 )}
               >
-                Book a call
+                <span className="!text-white dark:!text-black font-semibold">Book a call</span>
               </a>
             </div>
 
