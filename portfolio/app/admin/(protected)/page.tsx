@@ -213,7 +213,7 @@ export default function AdminOverviewPage() {
     <div className="flex flex-col gap-6 sm:gap-8">
       {/* Welcome Header / Banner */}
       <div
-        className={`relative overflow-hidden rounded-[24px] border border-line/50 bg-surface-card/60 backdrop-blur-2xl p-6 sm:p-8 md:p-10 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.05)] dark:border-line-dark/50 dark:bg-surface-dark-card/60 dark:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4)] transition-all duration-700 ease-out ${
+        className={`relative overflow-hidden rounded-[24px] border border-line/50 bg-surface-card/60 backdrop-blur-2xl p-6 sm:p-8 md:p-10 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.05)] dark:border-line-dark/50 dark:bg-surface-dark-card/60 dark:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4)] transition-all duration-700 ease-out [transform:translateZ(0)] [mask-image:linear-gradient(white,white)] ${
           mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
         }`}
       >
@@ -320,7 +320,7 @@ export default function AdminOverviewPage() {
 
         {/* Analytics 14-day Trend */}
         <section
-          className={`col-span-1 md:col-span-2 lg:col-span-2 flex flex-col rounded-apple-lg border border-line/50 bg-surface-card/60 backdrop-blur-xl p-5 sm:p-7 dark:border-line-dark/50 dark:bg-surface-dark-card/60 transition-all duration-700 delay-200 ease-out shadow-sm hover:border-line/80 hover:shadow-lg dark:hover:border-line-dark/80 group ${
+          className={`col-span-1 md:col-span-2 lg:col-span-2 flex flex-col min-h-[260px] sm:min-h-[280px] rounded-apple-lg border border-line/50 bg-surface-card/60 backdrop-blur-xl p-5 sm:p-7 dark:border-line-dark/50 dark:bg-surface-dark-card/60 transition-all duration-700 delay-200 ease-out shadow-sm hover:border-line/80 hover:shadow-lg dark:hover:border-line-dark/80 group ${
             mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
           }`}
         >
