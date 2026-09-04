@@ -4,16 +4,23 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { SITE } from "@/lib/constants";
 import { socialLinks } from "@/data/social";
-import { skills } from "@/data/skills";
 import { cn } from "@/lib/utils";
 import GlitchText from "@/components/ui/GlitchText";
+import TechIcon from "@/components/ui/TechIcon";
 
 interface ProfileCardProps {
   open?: boolean;
   onClose?: () => void;
 }
 
-const topSkills = ["Next.js", "TypeScript", "React Native", "Tailwind CSS"];
+const topTech = [
+  { name: "Next.js", label: "Next.js" },
+  { name: "React Native", label: "React Native" },
+  { name: "TypeScript", label: "TypeScript" },
+  { name: "Tailwind CSS", label: "Tailwind CSS" },
+  { name: "PostgreSQL", label: "PostgreSQL" },
+  { name: "Supabase", label: "Supabase" },
+];
 
 const socialIcons: Record<string, React.ReactNode> = {
   github: (
@@ -62,7 +69,7 @@ function useBadgeId(seed: string) {
   }, [seed]);
 }
 
-export default function ProfileCard({ open = false, onClose = () => {} }: ProfileCardProps) {
+export default function ProfileCard({ open = false, onClose = () => { } }: ProfileCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [shouldRender, setShouldRender] = useState(false);
   const [entered, setEntered] = useState(false);
@@ -136,7 +143,7 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
   return createPortal(
     <div
       className={cn(
-        "fixed inset-0 z-[250] flex items-center justify-center p-4",
+        "fixed inset-0 z-[250] flex items-center justify-center p-3.5 sm:p-4",
         "transition-[opacity,backdrop-filter] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
         entered ? "opacity-100" : "pointer-events-none opacity-0",
       )}
@@ -152,7 +159,7 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
       {/* Close button — mobile only */}
       <button
         onClick={onClose}
-        className="absolute top-5 right-5 z-[260] flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white/90 backdrop-blur-xl transition-all duration-200 hover:bg-white/20 active:scale-95 sm:hidden"
+        className="absolute top-4 right-4 z-[260] flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white/90 backdrop-blur-xl transition-all duration-200 hover:bg-white/20 active:scale-95 sm:hidden"
         aria-label="Close"
       >
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -165,7 +172,7 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
         className={cn(
           "absolute bottom-8 left-1/2 z-[260] hidden -translate-x-1/2 sm:flex",
           "items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 backdrop-blur-xl",
-           "transition-all delay-300 duration-500",
+          "transition-all delay-300 duration-500",
           entered ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0",
         )}
       >
@@ -193,7 +200,7 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
       {/* Perspective wrapper */}
       <div
         className={cn(
-          "w-full max-w-[500px]",
+          "w-full max-w-[480px]",
           "transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
           entered
             ? "translate-y-0 scale-100 opacity-100"
@@ -221,11 +228,11 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
           {/* Card — laminated badge, portrait-photo ID layout */}
           <div
             className={cn(
-              "profile-badge-card relative overflow-hidden rounded-[18px]",
+              "profile-badge-card relative overflow-hidden rounded-[16px] sm:rounded-[18px]",
               "bg-[#fafafa] dark:bg-[#161618]",
               "border border-black/[0.06] dark:border-white/[0.08]",
-              "shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_30px_60px_-25px_rgba(0,0,0,0.35)]",
-              "dark:shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_30px_70px_-25px_rgba(0,0,0,0.8)]",
+              "shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_20px_40px_-15px_rgba(0,0,0,0.35)] sm:shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_30px_60px_-25px_rgba(0,0,0,0.35)]",
+              "dark:shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_20px_40px_-15px_rgba(0,0,0,0.8)] dark:sm:shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_30px_70px_-25px_rgba(0,0,0,0.8)]",
             )}
           >
             {/* Lamination sheen — single soft light, no rainbow */}
@@ -238,7 +245,7 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
             />
 
             {/* Header strip */}
-            <div className="relative flex items-center justify-between border-b border-dashed border-black/[0.08] px-6 py-3 dark:border-white/[0.08]">
+            <div className="relative flex items-center justify-between border-b border-dashed border-black/[0.08] px-4.5 py-2.5 sm:px-6 sm:py-3 dark:border-white/[0.08]">
               <div className="flex items-center gap-1.5">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="text-black/35 dark:text-white/30">
                   <path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16" />
@@ -259,17 +266,17 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
             </div>
 
             {/* Body */}
-            <div className="relative flex gap-5 px-6 py-5">
+            <div className="relative flex items-center gap-3.5 sm:gap-5 px-4.5 py-4 sm:px-6 sm:py-5">
               {/* Portrait photo — square ID badge photo */}
               <div
-                className="profile-badge-photo relative h-[84px] w-[84px] shrink-0 overflow-hidden rounded-[12px] ring-1 ring-black/[0.08] dark:ring-white/[0.1]"
+                className="profile-badge-photo relative h-[88px] w-[88px] sm:h-[98px] sm:w-[98px] shrink-0 overflow-hidden rounded-[12px] sm:rounded-[14px] ring-1 ring-black/[0.08] dark:ring-white/[0.1]"
                 style={{ transform: "translateZ(0)", backfaceVisibility: "hidden" }}
               >
                 <Image
                   src="/images/profile/profile.png"
                   alt={SITE.name}
                   fill
-                  sizes="168px"
+                  sizes="196px"
                   quality={95}
                   className="object-cover"
                   style={{ transform: "translateZ(0)" }}
@@ -277,15 +284,15 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
               </div>
 
               {/* Identity block */}
-              <div className="flex min-w-0 flex-1 flex-col justify-between min-h-[84px]">
+              <div className="flex min-w-0 flex-1 flex-col justify-between min-h-[88px] sm:min-h-[98px]">
                 <div>
-                  <h2 className="truncate text-[25px] font-bold leading-tight tracking-[-0.02em] text-black/90 dark:text-white/90">
+                  <h2 className="truncate text-[20px] sm:text-[25px] font-bold leading-tight tracking-[-0.02em] text-black/90 dark:text-white/90">
                     <GlitchText triggerOnMount triggerOnHover={true} delay={220} duration={800} text={SITE.name} className="tabular-nums" />
                   </h2>
-                  <p className="mt-1 truncate font-mono text-[11px] font-medium uppercase tracking-wide text-black/45 dark:text-white/40">
+                  <p className="mt-0.5 sm:mt-1 truncate font-mono text-[10.5px] sm:text-[11px] font-medium uppercase tracking-wide text-black/45 dark:text-white/40">
                     <GlitchText triggerOnMount triggerOnHover={false} delay={280} duration={700} text={SITE.role} />
                   </p>
-                  <p className="mt-2 flex items-center gap-1 text-[11px] text-black/40 dark:text-white/35">
+                  <p className="mt-1 sm:mt-1.5 flex items-center gap-1 text-[10.5px] sm:text-[11px] text-black/40 dark:text-white/35">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
                       <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                       <circle cx="12" cy="10" r="3" />
@@ -294,18 +301,21 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
                   </p>
                 </div>
 
-                <div className="flex items-center gap-1.5 flex-nowrap overflow-hidden min-h-[22px]">
-                  {topSkills.map((skill, idx) => (
+                {/* Tech icons row */}
+                <div className="mt-2.5 flex items-center gap-1 sm:gap-1.5 flex-wrap min-h-[28px]">
+                  {topTech.map((tech) => (
                     <span
-                      key={skill}
+                      key={tech.name}
+                      title={tech.label}
+                      aria-label={tech.label}
                       className={cn(
-                        "inline-flex items-center shrink-0 rounded-[4px] px-2 py-[3px]",
-                        "font-mono text-[9.5px] font-medium uppercase tracking-wide",
-                        "bg-black/[0.04] text-black/55 ring-1 ring-black/[0.06]",
-                        "dark:bg-white/[0.06] dark:text-white/55 dark:ring-white/[0.08]",
+                        "inline-flex h-[26px] w-[26px] sm:h-[28px] sm:w-[28px] shrink-0 items-center justify-center rounded-[6px]",
+                        "bg-black/[0.04] ring-1 ring-black/[0.06]",
+                        "dark:bg-white/[0.06] dark:ring-white/[0.08]",
+                        "transition-all duration-200 hover:scale-110 hover:bg-black/[0.08] dark:hover:bg-white/[0.12]",
                       )}
                     >
-                      <GlitchText triggerOnMount triggerOnHover={false} delay={380 + idx * 70} duration={600} text={skill} />
+                      <TechIcon name={tech.name} size={15} />
                     </span>
                   ))}
                 </div>
@@ -313,38 +323,40 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
             </div>
 
             {/* Perforated tear line */}
-            <div className="relative flex items-center px-6">
+            <div className="relative flex items-center px-4.5 sm:px-6">
               <div className="h-px w-full border-t border-dashed border-black/[0.1] dark:border-white/[0.1]" />
             </div>
 
             {/* Footer — actions */}
-            <div className="relative flex items-center gap-1 px-6 py-4">
-              {socialLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.url}
-                  target={link.url.startsWith("http") ? "_blank" : undefined}
-                  rel="noreferrer"
-                  aria-label={link.label}
-                  className={cn(
-                    "flex h-8 w-8 items-center justify-center rounded-full",
-                    "text-black/40 transition-all duration-200",
-                    "hover:bg-black/[0.05] hover:text-black/75",
-                    "dark:text-white/35",
-                    "dark:hover:bg-white/[0.08] dark:hover:text-white/75",
-                  )}
-                >
-                  {socialIcons[link.icon] ?? link.label}
-                </a>
-              ))}
+            <div className="relative flex items-center justify-between gap-1 px-4.5 py-3 sm:px-6 sm:py-4">
+              <div className="flex items-center gap-0.5 sm:gap-1">
+                {socialLinks.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.url}
+                    target={link.url.startsWith("http") ? "_blank" : undefined}
+                    rel="noreferrer"
+                    aria-label={link.label}
+                    className={cn(
+                      "flex h-7.5 w-7.5 sm:h-8 sm:w-8 items-center justify-center rounded-full",
+                      "text-black/40 transition-all duration-200",
+                      "hover:bg-black/[0.05] hover:text-black/75",
+                      "dark:text-white/35",
+                      "dark:hover:bg-white/[0.08] dark:hover:text-white/75",
+                    )}
+                  >
+                    {socialIcons[link.icon] ?? link.label}
+                  </a>
+                ))}
+              </div>
 
               <a
                 href={SITE.calUrl}
                 target="_blank"
                 rel="noreferrer"
                 className={cn(
-                  "ml-auto inline-flex items-center gap-1.5 rounded-full px-4 py-[7px]",
-                  "text-[11.5px] font-semibold tracking-tight",
+                  "inline-flex items-center gap-1 sm:gap-1.5 rounded-full px-3.5 py-[6px] sm:px-4 sm:py-[7px]",
+                  "text-[11px] sm:text-[11.5px] font-semibold tracking-tight whitespace-nowrap",
                   "bg-black text-white",
                   "dark:bg-white dark:text-black",
                   "transition-all duration-200",
@@ -356,8 +368,8 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
             </div>
 
             {/* Badge footer strip — barcode + ID number, the signature detail */}
-            <div className="relative flex items-center justify-between border-t border-black/[0.06] bg-black/[0.02] px-6 py-2.5 dark:border-white/[0.06] dark:bg-white/[0.02]">
-              <svg width="120" height="14" viewBox="0 0 120 14" className="text-black/30 dark:text-white/25">
+            <div className="relative flex items-center justify-between border-t border-black/[0.06] bg-black/[0.02] px-4.5 py-2 sm:px-6 sm:py-2.5 dark:border-white/[0.06] dark:bg-white/[0.02]">
+              <svg width="108" height="13" viewBox="0 0 120 14" className="sm:w-[120px] sm:h-[14px] text-black/30 dark:text-white/25">
                 {(() => {
                   let x = 0;
                   return bars.map((w, i) => {
@@ -369,7 +381,7 @@ export default function ProfileCard({ open = false, onClose = () => {} }: Profil
                   });
                 })()}
               </svg>
-              <span className="font-mono text-[10px] font-medium tracking-wider text-black/35 dark:text-white/30">
+              <span className="font-mono text-[9.5px] sm:text-[10px] font-medium tracking-wider text-black/35 dark:text-white/30">
                 №&nbsp;<GlitchText triggerOnMount triggerOnHover={true} delay={440} duration={650} text={badgeNo} />
               </span>
             </div>
