@@ -700,7 +700,7 @@ export default function AdminVarexAiPage() {
                 </button>
               </div>
               <div className="mt-1.5 px-1 text-[10px] text-ink-tertiary/70 dark:text-ink-dark-secondary/70">
-                Note: AI Voice features are best supported on Google Chrome.
+                Note: Microphone / Voice Input only works on Google Chrome. It does not work on Brave or Safari.
               </div>
             </div>
           </div>
@@ -751,7 +751,7 @@ export default function AdminVarexAiPage() {
                   : "Click the orb to speak to Varex."}
               </p>
               <p className="text-[12px] text-ink-tertiary dark:text-zinc-500 mt-2">
-                * AI Voice commands are fully supported on Google Chrome.
+                * Microphone / Voice Input only works on Google Chrome. It does not work on Brave or Safari.
               </p>
             </div>
             
