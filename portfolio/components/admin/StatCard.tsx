@@ -12,8 +12,11 @@ interface StatCardProps {
 export default function StatCard({ label, value, hint, icon }: StatCardProps) {
   const [displayValue, setDisplayValue] = useState<number>(0);
   const isNumber = typeof value === "number";
-  const numValue = isNumber ? (value as number) : parseFloat(String(value).replace(/,/g, ""));
-  const validNumber = !isNaN(numValue);
+  // Only animate if it's a pure number (no letters/units like "MB")
+  const isPureNumberString = typeof value === "string" && !isNaN(Number(value.replace(/,/g, ""))) && value.trim() !== "";
+  const shouldAnimate = isNumber || isPureNumberString;
+  const numValue = shouldAnimate ? Number(String(value).replace(/,/g, "")) : NaN;
+  const validNumber = !isNaN(numValue) && shouldAnimate;
 
   useEffect(() => {
     if (!validNumber) return;

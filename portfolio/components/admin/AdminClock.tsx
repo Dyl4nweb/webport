@@ -26,23 +26,23 @@ export default function AdminClock() {
   // Avoid hydration mismatch by not rendering the time until mounted
   if (!time) {
     return (
-      <div className="flex h-9 items-center justify-between px-3">
-        <span className="text-[13px] font-medium text-ink-secondary dark:text-ink-dark-secondary">
-          PH Time
+      <div className="mx-3 mb-2 flex flex-col items-center justify-center rounded-apple-lg border border-line/60 bg-surface-card/60 py-3 px-2 shadow-sm backdrop-blur-md dark:border-line-dark/60 dark:bg-surface-dark-card/60">
+        <span className="mb-0.5 text-[10.5px] font-bold uppercase tracking-[0.15em] text-accent dark:text-accent-dark">
+          Manila, PH
         </span>
-        <span className="text-[13px] font-medium text-ink dark:text-ink-dark opacity-0">
-          --:--:--
+        <span className="text-[22px] font-bold tracking-tight text-ink tabular-nums opacity-0 dark:text-ink-dark">
+          --:--:-- PM
         </span>
       </div>
     );
   }
 
   return (
-    <div className="flex h-9 items-center justify-between px-3">
-      <span className="text-[13px] font-medium text-ink-secondary dark:text-ink-dark-secondary">
-        PH Time
+    <div className="mx-3 mb-2 flex flex-col items-center justify-center rounded-apple-lg border border-line/60 bg-surface-card/60 py-3 px-2 shadow-sm backdrop-blur-md dark:border-line-dark/60 dark:bg-surface-dark-card/60">
+      <span className="mb-0.5 text-[10.5px] font-bold uppercase tracking-[0.15em] text-accent dark:text-accent-dark">
+        Manila, PH
       </span>
-      <span className="text-[13px] font-medium text-ink dark:text-ink-dark tabular-nums tracking-tight">
+      <span className="text-[22px] font-bold tracking-tight text-ink tabular-nums dark:text-ink-dark">
         {time}
       </span>
     </div>

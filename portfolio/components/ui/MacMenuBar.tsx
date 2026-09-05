@@ -329,7 +329,7 @@ export const MacMenuBar = memo(function MacMenuBar() {
           </button>
 
           {/* Live Clock / Date */}
-          <span className="font-sans text-[12px] font-medium text-ink dark:text-ink-dark pl-0.5">
+          <span className="font-sans text-[13px] sm:text-[15px] font-bold tracking-tight text-ink dark:text-ink-dark pl-1">
             {timeStr || "Loading..."}
           </span>
         </div>

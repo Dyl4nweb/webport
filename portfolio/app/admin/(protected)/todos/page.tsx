@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getSupabase } from "@/lib/supabase";
+import { useConfirm } from "@/lib/admin/confirm-context";
 
 interface AdminTodo {
   id: string;
@@ -15,6 +16,7 @@ export default function TodosPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [newTask, setNewTask] = useState("");
+  const { confirm } = useConfirm();
 
   useEffect(() => {
     fetchTodos();
@@ -87,14 +89,20 @@ export default function TodosPage() {
   }
 
   async function handleDeleteTodo(id: string) {
-    if (!confirm("Delete this task?")) return;
+    const ok = await confirm({
+      title: "Delete Task",
+      message: "Are you sure you want to delete this task? This cannot be undone.",
+      confirmLabel: "Delete Task"
+    });
+    if (!ok) return;
+
     try {
       const supabase = getSupabase();
       const { error } = await supabase.from("admin_todos").delete().eq("id", id);
       if (error) throw error;
       setTodos((prev) => prev.filter((t) => t.id !== id));
-    } catch (error) {
-      console.error("Error deleting task:", error);
+    } catch (e: any) {
+      console.error(e.message);
     }
   }
 

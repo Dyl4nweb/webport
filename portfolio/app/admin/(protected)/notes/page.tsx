@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getSupabase } from "@/lib/supabase";
+import { useConfirm } from "@/lib/admin/confirm-context";
 
 function getRelativeTime(dateString: string) {
   const date = new Date(dateString);
@@ -34,6 +35,7 @@ export default function NotesPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [newNote, setNewNote] = useState("");
+  const { confirm } = useConfirm();
 
   useEffect(() => {
     fetchNotes();
@@ -79,15 +81,20 @@ export default function NotesPage() {
   }
 
   async function handleDeleteNote(id: string) {
-    if (!confirm("Are you sure you want to delete this note?")) return;
+    const ok = await confirm({
+      title: "Delete Note",
+      message: "Are you sure you want to delete this note? This cannot be undone.",
+      confirmLabel: "Delete Note"
+    });
+    if (!ok) return;
 
     try {
       const supabase = getSupabase();
       const { error } = await supabase.from("admin_notes").delete().eq("id", id);
       if (error) throw error;
       setNotes((prev) => prev.filter((n) => n.id !== id));
-    } catch (error) {
-      console.error("Error deleting note:", error);
+    } catch (e: any) {
+      console.error(e.message);
     }
   }
 

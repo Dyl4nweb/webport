@@ -269,7 +269,7 @@ export default function VarexSettingsModal({
                 onChange={(e) => setIncludeLiveContext(e.target.checked)}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-line/80 peer-focus:outline-none rounded-full peer dark:bg-line-dark peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-accent dark:peer-checked:bg-accent-dark"></div>
+              <div className="w-11 h-6 bg-line/80 peer-focus:outline-none rounded-full peer dark:bg-line-dark peer-checked:after:translate-x-full peer-checked:after:border-white dark:peer-checked:after:border-surface-dark after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white dark:peer-checked:after:bg-surface-dark after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-accent dark:peer-checked:bg-accent-dark"></div>
             </label>
           </div>
 

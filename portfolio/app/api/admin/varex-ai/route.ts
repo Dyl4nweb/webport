@@ -110,11 +110,12 @@ const geminiTools = [
       },
       {
         name: "addTodo",
-        description: "Add a new task to Dylan's todo list.",
+        description: "Add a new task to Dylan's todo list. Use remind_at to set a future reminder date/time if requested.",
         parameters: {
           type: "OBJECT",
           properties: {
             task: { type: "STRING", description: "The task description" },
+            remind_at: { type: "STRING", description: "Optional. ISO date string for when the reminder should trigger." },
           },
           required: ["task"],
         },
@@ -329,7 +330,10 @@ export async function POST(request: NextRequest) {
                   if (error) throw error;
                   result = { success: true, message: "Note saved successfully." };
                 } else if (funcName === "addTodo" || funcName.endsWith("addTodo")) {
-                  const { error } = await supabase.from("admin_todos").insert({ task: (args.task || "").trim() });
+                  const payload: any = { task: (args.task || "").trim() };
+                  if (args.remind_at) payload.remind_at = new Date(args.remind_at).toISOString();
+                  
+                  const { error } = await supabase.from("admin_todos").insert(payload);
                   if (error) throw error;
                   result = { success: true, message: "Task added successfully." };
                 } else if (funcName === "completeTodo" || funcName.endsWith("completeTodo")) {

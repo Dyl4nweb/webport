@@ -9,6 +9,8 @@ import AdminSplash from "@/components/admin/AdminSplash";
 import { AdminConfirmProvider } from "@/lib/admin/confirm-context";
 import { VarexAIProvider } from "@/lib/admin/varex-ai-context";
 import { useAdminSession } from "@/lib/auth";
+import { Toaster } from "sonner";
+import ReminderPoller from "@/components/admin/ReminderPoller";
 
 export default function ProtectedAdminLayout({
   children,
@@ -81,6 +83,10 @@ export default function ProtectedAdminLayout({
             <AdminAIChatHead />
           </div>
         </div>
+
+        {/* Global Toasts & Reminders */}
+        <Toaster theme="system" position="top-right" richColors />
+        <ReminderPoller />
       </VarexAIProvider>
     </AdminConfirmProvider>
   );

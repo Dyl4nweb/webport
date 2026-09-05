@@ -25,44 +25,6 @@ interface DbHealth {
 
 const AUDITED_ON = "Aug 23, 2026";
 
-interface AssetDirRow {
-  dir: string;
-  files: number;
-  kb: number;
-}
-
-const LOCAL_ASSET_TOTALS = { files: 53, mb: 13.47 };
-
-const LOCAL_ASSET_DIRS: AssetDirRow[] = [
-  { dir: "certificates/", files: 15, kb: 5604 },
-  { dir: "certificates/logos/", files: 8, kb: 903 },
-  { dir: "icons/", files: 1, kb: 62 },
-  { dir: "images/og/", files: 1, kb: 213 },
-  { dir: "images/profile/", files: 2, kb: 1886 },
-  { dir: "images/projects/", files: 20, kb: 3150 },
-  { dir: "images/pubmats/", files: 4, kb: 1426 },
-  { dir: "resume/", files: 2, kb: 550 },
-];
-
-interface UnusedCandidate {
-  path: string;
-  size: string;
-}
-
-const UNUSED_CANDIDATES: UnusedCandidate[] = [
-  { path: "public/images/profile/profile1.png", size: "1.39 MB" },
-  { path: "public/resume/1resume.pdf", size: "275 KB" },
-  { path: "public/certificates/C2.png", size: "296 KB" },
-  { path: "public/certificates/hr.png", size: "1.14 MB" },
-  { path: "public/images/projects/varex-ai-4.png", size: "12 KB" },
-];
-
-const MISSING_REFERENCES = [
-  "public/images/projects/eims-1.png",
-  "public/images/projects/eims-2.png",
-  "public/images/projects/eims-3.png",
-];
-
 type EligibleTable =
   | "page_views"
   | "bookings_cache"
@@ -801,13 +763,30 @@ export default function AdminStoragePage() {
             />
             <StatCard
               label="Largest table"
-              value={formatCount(stats.page_views?.count)}
-              hint="page_views — analytics events"
+              value={
+                dbHealthState === "ok" && dbHealth && dbHealth.largestTables.length > 0
+                  ? formatBytes(dbHealth.largestTables[0].totalBytes)
+                  : formatCount(stats.page_views?.count)
+              }
+              hint={
+                dbHealthState === "ok" && dbHealth && dbHealth.largestTables.length > 0
+                  ? `${dbHealth.largestTables[0].table} — ${formatCount(stats[dbHealth.largestTables[0].table]?.count)} rows`
+                  : "page_views — analytics events"
+              }
             />
+
             <StatCard
-              label="Local repo assets"
-              value={`${LOCAL_ASSET_TOTALS.mb.toFixed(2)} MB`}
-              hint={`~${LOCAL_ASSET_TOTALS.files} files under public/ (not database records)`}
+              label="Total database size"
+              value={
+                dbHealthState === "ok" && dbHealth
+                  ? formatBytes(dbHealth.databaseSize)
+                  : "—"
+              }
+              hint={
+                dbHealthState === "ok" && dbHealth
+                  ? "Total space consumed by PostgreSQL"
+                  : "Requires database health SQL"
+              }
             />
           </>
         )}
@@ -1114,126 +1093,6 @@ export default function AdminStoragePage() {
             ))}
           </ul>
         )}
-      </section>
-
-      {/* Local assets */}
-      <section className="rounded-apple-lg border border-line/70 bg-surface-card p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
-            Local Assets
-          </h2>
-          <span className="text-[12px] text-ink-tertiary dark:text-ink-dark-secondary">
-            Repository audit snapshot — {AUDITED_ON}
-          </span>
-        </div>
-
-        <p className="mt-2 text-[13px] text-ink-secondary dark:text-ink-dark-secondary">
-          Repository and deployment assets under{" "}
-          <code className="font-mono text-[12px]">public/</code>, served directly by
-          the website. These are not database records and not Supabase Storage
-          objects — they live in the Git repository and deploy with the app.
-        </p>
-
-        <div className="mt-5 overflow-x-auto">
-          <table className="w-full min-w-[420px] text-left text-[13px]">
-            <thead>
-              <tr className="border-b border-line/60 text-[11px] uppercase tracking-[0.12em] text-ink-tertiary dark:border-line-dark/60 dark:text-ink-dark-secondary">
-                <th className="pb-2 pr-4 font-semibold">Directory</th>
-                <th className="pb-2 pr-4 text-right font-semibold">Files</th>
-                <th className="pb-2 text-right font-semibold">Size</th>
-              </tr>
-            </thead>
-            <tbody>
-              {LOCAL_ASSET_DIRS.map((row) => (
-                <tr
-                  key={row.dir}
-                  className="border-b border-line/40 last:border-none dark:border-line-dark/40"
-                >
-                  <td className="py-2.5 pr-4 font-mono text-[12.5px] text-ink dark:text-ink-dark">
-                    public/{row.dir}
-                  </td>
-                  <td className="py-2.5 pr-4 text-right tabular-nums text-ink-secondary dark:text-ink-dark-secondary">
-                    {row.files}
-                  </td>
-                  <td className="py-2.5 text-right tabular-nums text-ink-secondary dark:text-ink-dark-secondary">
-                    {formatKB(row.kb)}
-                  </td>
-                </tr>
-              ))}
-              <tr>
-                <td className="pt-3 pr-4 font-semibold text-ink dark:text-ink-dark">
-                  Total
-                </td>
-                <td className="pt-3 pr-4 text-right font-semibold tabular-nums text-ink dark:text-ink-dark">
-                  ~{LOCAL_ASSET_TOTALS.files}
-                </td>
-                <td className="pt-3 text-right font-semibold tabular-nums text-ink dark:text-ink-dark">
-                  ~{LOCAL_ASSET_TOTALS.mb.toFixed(2)} MB
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* Potentially unused local assets */}
-      <section className="rounded-apple-lg border border-amber-500/30 bg-surface-card p-6 dark:border-amber-500/25 dark:bg-surface-dark-card">
-        <div className="flex flex-wrap items-center gap-2">
-          <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
-            Potentially Unused Local Assets
-          </h2>
-          <Badge tone="amber">Potentially unused — manual review required</Badge>
-        </div>
-
-        <ul className="mt-4 flex flex-col">
-          {UNUSED_CANDIDATES.map((candidate) => (
-            <li
-              key={candidate.path}
-              className="flex items-center justify-between gap-4 border-b border-line/40 py-2.5 last:border-none dark:border-line-dark/40"
-            >
-              <code className="min-w-0 truncate font-mono text-[12.5px] text-ink dark:text-ink-dark">
-                {candidate.path}
-              </code>
-              <span className="shrink-0 tabular-nums text-[12.5px] text-ink-secondary dark:text-ink-dark-secondary">
-                {candidate.size}
-              </span>
-            </li>
-          ))}
-        </ul>
-
-        <p className="mt-4 text-[12.5px] text-ink-secondary dark:text-ink-dark-secondary">
-          Informational only. Nothing is deleted automatically and these files
-          have no deletion controls anywhere in this app. Confirm references
-          before removing anything manually.
-        </p>
-      </section>
-
-      {/* Referenced but missing */}
-      <section className="rounded-apple-lg border border-line/70 bg-surface-card p-6 dark:border-line-dark/70 dark:bg-surface-dark-card">
-        <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
-          Referenced but Missing
-        </h2>
-
-        <p className="mt-2 text-[13px] text-ink-secondary dark:text-ink-dark-secondary">
-          These paths are referenced by{" "}
-          <code className="font-mono text-[12px]">data/projects.ts</code> but absent
-          from{" "}
-          <code className="font-mono text-[12px]">public/images/projects/</code>.
-          They are broken references, not unused files — never deletion candidates.
-        </p>
-
-        <ul className="mt-4 flex flex-col">
-          {MISSING_REFERENCES.map((path) => (
-            <li
-              key={path}
-              className="border-b border-line/40 py-2.5 last:border-none dark:border-line-dark/40"
-            >
-              <code className="font-mono text-[12.5px] text-ink dark:text-ink-dark">
-                {path}
-              </code>
-            </li>
-          ))}
-        </ul>
       </section>
 
       {/* Manual cleanup */}

@@ -118,7 +118,7 @@ export default function AdminOverviewPage() {
       try {
         const [visitorsRow, pageViews, inquiriesAll, inquiriesNew, upcoming, projects, recentRows, allTime, todosRes] =
           await Promise.all([
-          supabase.from("visitors").select("count").eq("id", 1).single(),
+          supabase.from("unique_visitors").select("*", { count: "exact", head: true }),
           supabase
             .from("page_views")
             .select("*", { count: "exact", head: true }),
@@ -149,7 +149,7 @@ export default function AdminOverviewPage() {
         if (cancelled) return;
 
         setStats({
-          visitors: visitorsRow.data?.count ?? 0,
+          visitors: visitorsRow.count ?? 0,
           pageViews: pageViews.count ?? 0,
           inquiries: inquiriesAll.count ?? 0,
           newInquiries: inquiriesNew.count ?? 0,

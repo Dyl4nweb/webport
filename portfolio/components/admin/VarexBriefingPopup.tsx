@@ -139,7 +139,7 @@ export default function VarexBriefingPopup({
         const sinceYesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
         const [visitorsRes, inquiriesRes, viewsTodayRes] = await Promise.all([
-          supabase.from("visitors").select("count").eq("id", 1).single(),
+          supabase.from("unique_visitors").select("*", { count: "exact", head: true }),
           supabase
             .from("inquiries")
             .select("*", { count: "exact", head: true })
@@ -151,7 +151,7 @@ export default function VarexBriefingPopup({
         ]);
 
         const data: SiteBriefing = {
-          totalVisitors: visitorsRes.data?.count ?? 0,
+          totalVisitors: visitorsRes.count ?? 0,
           newInquiries: inquiriesRes.count ?? 0,
           viewsToday: viewsTodayRes.count ?? 0,
         };
@@ -178,7 +178,7 @@ export default function VarexBriefingPopup({
           const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
           const dateStr = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
           
-          let speechText = `Welcome back, Dylan! As of ${timeStr} on ${dateStr}, your portfolio has reached ${data.totalVisitors} total visitors.`;
+          let speechText = `Welcome back, Dylan! As of ${timeStr} on ${dateStr}, your portfolio has reached ${data.totalVisitors} unique visitors.`;
           
           if (data.viewsToday > 0) {
             speechText += ` Your users have increased by ${data.viewsToday} in the last 24 hours.`;
@@ -339,7 +339,7 @@ export default function VarexBriefingPopup({
                 const now = new Date();
                 const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
                 const dateStr = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-                let speechText = `Welcome back, Dylan! As of ${timeStr} on ${dateStr}, your portfolio has reached ${briefing.totalVisitors} total visitors.`;
+                let speechText = `Welcome back, Dylan! As of ${timeStr} on ${dateStr}, your portfolio has reached ${briefing.totalVisitors} unique visitors.`;
                 if (briefing.viewsToday > 0) speechText += ` Your users have increased by ${briefing.viewsToday} in the last 24 hours.`;
                 if (briefing.newInquiries > 0) speechText += ` You have ${briefing.newInquiries} unread client inquiries waiting for your reply.`;
                 else speechText += ` All client inquiries are up to date.`;
