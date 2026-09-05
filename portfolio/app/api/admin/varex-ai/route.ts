@@ -52,6 +52,7 @@ YOUR ROLE AS ADMIN COPILOT:
 5. Action Execution: You can execute backend actions when commanded by Dylan.
 - deleteInquiry: ALWAYS ask for confirmation before deleting an inquiry unless Dylan explicitly tells you to skip confirmation or asks you to delete it unconditionally.
 - replyToInquiry: You can draft and send emails. Send the email directly using this tool when commanded.
+- addTodo: If Dylan asks you to "remind me" to do something, or sets any kind of reminder, immediately use the addTodo tool to save it as a task in his Todo list.
 - OFFICIAL EMAIL SIGNATURE:
   When drafting email replies or generating the 'body' parameter for 'replyToInquiry', ALWAYS sign the email with:
 
@@ -94,6 +95,50 @@ const geminiTools = [
             body: { type: "STRING", description: "The email body" },
           },
           required: ["id", "email", "subject", "body"],
+        },
+      },
+      {
+        name: "saveNote",
+        description: "Save a note to Dylan's personal admin notepad.",
+        parameters: {
+          type: "OBJECT",
+          properties: {
+            content: { type: "STRING", description: "The text content of the note" },
+          },
+          required: ["content"],
+        },
+      },
+      {
+        name: "addTodo",
+        description: "Add a new task to Dylan's todo list.",
+        parameters: {
+          type: "OBJECT",
+          properties: {
+            task: { type: "STRING", description: "The task description" },
+          },
+          required: ["task"],
+        },
+      },
+      {
+        name: "completeTodo",
+        description: "Mark a task as completed in the todo list using its ID.",
+        parameters: {
+          type: "OBJECT",
+          properties: {
+            id: { type: "STRING", description: "The UUID of the task to mark as completed" },
+          },
+          required: ["id"],
+        },
+      },
+      {
+        name: "deleteTodo",
+        description: "Delete a task from the todo list using its ID.",
+        parameters: {
+          type: "OBJECT",
+          properties: {
+            id: { type: "STRING", description: "The UUID of the task to delete" },
+          },
+          required: ["id"],
         },
       },
     ],
@@ -279,6 +324,22 @@ export async function POST(request: NextRequest) {
                   const { error: dbError } = await supabase.from("inquiries").update({ status: "replied" }).eq("id", args.id);
                   if (dbError) throw dbError;
                   result = { success: true, message: "Email sent and inquiry marked as replied." };
+                } else if (funcName === "saveNote" || funcName.endsWith("saveNote")) {
+                  const { error } = await supabase.from("admin_notes").insert({ content: (args.content || "").trim() });
+                  if (error) throw error;
+                  result = { success: true, message: "Note saved successfully." };
+                } else if (funcName === "addTodo" || funcName.endsWith("addTodo")) {
+                  const { error } = await supabase.from("admin_todos").insert({ task: (args.task || "").trim() });
+                  if (error) throw error;
+                  result = { success: true, message: "Task added successfully." };
+                } else if (funcName === "completeTodo" || funcName.endsWith("completeTodo")) {
+                  const { error } = await supabase.from("admin_todos").update({ is_completed: true, updated_at: new Date().toISOString() }).eq("id", args.id);
+                  if (error) throw error;
+                  result = { success: true, message: "Task marked as completed." };
+                } else if (funcName === "deleteTodo" || funcName.endsWith("deleteTodo")) {
+                  const { error } = await supabase.from("admin_todos").delete().eq("id", args.id);
+                  if (error) throw error;
+                  result = { success: true, message: "Task deleted successfully." };
                 } else {
                   result = { success: false, message: "Unknown function." };
                 }

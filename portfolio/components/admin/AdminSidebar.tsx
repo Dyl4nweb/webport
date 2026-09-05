@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import AdminClock from "@/components/admin/AdminClock";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { signOut } from "@/lib/auth";
 
@@ -17,6 +18,8 @@ const NAV_ITEMS: { name: string; href: string; badge?: string }[] = [
   { name: "Analytics", href: "/admin/analytics" },
   { name: "Visitors", href: "/admin/visitors" },
   { name: "Activity", href: "/admin/activity" },
+  { name: "Notes", href: "/admin/notes" },
+  { name: "Tasks", href: "/admin/todos" },
   { name: "Projects", href: "/admin/projects" },
   { name: "Certificates", href: "/admin/certificates" },
   { name: "Storage", href: "/admin/storage" },
@@ -94,7 +97,7 @@ export default function AdminSidebar({
             : "invisible -translate-x-full"
         } md:visible md:translate-x-0 md:shadow-none`}
       >
-      <div className="flex items-center gap-2.5 px-2 pb-4">
+      <div className="flex items-center gap-2.5 px-2 pb-2">
         <Image
           src="/icon.png"
           alt=""
@@ -112,6 +115,10 @@ export default function AdminSidebar({
             Admin
           </p>
         </div>
+      </div>
+
+      <div className="pb-2">
+        <AdminClock />
       </div>
 
       <nav

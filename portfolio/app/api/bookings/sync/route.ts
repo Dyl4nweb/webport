@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { getSupabaseWithToken } from "@/lib/supabase";
 
-const CAL_API_BASE = "https://api.cal.com/v1/bookings";
+const CAL_API_BASE = "https://api.cal.com/v2/bookings";
 const CAL_TIMEOUT_MS = 8000;
 
 interface CalAttendee {
@@ -14,10 +14,11 @@ interface CalAttendee {
 interface CalBooking {
   uid?: string;
   title?: string;
-  startTime?: string;
+  startTime?: string; // v1
+  start?: string;     // v2
   status?: string;
   attendees?: CalAttendee[];
-  eventType?: { title?: string } | null;
+  eventType?: { title?: string; slug?: string } | null;
 }
 
 interface CacheRow {
@@ -55,7 +56,7 @@ function toCacheRow(booking: CalBooking): CacheRow | null {
     name: attendee?.name ?? "",
     email: attendee?.email ?? "",
     title: booking.eventType?.title ?? booking.title ?? "",
-    start_time: booking.startTime ?? null,
+    start_time: booking.start ?? booking.startTime ?? null,
     timezone: attendee?.timeZone ?? null,
     status: mapStatus(booking.status),
   };
@@ -94,8 +95,12 @@ export async function POST(request: NextRequest) {
   let bookings: CalBooking[];
 
   try {
-    const response = await fetch(`${CAL_API_BASE}?apiKey=${apiKey}`, {
-      headers: { Accept: "application/json" },
+    const response = await fetch(`${CAL_API_BASE}`, {
+      headers: { 
+        Accept: "application/json",
+        Authorization: `Bearer ${apiKey}`,
+        "cal-api-version": "2024-08-13"
+      },
       signal: AbortSignal.timeout(CAL_TIMEOUT_MS),
       cache: "no-store",
     });
@@ -105,10 +110,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: false, reason: "cal_unavailable" });
     }
 
-    const json: unknown = await response.json();
-    bookings = Array.isArray((json as { bookings?: unknown })?.bookings)
-      ? ((json as { bookings: CalBooking[] }).bookings)
-      : [];
+    const json: any = await response.json();
+    bookings = Array.isArray(json?.data) 
+      ? json.data 
+      : Array.isArray(json?.bookings) 
+        ? json.bookings 
+        : [];
   } catch {
     console.error("[bookings-sync] Cal.com request failed");
     return NextResponse.json({ ok: false, reason: "cal_unavailable" });

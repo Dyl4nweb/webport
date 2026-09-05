@@ -271,53 +271,140 @@ export function VarexAIProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const supabase = getSupabase();
-      const [inquiriesRes, visitorsRes, pageViewsRes, bookingsRes, projectsRes] =
-        await Promise.all([
-          supabase
-            .from("inquiries")
-            .select("id, name, email, message, status, created_at")
-            .order("created_at", { ascending: false })
-            .limit(5),
-          supabase.from("visitors").select("count").eq("id", 1).single(),
-          supabase.from("page_views").select("*", { count: "exact", head: true }),
-          supabase
-            .from("bookings_cache")
-            .select("*", { count: "exact", head: true })
-            .gt("start_time", new Date().toISOString()),
-          supabase
-            .from("portfolio_projects")
-            .select("title, category, featured")
-            .limit(10),
-        ]);
+      const [
+        inquiriesRes,
+        visitorsRes,
+        pageViewsCountRes,
+        pageViewsRecentRes,
+        bookingsRes,
+        projectsRes,
+        uniqueVisitorsRes,
+        notesRes,
+        todosRes,
+      ] = await Promise.all([
+        supabase
+          .from("inquiries")
+          .select("id, name, email, message, status, created_at")
+          .order("created_at", { ascending: false })
+          .limit(5),
+        supabase.from("visitors").select("count").eq("id", 1).single(),
+        supabase.from("page_views").select("*", { count: "exact", head: true }),
+        supabase
+          .from("page_views")
+          .select("path, device, created_at")
+          .order("created_at", { ascending: false })
+          .limit(100),
+        supabase
+          .from("bookings_cache")
+          .select("name, title, start_time, status")
+          .gt("start_time", new Date().toISOString())
+          .order("start_time", { ascending: true })
+          .limit(5),
+        supabase
+          .from("portfolio_projects")
+          .select("name, category, featured, tech_stack, live_url")
+          .order("sort_order", { ascending: true })
+          .limit(10),
+        supabase
+          .from("unique_visitors")
+          .select("ip_address, last_seen")
+          .not("ip_address", "is", null)
+          .order("last_seen", { ascending: false })
+          .limit(5),
+        supabase
+          .from("admin_notes")
+          .select("content, created_at")
+          .order("created_at", { ascending: false })
+          .limit(5),
+        supabase
+          .from("admin_todos")
+          .select("id, task, created_at")
+          .eq("is_completed", false)
+          .order("created_at", { ascending: false })
+          .limit(10),
+      ]);
+
+      // Calculate device distribution
+      const recentViews = pageViewsRecentRes.data || [];
+      const desktopViews = recentViews.filter((v) => v.device === "desktop").length;
+      const mobileViews = recentViews.filter((v) => v.device === "mobile").length;
+      const tabletViews = recentViews.filter((v) => v.device === "tablet").length;
+      
+      const recentPaths = [...new Set(recentViews.map((v) => v.path))].slice(0, 5).join(", ");
 
       const inquiriesSummary = (inquiriesRes.data || [])
         .map(
           (inq, idx) =>
-            `${idx + 1}. From: "${inq.name}" <${inq.email}> (ID: ${inq.id}, ${inq.status}, ${new Date(
+            `${idx + 1}. [${inq.status.toUpperCase()}] From: "${inq.name}" <${inq.email}> (ID: ${inq.id}, ${new Date(
               inq.created_at
             ).toLocaleDateString()}): "${inq.message}"`
         )
         .join("\n");
 
       const projectsSummary = (projectsRes.data || [])
-        .map((p) => `- ${p.title} (${p.category || "General"})`)
+        .map((p) => {
+          const stack = p.tech_stack && p.tech_stack.length > 0 ? p.tech_stack.join(", ") : "N/A";
+          return `- ${p.name} [${p.category || "General"}] - Stack: ${stack} ${p.live_url ? `(${p.live_url})` : ""}`;
+        })
         .join("\n");
 
+      const bookingsSummary = (bookingsRes.data || [])
+        .map((b) => `- [${b.status}] ${b.title} with ${b.name} at ${new Date(b.start_time).toLocaleString("en-US", { timeZone: "Asia/Manila" })}`)
+        .join("\n");
+
+      const recentIPsSummary = (uniqueVisitorsRes.data || [])
+        .map((v) => `- ${v.ip_address} (Last seen: ${new Date(v.last_seen).toLocaleString("en-US", { timeZone: "Asia/Manila" })})`)
+        .join("\n");
+
+      const recentNotesSummary = (notesRes.data || [])
+        .map((n) => `- ${new Date(n.created_at).toLocaleDateString("en-US", { timeZone: "Asia/Manila" })}: ${n.content}`)
+        .join("\n");
+
+      const pendingTodosSummary = (todosRes.data || [])
+        .map((t) => `- [ID: ${t.id}] ${t.task}`)
+        .join("\n");
+
+      // Generate accurate PHT time
+      const currentTimePHT = new Intl.DateTimeFormat("en-US", {
+        timeZone: "Asia/Manila",
+        dateStyle: "full",
+        timeStyle: "long",
+      }).format(new Date());
+
       const result = `
+[SYSTEM DATETIME]
+Current Date & Time (PHT): ${currentTimePHT}
+
+[TELEMETRY & TRAFFIC]
 Total Lifetime Visitors: ${visitorsRes.data?.count ?? 0}
-Total Page Views: ${pageViewsRes.count ?? 0}
-Upcoming Bookings: ${bookingsRes.count ?? 0}
+Total Page Views: ${pageViewsCountRes.count ?? 0}
+Device Split (Last 100 views): ${desktopViews} Desktop / ${mobileViews} Mobile / ${tabletViews} Tablet
+Recent Paths Visited: ${recentPaths || "None"}
+
+Recent Visitor IPs:
+${recentIPsSummary || "No IPs recorded."}
+
+[PORTFOLIO PROJECTS]
+${projectsSummary || "None listed."}
+
+[CLIENT INQUIRIES & BOOKINGS]
+Upcoming Bookings (${bookingsRes.data?.length ?? 0}):
+${bookingsSummary || "No upcoming bookings."}
 
 Recent Inquiries:
 ${inquiriesSummary || "No inquiries recorded."}
 
-Active Portfolio Projects:
-${projectsSummary || "None listed."}
+[RECENT NOTES]
+${recentNotesSummary || "No recent notes."}
+
+[PENDING TASKS]
+${pendingTodosSummary || "No pending tasks."}
       `.trim();
 
       liveContextCacheRef.current = { text: result, time: Date.now() };
       return result;
-    } catch {
+    } catch (error) {
+      console.error("Context gather error:", error);
       return "Live context unavailable.";
     }
   };

@@ -78,8 +78,10 @@ export default function AdminOverviewPage() {
     newInquiries: 0,
     upcomingBookings: 0,
     projects: 0,
+    pendingTasks: 0,
   });
   const [activity, setActivity] = useState<ActivityRow[]>([]);
+  const [pendingTodos, setPendingTodos] = useState<any[]>([]);
   const [analyticsRows, setAnalyticsRows] = useState<PageViewRow[]>([]);
   const [totalViews, setTotalViews] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -114,7 +116,7 @@ export default function AdminOverviewPage() {
       const supabase = getSupabase();
 
       try {
-        const [visitorsRow, pageViews, inquiriesAll, inquiriesNew, upcoming, projects, recentRows, allTime] =
+        const [visitorsRow, pageViews, inquiriesAll, inquiriesNew, upcoming, projects, recentRows, allTime, todosRes] =
           await Promise.all([
           supabase.from("visitors").select("count").eq("id", 1).single(),
           supabase
@@ -136,6 +138,12 @@ export default function AdminOverviewPage() {
             .select("*", { count: "exact", head: true }),
           fetchRecentViews(14),
           countAllViews(),
+          supabase
+            .from("admin_todos")
+            .select("*")
+            .eq("is_completed", false)
+            .order("created_at", { ascending: false })
+            .limit(5),
         ]);
 
         if (cancelled) return;
@@ -147,8 +155,10 @@ export default function AdminOverviewPage() {
           newInquiries: inquiriesNew.count ?? 0,
           upcomingBookings: upcoming.count ?? 0,
           projects: projects.count ?? 0,
+          pendingTasks: todosRes.data?.length ?? 0,
         });
 
+        setPendingTodos(todosRes.data || []);
         setAnalyticsRows(recentRows);
         setTotalViews(allTime);
         setActivity(await fetchActivityFeed(6));
@@ -320,7 +330,7 @@ export default function AdminOverviewPage() {
 
         {/* Analytics 14-day Trend */}
         <section
-          className={`col-span-1 md:col-span-2 lg:col-span-2 flex flex-col min-h-[260px] sm:min-h-[280px] rounded-apple-lg border border-line/50 bg-surface-card/60 backdrop-blur-xl p-5 sm:p-7 dark:border-line-dark/50 dark:bg-surface-dark-card/60 transition-all duration-700 delay-200 ease-out shadow-sm hover:border-line/80 hover:shadow-lg dark:hover:border-line-dark/80 group ${
+          className={`col-span-1 md:col-span-2 lg:col-span-3 flex flex-col min-h-[260px] sm:min-h-[280px] rounded-apple-lg border border-line/50 bg-surface-card/60 backdrop-blur-xl p-5 sm:p-7 dark:border-line-dark/50 dark:bg-surface-dark-card/60 transition-all duration-700 delay-300 ease-out shadow-sm hover:border-line/80 hover:shadow-lg dark:hover:border-line-dark/80 group ${
             mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
           }`}
         >
@@ -457,44 +467,93 @@ export default function AdminOverviewPage() {
 
         {/* Recent activity */}
         <section
-          className={`col-span-1 md:col-span-3 lg:col-span-1 flex flex-col rounded-apple-lg border border-line/50 bg-surface-card/60 backdrop-blur-xl p-5 sm:p-7 dark:border-line-dark/50 dark:bg-surface-dark-card/60 transition-all duration-700 delay-[400ms] ease-out shadow-sm hover:border-line/80 hover:shadow-lg dark:hover:border-line-dark/80 ${
+          className={`col-span-1 md:col-span-3 lg:col-span-4 flex flex-col max-h-[320px] rounded-apple-lg border border-line/50 bg-surface-card/60 backdrop-blur-xl p-5 sm:p-7 dark:border-line-dark/50 dark:bg-surface-dark-card/60 transition-all duration-700 delay-[400ms] ease-out shadow-sm hover:border-line/80 hover:shadow-lg dark:hover:border-line-dark/80 ${
             mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
           }`}
         >
-          <div className="flex items-center justify-between border-b border-line/40 pb-4 dark:border-line-dark/40">
+          <div className="flex items-center justify-between border-b border-line/40 pb-4 dark:border-line-dark/40 shrink-0">
             <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
               Recent activity
             </h2>
           </div>
 
+          <div className="flex-1 overflow-y-auto min-h-0 pr-2 -mr-2 mt-2">
+            {loading ? (
+              <div className="mt-3 flex flex-col gap-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="h-5 w-full max-w-[200px] animate-pulse rounded-full bg-ink/[0.04] dark:bg-ink-dark/[0.06]" />
+                ))}
+              </div>
+            ) : activity.length === 0 ? (
+              <p className="mt-4 text-[13.5px] text-ink-secondary dark:text-ink-dark-secondary text-center">
+                No activity yet.
+              </p>
+            ) : (
+              <ul className="flex flex-col">
+                {activity.map((row) => (
+                  <li
+                    key={row.id}
+                    className="group flex items-start gap-3.5 border-b border-line/30 py-3.5 last:border-none dark:border-line-dark/30 transition-colors hover:bg-ink/[0.03] dark:hover:bg-ink-dark/[0.03] px-3 rounded-md"
+                  >
+                    <ActivityDot type={row.type} />
+                    <span className="flex-1 text-[13.5px] font-medium leading-snug text-ink dark:text-ink-dark">
+                      {row.title}
+                    </span>
+                    <time
+                      dateTime={row.created_at}
+                      className="shrink-0 text-[12px] font-medium tabular-nums text-ink-tertiary dark:text-ink-dark-secondary group-hover:text-ink-secondary dark:group-hover:text-ink-dark transition-colors"
+                    >
+                      {relativeTime(row.created_at)}
+                    </time>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </section>
+        {/* Pending Tasks Section */}
+        <section
+          className={`col-span-1 md:col-span-3 lg:col-span-4 flex flex-col rounded-apple-lg border border-line/50 bg-surface-card/60 backdrop-blur-xl p-5 sm:p-7 dark:border-line-dark/50 dark:bg-surface-dark-card/60 transition-all duration-700 delay-[500ms] ease-out shadow-sm hover:border-line/80 hover:shadow-lg dark:hover:border-line-dark/80 ${
+            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+          }`}
+        >
+          <div className="flex items-center justify-between border-b border-line/40 pb-4 dark:border-line-dark/40">
+            <h2 className="text-[15px] font-semibold tracking-tight text-ink dark:text-ink-dark">
+              Pending Tasks
+            </h2>
+            {pendingTodos.length > 0 && (
+              <span className="text-[12px] font-medium text-ink-tertiary dark:text-ink-dark-secondary bg-ink/[0.04] dark:bg-ink-dark/[0.08] px-2 py-1 rounded-md">
+                {stats.pendingTasks} {stats.pendingTasks === 5 ? "(Top 5)" : ""}
+              </span>
+            )}
+          </div>
+
           {loading ? (
             <div className="mt-5 flex flex-col gap-4">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-5 w-full max-w-[200px] animate-pulse rounded-full bg-ink/[0.04] dark:bg-ink-dark/[0.06]" />
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="h-10 w-full animate-pulse rounded-md bg-ink/[0.04] dark:bg-ink-dark/[0.06]" />
               ))}
             </div>
-          ) : activity.length === 0 ? (
-            <p className="mt-6 text-[13.5px] text-ink-secondary dark:text-ink-dark-secondary text-center">
-              No activity yet.
+          ) : pendingTodos.length === 0 ? (
+            <p className="mt-6 text-[13.5px] text-ink-secondary dark:text-ink-dark-secondary text-center pb-2">
+              All caught up! No pending tasks.
             </p>
           ) : (
-            <ul className="mt-3 flex flex-col">
-              {activity.map((row) => (
+            <ul className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+              {pendingTodos.map((todo) => (
                 <li
-                  key={row.id}
-                  className="group flex items-start gap-3.5 border-b border-line/30 py-3.5 last:border-none dark:border-line-dark/30 transition-colors hover:bg-ink/[0.03] dark:hover:bg-ink-dark/[0.03] -mx-3 px-3 rounded-md"
+                  key={todo.id}
+                  className="flex items-center gap-3 rounded-lg border border-line/40 bg-surface/30 p-3 shadow-sm dark:border-line-dark/40 dark:bg-surface-dark/30"
                 >
-                  <ActivityDot type={row.type} />
-
-                  <span className="flex-1 text-[13.5px] font-medium leading-snug text-ink dark:text-ink-dark">
-                    {row.title}
+                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 border-line/60 dark:border-line-dark/60" />
+                  <span className="flex-1 truncate text-[14px] font-medium text-ink dark:text-ink-dark">
+                    {todo.task}
                   </span>
-
                   <time
-                    dateTime={row.created_at}
-                    className="shrink-0 text-[12px] font-medium tabular-nums text-ink-tertiary dark:text-ink-dark-secondary group-hover:text-ink-secondary dark:group-hover:text-ink-dark transition-colors"
+                    dateTime={todo.created_at}
+                    className="shrink-0 text-[12px] font-medium tabular-nums text-ink-tertiary dark:text-ink-dark-secondary"
                   >
-                    {relativeTime(row.created_at)}
+                    {relativeTime(todo.created_at)}
                   </time>
                 </li>
               ))}

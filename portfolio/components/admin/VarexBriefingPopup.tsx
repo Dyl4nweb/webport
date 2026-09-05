@@ -126,12 +126,8 @@ export default function VarexBriefingPopup({
     const dismissedAt = sessionStorage.getItem("varex_briefing_dismissed_at");
 
     if (hasTriggeredInSession) return;
-
-    // If dismissed less than 60 seconds ago and not a fresh login, wait
-    if (!justLoggedIn && dismissedAt && Date.now() - Number(dismissedAt) < 60000) {
-      return;
-    }
     
+    // The 60-second cooldown was removed as requested so Varex AI always pops up on refresh.
     hasTriggeredInSession = true;
 
     let timer: NodeJS.Timeout;
@@ -335,9 +331,23 @@ export default function VarexBriefingPopup({
           {/* Audio Chime Test / Indicator Button */}
           <button
             type="button"
-            onClick={playCyberChime}
+            onClick={() => {
+              playCyberChime();
+              if (realtimeAlert) {
+                speakText(realtimeAlert.message);
+              } else if (briefing) {
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                const dateStr = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                let speechText = `Welcome back, Dylan! As of ${timeStr} on ${dateStr}, your portfolio has reached ${briefing.totalVisitors} total visitors.`;
+                if (briefing.viewsToday > 0) speechText += ` Your users have increased by ${briefing.viewsToday} in the last 24 hours.`;
+                if (briefing.newInquiries > 0) speechText += ` You have ${briefing.newInquiries} unread client inquiries waiting for your reply.`;
+                else speechText += ` All client inquiries are up to date.`;
+                speakText(speechText);
+              }
+            }}
             aria-label="Play notification sound"
-            title="Notification sound on (click to preview chime)"
+            title="Play Varex AI Audio (Click if browser blocked autoplay)"
             className="admin-chat-btn flex h-6 w-6 items-center justify-center text-ink-secondary hover:text-accent dark:text-ink-dark-secondary dark:hover:text-accent-dark transition-colors"
           >
             <svg
